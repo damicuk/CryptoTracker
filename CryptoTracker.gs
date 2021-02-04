@@ -82,20 +82,20 @@ class CryptoTracker {
 
   processTrades() {
 
-    let ledgerData = this.getLedgerData();
+    let ledgerRecords = this.getLedgerRecords();
 
-    for (let row of ledgerData) {
+    for (let ledgerRecord of ledgerRecords) {
 
-      let date = new Date(row[0]);
-      let action = row[1];
-      let debitCurrency = row[2];
-      let debitAmount = Number(row[4]);
-      let debitFee = Number(row[5]);
-      let creditCurrency = row[6];
-      let creditAmount = Number(row[8]);
-      let creditFee = Number(row[9]);
-      let exchangeName = row[10];
-      let walletName = row[11];
+      let date = ledgerRecord.date;
+      let action = ledgerRecord.action;
+      let debitCurrency = ledgerRecord.debitCurrency;
+      let debitAmount = ledgerRecord.debitAmount;
+      let debitFee = ledgerRecord.debitFee;
+      let creditCurrency = ledgerRecord.creditCurrency;
+      let creditAmount = ledgerRecord.creditAmount;
+      let creditFee = ledgerRecord.creditFee;
+      let exchangeName = ledgerRecord.exchangeName;
+      let walletName = ledgerRecord.walletName;
 
       this.validateLedgerRecord(date, action, debitCurrency, creditCurrency, exchangeName, walletName);
 
@@ -313,7 +313,7 @@ class CryptoTracker {
 
 //   }
 
-  getLedgerData() {
+  getLedgerRecords() {
 
     let ss = SpreadsheetApp.getActive();
     let ledgerSheet = ss.getSheetByName('Ledger');
@@ -325,7 +325,15 @@ class CryptoTracker {
       return a[0] - b[0];
     });
 
-    return ledgerData;
+    let ledgerRecords = [];
+    for(let row of ledgerData) {
+
+      let ledgerRecord = new LedgerRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]);
+      ledgerRecords.push(ledgerRecord);
+
+    }
+
+    return ledgerRecords;
   }
 
 }

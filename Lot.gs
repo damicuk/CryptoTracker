@@ -10,14 +10,19 @@ class Lot {
     this.creditCurrency = creditCurrency;
     this.creditAmount = creditAmount;
     this.creditFee = creditFee;
-    this._satoshi = Math.round(creditAmount * 10e8) - Math.round(creditFee * 10e8); //round because multiplying
-    this.costBasisCents = Math.round(debitCurrency * 100) - Math.round(debitFee * 100);
 
   }
 
   get satoshi() {
 
-    return this._satoshi;
+    return Math.round(creditAmount * 10e8) - Math.round(creditFee * 10e8); //round because multiplying
+
+  }
+
+  get costBasisCents() {
+
+    let costBasisDebitCurrency = Math.round(debitCurrency * 100) - Math.round(debitFee * 100);
+    return Math.round(costBasisDebitCurrency * debitExRate);
 
   }
 
@@ -25,4 +30,6 @@ class Lot {
 
 
   }
+
+
 }

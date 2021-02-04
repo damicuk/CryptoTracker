@@ -227,7 +227,7 @@ class CryptoTracker {
     let ledgerData = ledgerDataRange.getValues();
 
     //fill in any missing exchange rates with GOOGLEFINANCE formula
-    const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#fiatConvert#", "#currency#")), "close", A#row#), 2,2)`;
+    const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#currency#", "#fiatConvert#")), "close", A#row#), 2,2)`;
 
     let debitExRates = [];
     let creditExRates = [];
@@ -252,7 +252,7 @@ class CryptoTracker {
         if (this.isFiat(debitCurrency) && !this.isFiatConvert(debitCurrency)) {  //Buy crypto
 
           if (!debitExRate || isNaN(debitExRate)) {
-            debitExRates[i][0] = formula.replace(/#fiatConvert#/, this.fiatConvert).replace(/#currency#/, debitCurrency).replace(/#row#/, (i + 3).toString());
+            debitExRates[i][0] = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
             updateDebitExRates = true;
 
           }
@@ -260,19 +260,19 @@ class CryptoTracker {
         else if (this.isFiat(creditCurrency) && !this.isFiatConvert(creditCurrency)) { //Sell crypto
 
           if (!creditExRate || isNaN(creditExRate)) {
-            creditExRates[i][0] = formula.replace(/#fiatConvert#/, this.fiatConvert).replace(/#currency#/, creditCurrency).replace(/#row#/, (i + 3).toString());
+            creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
             updateCreditExRates = true;
           }
         }
         else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) {  //Exchange cyrptos
 
           if (!debitExRate || isNaN(debitExRate)) {
-            debitExRates[i][0] = formula.replace(/#fiatConvert#/, this.fiatConvert).replace(/#currency#/, debitCurrency).replace(/#row#/, (i + 3).toString());
+            debitExRates[i][0] = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
             updateDebitExRates = true;
           }
 
           if (!creditExRate || isNaN(creditExRate)) {
-            creditExRates[i][0] = formula.replace(/#fiatConvert#/, this.fiatConvert).replace(/#currency#/, creditCurrency).replace(/#row#/, (i + 3).toString());
+            creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency.replace(/#fiatConvert#/, this.fiatConvert)).replace(/#row#/, (i + 3).toString());
             updateCreditExRates = true;
           }
         }

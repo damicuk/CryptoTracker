@@ -286,8 +286,8 @@ class CryptoTracker {
       }
 
       if (updateCreditExRates) {
-        creditExRates = this.removeFailedFormula(creditExRates);
         creditExRates = creditExRatesDataRange.getValues();
+        creditExRates = this.removeFailedFormula(creditExRates);
         creditExRatesDataRange.setValues(creditExRates);
       }
 

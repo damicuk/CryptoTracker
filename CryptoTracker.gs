@@ -5,7 +5,6 @@ class CryptoTracker {
     this.settings = new Settings();
     this.exchanges = new Map();
     this.fiatConvert = this.getFiatConvert();
-    //this.exRates = this.getExRates();
 
   }
 
@@ -14,21 +13,14 @@ class CryptoTracker {
     let fiatConvert = this.settings['Fiat Convert'];
 
     if (!fiatConvert) {
-
       throw Error(`Fiat Convert is missing from the settings sheet.`);
-
     }
     else if (!this.isFiat(fiatConvert)) {
-
       throw Error(`Fiat Convert (${fiatConvert}) is not listed as fiat (${this.fiats}) in the settings sheet.`);
-
     }
     else if (this.isCrypto(fiatConvert)) {
-
       throw Error(`Fiat Convert (${fiatConvert}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
-
     }
-
     return fiatConvert;
   }
 
@@ -40,25 +32,7 @@ class CryptoTracker {
 
     }
     return this.exchanges.get(name);
-
   }
-
-  // getExRate(date, currency) {
-
-  //   let exRateValue = null;
-  //   if (currency != this.fiatConvert) {
-  //     for (let exRate of this.exRates) {
-  //       if (exRate[0].getTime() == date.getTime()
-  //         && exRate[1] == this.fiatConvert
-  //         && exRate[2] == currency
-  //         && exRate[3] && !isNaN(exRate[3])) {
-  //         exRateValue = Number(exRate[3]);
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   return exRateValue;
-  // }
 
   isFiatConvert(currency) {
     return this.currency == this.fiatConvert;
@@ -160,9 +134,7 @@ class CryptoTracker {
   validateLedgerRecords(ledgerRecords) {
 
     for (let ledgerRecord of ledgerRecords) {
-
       this.validateLedgerRecord(ledgerRecord);
-
     }
   }
 
@@ -220,120 +192,118 @@ class CryptoTracker {
     }
   }
 
-  //   getExRates() {
-
-  //     let ledgerData = this.getLedgerData();
-
-  //     let neededRates = [];
-
-  //     for (let row of ledgerData) {
-
-  //       let date = new Date(row[0]);
-  //       let action = row[1];
-  //       let debitCurrency = row[2];
-  //       let creditCurrency = row[5];
-  //       let exchangeName = row[8];
-  //       let walletName = row[9];
-
-  //       this.validateLedgerRecord(date, action, debitCurrency, creditCurrency, exchangeName, walletName);
-
-  //       if (action == 'Trade') {
-
-  //         if (this.isFiat(debitCurrency) && !this.isFiatConvert(debitCurrency)) {  //Buy crypto
-
-  //           neededRates.push([date, this.fiatConvert, debitCurrency, '']);
-  //           // Logger.log(`Date: ${date.toISOString()}, Fiat Convert: ${this.fiatConvert}, Debit Currency: ${debitCurrency}`);
-
-  //         }
-  //         else if (this.isFiat(creditCurrency) && !this.isFiatConvert(creditCurrency)) { //Sell crypto
-
-  //           neededRates.push([date, this.fiatConvert, creditCurrency, '']);
-  //           // Logger.log(`Date: ${date.toISOString()}, Fiat Convert: ${this.fiatConvert}, Credit Currency: ${creditCurrency}`);
-
-  //         }
-  //         else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) {  //Exchange cyrptos
-
-  //           neededRates.push([date, this.fiatConvert, debitCurrency, '']);
-  //           // Logger.log(`Date: ${date.toISOString()}, Fiat Convert: ${this.fiatConvert}, Debit Currency: ${debitCurrency}`);
-
-  //           neededRates.push([date, this.fiatConvert, creditCurrency, '']);
-  //           // Logger.log(`Date: ${date.toISOString()}, Fiat Convert: ${this.fiatConvert}, Credit Currency: ${creditCurrency}`);
-
-  //         }
-  //       }
-  //     }
-
-  //     let ss = SpreadsheetApp.getActive();
-  //     const exRatesSheetName = 'Ex Rates';
-  //     let exRatesSheet = ss.getSheetByName(exRatesSheetName);
-
-  //     if (!exRatesSheet) {
-  //       exRatesSheet = ss.insertSheet(exRatesSheetName);
-  //     }
-
-  //     //existing data
-  //     let exRatesDataRange = exRatesSheet.getDataRange();
-
-  //     //append needed rates
-  //     let neededRateDataRange = exRatesSheet.getRange(exRatesDataRange.getHeight(), 1, neededRates.length, 4);
-  //     neededRateDataRange.setValues(neededRates);
-
-  //     //remove rows with duplicate values in columns A-C
-  //     exRatesSheet.getDataRange().removeDuplicates([1, 2, 3]);
-
-  //     //data range without duplicates
-  //     exRatesDataRange = exRatesSheet.getDataRange();
-
-  //     //column D contains calculated values or empty where value yet to be calculated
-  //     let rateValuesDataRange = exRatesSheet.getRange(1, 4, exRatesDataRange.getHeight(), 1);
-  //     let rateValues = rateValuesDataRange.getValues();
-
-  //     //add formula to calculate missing values
-  //     const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT(B#, C#)), "close", A#), 2,2)`;
-  //     const regEx = /#/g;
-
-  //     for (let i = 0; i < rateValues.length; i++) {
-  //       let rateValue = rateValues[i][0];
-  //       if (!rateValue || isNaN(rateValue)) {
-  //         rateValues[i][0] = formula.replace(regEx, (i + 1).toString());
-  //       }
-  //     }
-
-  //     //apply the formula to calculate the values
-  //     rateValuesDataRange.setFormulas(rateValues);
-  //     SpreadsheetApp.flush(); //applies changes
-
-  //     //read in values calculated by the formula
-  //     rateValues = rateValuesDataRange.getValues();
-
-  //     //remove failed formula results
-  //     for (let rateValue of rateValues) {
-  //       if (isNaN(rateValue[0])) {
-  //         rateValue[0] = '';
-  //       }
-  //     }
-
-  //     //overwrite the formulas with hard coded values
-  //     rateValuesDataRange.setValues(rateValues);
-  //     SpreadsheetApp.flush(); //applies changes
-
-  //     //read in final results
-  //     return exRatesDataRange.getValues();
-
-  //   }
-
   getLedgerRecords() {
 
     let ss = SpreadsheetApp.getActive();
     let ledgerSheet = ss.getSheetByName('Ledger');
 
     let ledgerDataRange = ledgerSheet.getDataRange();
-    let ledgerData = ledgerDataRange.offset(2, 0, ledgerDataRange.getHeight() - 2, 12).getValues();
+    ledgerDataRange = ledgerDataRange.offset(2, 0, ledgerDataRange.getHeight() - 2, 12);
 
-    ledgerData.sort(function (a, b) { //sort by date
+    let debitExRatesDataRange = ledgerDataRange.offset(0, 3, ledgerDataRange.getHeight(), 1);
+    let creditExRatesDataRange = ledgerDataRange.offset(0, 7, ledgerDataRange.getHeight(), 1);
+
+    let ledgerData = ledgerDataRange.getValues();
+
+    //fill in any missing exchange rates with GOOGLEFINANCE formula
+    const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#fiatConvert#", "#currency#")), "close", A#row#), 2,2)`;
+
+    let debitExRates = [];
+    let creditExRates = [];
+
+    //do we need to update these columns?
+    let updateDebitExRates = false;
+    let updateCreditExRates = false;
+
+    for (let i = 0; i < ledgerData.length; i++) {
+
+      let action = ledgerData[i][1];
+      let debitCurrency = ledgerData[i][2];
+      let debitExRate = ledgerData[i][3];
+      let creditCurrency = ledgerData[i][6];
+      let creditExRate = ledgerData[i][7];
+
+      debitExRates.push([debitExRate]);
+      creditExRates.push([creditExRate]);
+
+      if (action == 'Trade') {
+
+        if (this.isFiat(debitCurrency) && !this.isFiatConvert(debitCurrency)) {  //Buy crypto
+
+          if (!debitExRate || isNaN(debitExRate)) {
+            debitExRates[i][0] = formula.replace(/#fiatConvert#/, this.fiatConvert).replace(/#currency#/, debitCurrency).replace(/#row#/, (i + 3).toString());
+            updateDebitExRates = true;
+
+          }
+        }
+        else if (this.isFiat(creditCurrency) && !this.isFiatConvert(creditCurrency)) { //Sell crypto
+
+          if (!creditExRate || isNaN(creditExRate)) {
+            creditExRates[i][0] = formula.replace(/#fiatConvert#/, this.fiatConvert).replace(/#currency#/, creditCurrency).replace(/#row#/, (i + 3).toString());
+            updateCreditExRates = true;
+          }
+        }
+        else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) {  //Exchange cyrptos
+
+          if (!debitExRate || isNaN(debitExRate)) {
+            debitExRates[i][0] = formula.replace(/#fiatConvert#/, this.fiatConvert).replace(/#currency#/, debitCurrency).replace(/#row#/, (i + 3).toString());
+            updateDebitExRates = true;
+          }
+
+          if (!creditExRate || isNaN(creditExRate)) {
+            creditExRates[i][0] = formula.replace(/#fiatConvert#/, this.fiatConvert).replace(/#currency#/, creditCurrency).replace(/#row#/, (i + 3).toString());
+            updateCreditExRates = true;
+          }
+        }
+
+      }
+
+    }
+
+    if (updateDebitExRates || updateCreditExRates) {
+
+      //apply the formula to calculate the values
+      if (updateDebitExRates) {
+        debitExRatesDataRange.setValues(debitExRates);
+      }
+
+      if (updateCreditExRates) {
+        creditExRatesDataRange.setValues(creditExRates);
+      }
+
+      //apply changes
+      SpreadsheetApp.flush();
+
+      //read in values calculated by the formula
+      //remove failed formula results
+      //overwrite the formulas with hard coded values
+      if (updateDebitExRates) {
+        debitExRates = debitExRatesDataRange.getValues();
+        debitExRates = this.removeFailedFormula(debitExRates);
+        debitExRatesDataRange.setValues(debitExRates);
+
+      }
+
+      if (updateCreditExRates) {
+        creditExRates = this.removeFailedFormula(creditExRates);
+        creditExRates = creditExRatesDataRange.getValues();
+        creditExRatesDataRange.setValues(creditExRates);
+      }
+
+      //applies changes
+      SpreadsheetApp.flush();
+
+    }
+
+    //read in final results
+    ledgerData = ledgerDataRange.getValues();
+
+    //sort by date
+    ledgerData.sort(function (a, b) {
       return a[0] - b[0];
     });
 
+    //convert raw data to object array
     let ledgerRecords = [];
     for (let row of ledgerData) {
 
@@ -345,7 +315,22 @@ class CryptoTracker {
     return ledgerRecords;
   }
 
+  removeFailedFormula(exRates) {
+
+    let updatedExRates = [];
+
+    for (let exRate of exRates) {
+      if (isNaN(exRate[0])) {
+        updatedExRates.push(['']);
+      }
+      else {
+        updatedExRates.push(exRate);
+      }
+    }
+    return updatedExRates;
+  }
 }
+
 
 function processTrades() {
 

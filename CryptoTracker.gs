@@ -110,7 +110,7 @@ class CryptoTracker {
           // Logger.log(`Trade buy crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
           this.getExchange(exchangeName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
           // Logger.log(`Trade fiat debit balance: ${this.getExchange(exchangeName).getFiatAccount(debitCurrency).balance}`);
-          
+
           // Logger.log(`Trade buy crypto debit: ${debitCurrency} (exrate: ${debitExRate}) ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
           let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
           this.getExchange(exchangeName).getCryptoAccount(creditCurrency).deposit(lot);
@@ -143,7 +143,9 @@ class CryptoTracker {
     let date = ledgerRecord.date;
     let action = ledgerRecord.action;
     let debitCurrency = ledgerRecord.debitCurrency;
+    let debitExRate = ledgerRecord.debitExRate;
     let creditCurrency = ledgerRecord.creditCurrency;
+    let creditExRate = ledgerRecord.creditExRate;
     let exchangeName = ledgerRecord.exchangeName;
     let walletName = ledgerRecord.walletName;
 
@@ -186,6 +188,25 @@ class CryptoTracker {
       else if (walletName) {
         throw Error(`[${date.toISOString()}] Ledger record: trade has wallet (${walletName}) specified. Leave field blank.`);
       }
+      else if (this.isFiat(debitCurrency) && !this.isFiatConvert(debitCurrency)) {//Buy crypto
+        if (!debitExRate || isNaN(debitExRate)) {
+          throw Error(`[${date.toISOString()}] Ledger record: trade (buy crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+        }
+      }
+      else if (this.isFiat(creditCurrency) && !this.isFiatConvert(creditCurrency)) {//Sell crypto
+        if (!creditExRate || isNaN(creditExRate)) {
+          throw Error(`[${date.toISOString()}] Ledger record: trade (sell crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+        }
+      }
+      else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) {  //Exchange cyrptos
+        if (!debitExRate || isNaN(debitExRate)) {
+          throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+        }
+        else if (!creditExRate || isNaN(creditExRate)) {
+          throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+        }
+      }
+
     }
     else {
       throw Error(`[${date.toISOString()}] Ledger record: action '${action}' is invalid.`);

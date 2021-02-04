@@ -113,6 +113,11 @@ class CryptoTracker {
 
           // Logger.log(`Trade buy crypto debit: ${debitCurrency} (exrate: ${debitExRate}) ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
           let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
+          
+          Logger.log(`[${lot.date.toISOString()}] Lot 
+          ${lot.creditCurrency} ${lot.creditAmountSatoshi / 10e8} - ${lot.creditFeeSatoshi / 10e8} = ${lot.satoshi / 10e8}
+          ${lot.debitCurrency} (${lot.debitAmountSatoshi /10e8} - ${lot.debitFeeSatoshi /10e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
+
           this.getExchange(exchangeName).getCryptoAccount(creditCurrency).deposit(lot);
           // Logger.log(`Trade crypto credit balance: ${this.getExchange(exchangeName).getCryptoAccount(creditCurrency).balance}`);
 

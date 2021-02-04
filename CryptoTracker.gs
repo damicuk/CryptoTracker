@@ -65,9 +65,11 @@ class CryptoTracker {
       let date = ledgerRecord.date;
       let action = ledgerRecord.action;
       let debitCurrency = ledgerRecord.debitCurrency;
+      let debitExRate = ledgerRecord.debitExRate;
       let debitAmount = ledgerRecord.debitAmount;
       let debitFee = ledgerRecord.debitFee;
       let creditCurrency = ledgerRecord.creditCurrency;
+      let creditExRate = ledgerRecord.creditExRate;
       let creditAmount = ledgerRecord.creditAmount;
       let creditFee = ledgerRecord.creditFee;
       let exchangeName = ledgerRecord.exchangeName;
@@ -108,12 +110,10 @@ class CryptoTracker {
           // Logger.log(`Trade buy crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
           this.getExchange(exchangeName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
           // Logger.log(`Trade fiat debit balance: ${this.getExchange(exchangeName).getFiatAccount(debitCurrency).balance}`);
-
-          //let exRate = this.getExRate(date, debitCurrency);
-          // Logger.log(`ExRate [${date.toISOString()}] ${debitCurrency} ${exRate}`);
-
-          // let lot = new Lot(date, debitCurrency, debitAmount, debitFee, creditCurrency, creditAmount, creditFee, exRate);
-          // this.getExchange(exchangeName).getCryptoAccount(creditCurrency).deposit(lot);
+          
+          // Logger.log(`Trade buy crypto debit: ${debitCurrency} (exrate: ${debitExRate}) ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
+          let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
+          this.getExchange(exchangeName).getCryptoAccount(creditCurrency).deposit(lot);
           // Logger.log(`Trade crypto credit balance: ${this.getExchange(exchangeName).getCryptoAccount(creditCurrency).balance}`);
 
         }
@@ -260,6 +260,7 @@ class CryptoTracker {
 
     }
 
+    //Only update the ex rates if necessary (slow)
     if (updateDebitExRates || updateCreditExRates) {
 
       //apply the formula to calculate the values
@@ -311,7 +312,6 @@ class CryptoTracker {
       ledgerRecords.push(ledgerRecord);
 
     }
-
     return ledgerRecords;
   }
 
@@ -330,7 +330,6 @@ class CryptoTracker {
     return updatedExRates;
   }
 }
-
 
 function processTrades() {
 

@@ -297,18 +297,18 @@ class CryptoTracker {
       SpreadsheetApp.flush();
 
       //read in values calculated by the formula
-      //remove failed formula results
+      //remove failed formula results and invalid values
       //overwrite the formulas with hard coded values
       if (updateDebitExRates) {
         debitExRates = debitExRatesDataRange.getValues();
-        debitExRates = this.removeFailedFormula(debitExRates);
+        debitExRates = this.removeInvalidExRates(debitExRates);
         debitExRatesDataRange.setValues(debitExRates);
 
       }
 
       if (updateCreditExRates) {
         creditExRates = creditExRatesDataRange.getValues();
-        creditExRates = this.removeFailedFormula(creditExRates);
+        creditExRates = this.removeInvalidExRates(creditExRates);
         creditExRatesDataRange.setValues(creditExRates);
       }
 
@@ -336,19 +336,19 @@ class CryptoTracker {
     return ledgerRecords;
   }
 
-  removeFailedFormula(exRates) {
+  removeInvalidExRates(exRates) {
 
-    let updatedExRates = [];
+    let validExRates = [];
 
     for (let exRate of exRates) {
       if (isNaN(exRate[0])) {
-        updatedExRates.push(['']);
+        validExRates.push(['']);
       }
       else {
-        updatedExRates.push(exRate);
+        validExRates.push(exRate);
       }
     }
-    return updatedExRates;
+    return validExRates;
   }
 }
 

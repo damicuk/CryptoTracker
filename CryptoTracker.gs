@@ -369,39 +369,39 @@ class CryptoTracker {
     }
 
     //only update the ex rates if necessary (slow)
-    // if (updateDebitExRates || updateCreditExRates) {
+    if (updateDebitExRates || updateCreditExRates) {
 
-    //   //apply the formula to calculate the values
-    //   if (updateDebitExRates) {
-    //     debitExRatesDataRange.setValues(debitExRates);
-    //   }
+      //apply the formula to calculate the values
+      if (updateDebitExRates) {
+        debitExRatesDataRange.setValues(debitExRates);
+      }
 
-    //   if (updateCreditExRates) {
-    //     creditExRatesDataRange.setValues(creditExRates);
-    //   }
+      if (updateCreditExRates) {
+        creditExRatesDataRange.setValues(creditExRates);
+      }
 
-    //   //apply changes
-    //   SpreadsheetApp.flush();
+      //apply changes
+      SpreadsheetApp.flush();
 
-    //   //read in values calculated by the formula
-    //   //remove failed formula results and invalid values
-    //   //overwrite the formulas with hard coded values
-    //   if (updateDebitExRates) {
-    //     debitExRates = debitExRatesDataRange.getValues();
-    //     debitExRates = this.removeInvalidExRates(debitExRates);
-    //     debitExRatesDataRange.setValues(debitExRates);
-    //   }
+      //read in values calculated by the formula
+      //remove failed formula results and invalid values
+      //overwrite the formulas with hard coded values
+      if (updateDebitExRates) {
+        debitExRates = debitExRatesDataRange.getValues();
+        debitExRates = this.removeInvalidExRates(debitExRates);
+        debitExRatesDataRange.setValues(debitExRates);
+      }
 
-    //   if (updateCreditExRates) {
-    //     creditExRates = creditExRatesDataRange.getValues();
-    //     creditExRates = this.removeInvalidExRates(creditExRates);
-    //     creditExRatesDataRange.setValues(creditExRates);
-    //   }
+      if (updateCreditExRates) {
+        creditExRates = creditExRatesDataRange.getValues();
+        creditExRates = this.removeInvalidExRates(creditExRates);
+        creditExRatesDataRange.setValues(creditExRates);
+      }
 
-    //   //applies changes
-    //   SpreadsheetApp.flush();
+      //applies changes
+      SpreadsheetApp.flush();
 
-    // }
+    }
 
     //read in final results
     ledgerData = ledgerDataRange.getValues();

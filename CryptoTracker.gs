@@ -58,7 +58,7 @@ class CryptoTracker {
 
     let ledgerRecords = this.getLedgerRecords();
 
-    this.validateLedger(ledgerRecords);
+    this.validateLedgerRecords(ledgerRecords);
 
     for (let ledgerRecord of ledgerRecords) {
 
@@ -171,9 +171,6 @@ class CryptoTracker {
     if (isNaN(date)) {
       throw Error('Ledger record: missing date.');
     }
-    // else if (!exchangeName) {
-    //   throw Error(`[${date.toISOString()}] Ledger record: has no exchange specified.`);
-    // }
     else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
       throw Error(`[${date.toISOString()}] Ledger record: debit currency (${debitCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
     }
@@ -220,56 +217,77 @@ class CryptoTracker {
         else if (!creditWalletName) {
           throw Error(`[${date.toISOString()}] Ledger record: crypto transfer has no credit wallet specified.`);
         }
+        else if (debitWalletName == creditWalletName) {
+          throw Error(`[${date.toISOString()}] Ledger record: crypto transfer debit wallet (${debitWalletName}) and credit wallet (${creditWalletName}) must be different.`);
+        }
       }
     }
     else if (action == 'Trade') { //Trade
-      //   if (!debitCurrency) {
-      //     throw Error(`[${date.toISOString()}] Ledger record: trade with no debit currency specified.`);
-      //   }
-      //   else if (!creditCurrency) {
-      //     throw Error(`[${date.toISOString()}] Ledger record: trade with no credit currency specified.`);
-      //   }
-      //   else if (this.isFiat(debitCurrency) && this.isFiat(creditCurrency)) {
-      //     throw Error(`[${date.toISOString()}] Ledger record: trade with both fiat debit currency (${debitCurrency}) and fiat credit currency (${creditCurrency}) not supported.`);
-      //   }
-      //   else if (walletName) {
-      //     throw Error(`[${date.toISOString()}] Ledger record: trade has wallet (${walletName}) specified. Leave field blank.`);
-      //   }
-      //   else if (this.isFiat(debitCurrency)) {//Buy crypto
-      //     if (this.isFiatConvert(debitCurrency)) {
-      //       if (debitExRate) {
-      //         throw Error(`[${date.toISOString()}] Ledger record: trade (buy crypto) debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
-      //       }
-      //     }
-      //     else {
-      //       if (!debitExRate || isNaN(debitExRate)) {
-      //         throw Error(`[${date.toISOString()}] Ledger record: trade (buy crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      //       }
-      //     }
-      //   }
-      //   else if (this.isFiat(creditCurrency)) {//Sell crypto
-      //     if (this.isFiatConvert(creditCurrency)) {
-      //       if (creditExRate) {
-      //         throw Error(`[${date.toISOString()}] Ledger record: trade (sell crypto) credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
-      //       }
-      //     }
-      //     else {
-      //       if (!creditExRate || isNaN(debitExRate)) {
-      //         throw Error(`[${date.toISOString()}] Ledger record: trade (sell crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      //       }
-      //     }
-      //   }
-      //   else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) {  //Exchange cyrptos
-      //     if (!debitExRate || isNaN(debitExRate)) {
-      //       throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      //     }
-      //     else if (!creditExRate || isNaN(creditExRate)) {
-      //       throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      //     }
-      //   }
-      // }
-      // else {
-      //   throw Error(`[${date.toISOString()}] Ledger record: action '${action}' is invalid.`);
+      if (!debitCurrency) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade with no debit currency specified.`);
+      }
+      else if (!creditCurrency) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade with no credit currency specified.`);
+      }
+      else if (debitCurrency == creditCurrency) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade debit currency (${debitCurrency}) and credit currency (${creditCurrency}) must be different.`);
+      }
+      else if (this.isFiat(debitCurrency) && this.isFiat(creditCurrency)) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade with both fiat debit currency (${debitCurrency}) and fiat credit currency (${creditCurrency}) not supported.`);
+      }
+      else if (!debitWalletName) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade has no debit wallet specified.`);
+      }
+      else if (creditWalletName) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade credit wallet (${creditWalletName}) is redundant, leave blank. It is inferred from the debit wallet (${debitWalletName}).`);
+      }
+      else if (debitAmount < 0) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade debit amount (${debitAmount.toLocaleString()}) must be greater or equal to 0.`);
+      }
+      else if (debitFee < 0) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0.`);
+      }
+      else if (creditAmount < 0) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade credit amount (${creditAmount.toLocaleString()}) must be greater or equal to 0.`);
+      }
+      else if (creditFee < 0) {
+        throw Error(`[${date.toISOString()}] Ledger record: trade credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0.`);
+      }
+      else if (this.isFiat(debitCurrency)) {  //Buy crypto
+        if (this.isFiatConvert(debitCurrency)) {
+          if (debitExRate) {
+            throw Error(`[${date.toISOString()}] Ledger record: buy crypto trade debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
+          }
+        }
+        else {
+          if (!debitExRate || isNaN(debitExRate)) {
+            throw Error(`[${date.toISOString()}] Ledger record: buy crypto trade debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+          }
+        }
+      }
+      else if (this.isFiat(creditCurrency)) { //Sell crypto
+        if (this.isFiatConvert(creditCurrency)) {
+          if (creditExRate) {
+            throw Error(`[${date.toISOString()}] Ledger record: sell crypto trade credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
+          }
+        }
+        else {
+          if (!creditExRate || isNaN(debitExRate)) {
+            throw Error(`[${date.toISOString()}] Ledger record: sell crypto trade credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+          }
+        }
+      }
+      else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos
+        if (!debitExRate || isNaN(debitExRate)) {
+          throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+        }
+        else if (!creditExRate || isNaN(creditExRate)) {
+          throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+        }
+      }
+    }
+    else {
+      throw Error(`[${date.toISOString()}] Ledger record: action (${action}) is invalid.`);
     }
   }
 
@@ -351,40 +369,39 @@ class CryptoTracker {
     }
 
     //only update the ex rates if necessary (slow)
-    if (updateDebitExRates || updateCreditExRates) {
+    // if (updateDebitExRates || updateCreditExRates) {
 
-      //apply the formula to calculate the values
-      if (updateDebitExRates) {
-        debitExRatesDataRange.setValues(debitExRates);
-      }
+    //   //apply the formula to calculate the values
+    //   if (updateDebitExRates) {
+    //     debitExRatesDataRange.setValues(debitExRates);
+    //   }
 
-      if (updateCreditExRates) {
-        creditExRatesDataRange.setValues(creditExRates);
-      }
+    //   if (updateCreditExRates) {
+    //     creditExRatesDataRange.setValues(creditExRates);
+    //   }
 
-      //apply changes
-      SpreadsheetApp.flush();
+    //   //apply changes
+    //   SpreadsheetApp.flush();
 
-      //read in values calculated by the formula
-      //remove failed formula results and invalid values
-      //overwrite the formulas with hard coded values
-      if (updateDebitExRates) {
-        debitExRates = debitExRatesDataRange.getValues();
-        debitExRates = this.removeInvalidExRates(debitExRates);
-        debitExRatesDataRange.setValues(debitExRates);
+    //   //read in values calculated by the formula
+    //   //remove failed formula results and invalid values
+    //   //overwrite the formulas with hard coded values
+    //   if (updateDebitExRates) {
+    //     debitExRates = debitExRatesDataRange.getValues();
+    //     debitExRates = this.removeInvalidExRates(debitExRates);
+    //     debitExRatesDataRange.setValues(debitExRates);
+    //   }
 
-      }
+    //   if (updateCreditExRates) {
+    //     creditExRates = creditExRatesDataRange.getValues();
+    //     creditExRates = this.removeInvalidExRates(creditExRates);
+    //     creditExRatesDataRange.setValues(creditExRates);
+    //   }
 
-      if (updateCreditExRates) {
-        creditExRates = creditExRatesDataRange.getValues();
-        creditExRates = this.removeInvalidExRates(creditExRates);
-        creditExRatesDataRange.setValues(creditExRates);
-      }
+    //   //applies changes
+    //   SpreadsheetApp.flush();
 
-      //applies changes
-      SpreadsheetApp.flush();
-
-    }
+    // }
 
     //read in final results
     ledgerData = ledgerDataRange.getValues();

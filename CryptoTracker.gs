@@ -152,6 +152,7 @@ class CryptoTracker {
     let debitCurrency = ledgerRecord.debitCurrency;
     let debitExRate = ledgerRecord.debitExRate;
     let debitAmount = ledgerRecord.debitAmount;
+    let debitFee = ledgerRecord.debitFee;
     let debitWalletName = ledgerRecord.debitWalletName;
     let creditCurrency = ledgerRecord.creditCurrency;
     let creditExRate = ledgerRecord.creditExRate;
@@ -159,38 +160,60 @@ class CryptoTracker {
     let creditFee = ledgerRecord.creditFee;
     let creditWalletName = ledgerRecord.creditWalletName;
 
-    // if (isNaN(date)) {
-    //   throw Error('Ledger record: missing date.');
-    // }
+    if (isNaN(date)) {
+      throw Error('Ledger record: missing date.');
+    }
     // else if (!exchangeName) {
     //   throw Error(`[${date.toISOString()}] Ledger record: has no exchange specified.`);
     // }
-    // else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
-    //   throw Error(`[${date.toISOString()}] Ledger record: debit currency (${debitCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
-    // }
-    // else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
-    //   throw Error(`[${date.toISOString()}] Ledger record: credit currency (${creditCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
-    // }
-    // else if (action == 'Transfer') {  //Transfer
-    //   if (!debitCurrency && !creditCurrency) {
-    //     throw Error(`[${date.toISOString()}] Ledger record : transfer with no currency specified.`);
-    //   }
-    //   else if (debitCurrency && creditCurrency) {
-    //     throw Error(`[${date.toISOString()}] Ledger record: transfer with both debit (${debitCurrency}) and credit (${creditCurrency}) currencies.`);
-    //   }
-    //   else if ((debitCurrency && this.isFiat(debitCurrency) || creditCurrency && this.isFiat(creditCurrency)) && walletName) { //Fiat transfer
-    //     throw Error(`[${date.toISOString()}] Ledger record: fiat transfer has wallet (${walletName}) specified. Leave field blank.`);
-    //   }
-    //   else if ((debitCurrency && this.isCrypto(debitCurrency) || creditCurrency && this.isCrypto(creditCurrency)) && !walletName) { //Crypto transfer
-    //     throw Error(`[${date.toISOString()}] Ledger record: crypto transfer has no wallet specified.`);
-    //   }
-    //   else if (debitExRate) {
-    //     throw Error(`[${date.toISOString()}] Ledger record: transfer. Leave debit exchange rate blank.`);
-    //   }
-    //   else if (creditExRate) {
-    //     throw Error(`[${date.toISOString()}] Ledger record: transfer. Leave credit exchange rate blank.`);
-    //   }
-    // }
+    else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
+      throw Error(`[${date.toISOString()}] Ledger record: debit currency (${debitCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
+    }
+    else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
+      throw Error(`[${date.toISOString()}] Ledger record: credit currency (${creditCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
+    }
+    else if (action == 'Transfer') {  //Transfer
+      if (!debitCurrency) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer with no debit currency specified.`);
+      }
+      else if (creditCurrency) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer credit currency (${creditCurrency}) is redundant, leave blank. It is inferred from the debit currency (${debitCurrency}).`);
+      }
+      else if (debitAmount <= 0) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer debit amount (${debitAmount.toLocaleString()}) must be greater than 0.`);
+      }
+      else if (creditAmount != 0) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer credit amount (${creditAmount.toLocaleString()}) is redundant, leave blank. It is inferred from the debit amount (${debitAmount.toLocaleString()}) and debit fee (${debitFee.toLocaleString()}).`);
+      }
+      else if (debitFee < 0) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0.`);
+      }
+      else if (creditFee != 0) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer credit fee (${creditFee.toLocaleString()}) leave blank.`);
+      }
+      else if (!debitWalletName && !creditWalletName) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer has no debit or credit wallet specified.`);
+      }
+      else if (debitExRate) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer. Leave debit exchange rate blank.`);
+      }
+      else if (creditExRate) {
+        throw Error(`[${date.toISOString()}] Ledger record: transfer. Leave credit exchange rate blank.`);
+      }
+      else if (this.isFiat(debitCurrency)) { //Fiat transfer
+        if (debitWalletName && creditWalletName) {
+          throw Error(`[${date.toISOString()}] Ledger record: fiat transfer has both debit wallet (${debitWalletName}) and credit wallet (${creditWalletName}) specified. Leave debit wallet blank for deposits or credit wallet blank for withdrawals.`);
+        }
+      }
+      else if (this.isCrypto(debitCurrency)) { //Crypto transfer
+        if (!debitWalletName) {
+          throw Error(`[${date.toISOString()}] Ledger record: crypto transfer has no debit wallet specified.`);
+        }
+        else if (!creditWalletName) {
+          throw Error(`[${date.toISOString()}] Ledger record: crypto transfer has no credit wallet specified.`);
+        }
+      }
+    }
     // else if (action == 'Trade') { //Trade
     //   if (!debitCurrency) {
     //     throw Error(`[${date.toISOString()}] Ledger record: trade with no debit currency specified.`);
@@ -270,8 +293,8 @@ class CryptoTracker {
       let action = ledgerData[i][1];
       let debitCurrency = ledgerData[i][2];
       let debitExRate = ledgerData[i][3];
-      let creditCurrency = ledgerData[i][6];
-      let creditExRate = ledgerData[i][7];
+      let creditCurrency = ledgerData[i][7];
+      let creditExRate = ledgerData[i][8];
 
       debitExRates.push([debitExRate]);
       creditExRates.push([creditExRate]);
@@ -313,7 +336,7 @@ class CryptoTracker {
         updateDebitExRates = true;
       }
 
-      if (creditExRate || isNaN(creditExRate)) {
+      if (creditExRate && isNaN(creditExRate)) {
         updateCreditExRates = true;
       }
 

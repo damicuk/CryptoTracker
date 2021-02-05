@@ -5,7 +5,7 @@ function onOpen() {
     .addItem('Process Trades', 'processTrades')
     .addSeparator()
     .addItem(
-      'More Stuff', 'processTrades')
+      'Validate Ledger', 'processTrades')
     .addItem(
       'More Stuff', 'processTrades')
     .addSeparator()

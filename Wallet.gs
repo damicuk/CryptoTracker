@@ -4,7 +4,7 @@ class Wallet {
 
     this.name = name;
     this.cryptoAccounts = new Map();
-
+    this.fiatAccounts = new Map();
   }
 
   getCryptoAccount(ticker) {
@@ -16,4 +16,15 @@ class Wallet {
     }
     return this.cryptoAccounts.get(ticker);
   }
+
+  getFiatAccount(ticker) {
+
+    if (!this.fiatAccounts.has(ticker)) {
+
+      this.fiatAccounts.set(ticker, new FiatAccount(ticker));
+
+    }
+    return this.fiatAccounts.get(ticker);
+  }
+  
 }

@@ -13,8 +13,6 @@ class Lot {
 
   }
 
-
-
   get satoshi() {
 
     return this.creditAmountSatoshi - this.creditFeeSatoshi;

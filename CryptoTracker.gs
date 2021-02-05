@@ -3,7 +3,7 @@ class CryptoTracker {
   constructor() {
 
     this.settings = new Settings();
-    this.exchanges = new Map();
+    this.wallets = new Map();
     this.fiatConvert = this.getFiatConvert();
 
   }
@@ -24,14 +24,14 @@ class CryptoTracker {
     return fiatConvert;
   }
 
-  getExchange(name) {
+  getWallet(name) {
 
-    if (!this.exchanges.has(name)) {
+    if (!this.wallets.has(name)) {
 
-      this.exchanges.set(name, new Exchange(name));
+      this.wallets.set(name, new Wallet(name));
 
     }
-    return this.exchanges.get(name);
+    return this.wallets.get(name);
   }
 
   isFiatConvert(currency) {
@@ -68,71 +68,73 @@ class CryptoTracker {
       let debitExRate = ledgerRecord.debitExRate;
       let debitAmount = ledgerRecord.debitAmount;
       let debitFee = ledgerRecord.debitFee;
+      let debitWalletName = ledgerRecord.debitWalletName;
       let creditCurrency = ledgerRecord.creditCurrency;
       let creditExRate = ledgerRecord.creditExRate;
       let creditAmount = ledgerRecord.creditAmount;
       let creditFee = ledgerRecord.creditFee;
-      let exchangeName = ledgerRecord.exchangeName;
-      let walletName = ledgerRecord.walletName;
+      let creditWalletName = ledgerRecord.creditWalletName;
 
-      // Logger.log(`Date: ${date.toUTCString()}, Action; ${action}, Exchange: ${exchangeName}, Wallet: ${walletName}, Debit Currency: ${debitCurrency}, Credit Currency: ${creditCurrency}`);
+      // Logger.log(`Date: ${date.toISOString()}, Action; ${action}, 
+      //           Debit: ${debitWalletName} ${debitCurrency} Exrate ${debitExRate} Amount ${debitAmount} Fee ${debitFee}, 
+      //           Credit: ${creditWalletName} ${creditCurrency} Exrate ${creditExRate} Amount ${creditAmount} Fee ${creditFee}`);
 
-      if (action == 'Transfer') {  //Transfer
+      // if (action == 'Transfer') {  //Transfer
 
-        if (debitCurrency) { //Withdrawal
-          if (this.isFiat(debitCurrency)) { //Fiat withdrawal
+      //   if (debitCurrency) { //Withdrawal
+      //     if (this.isFiat(debitCurrency)) { //Fiat withdrawal
 
-            this.getExchange(exchangeName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
-            // Logger.log(`Fiat withdrawal balance: ${this.getExchange(exchangeName).getFiatAccount(debitCurrency).balance}`);
+      //       this.getExchange(exchangeName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
+      //       // Logger.log(`Fiat withdrawal balance: ${this.getExchange(exchangeName).getFiatAccount(debitCurrency).balance}`);
 
-          }
-          else if (this.isCrypto(debitCurrency)) { //Crypto withdrawal
+      //     }
+      //     else if (this.isCrypto(debitCurrency)) { //Crypto withdrawal
 
-          }
-        }
-        else {  //Deposit
-          if (this.isFiat(creditCurrency)) { //Fiat deposit
+      //     }
+      //   }
+      //   else {  //Deposit
+      //     if (this.isFiat(creditCurrency)) { //Fiat deposit
 
-            this.getExchange(exchangeName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
-            // Logger.log(`Fiat deposit balance: ${this.getExchange(exchangeName).getFiatAccount(creditCurrency).balance}`);
+      //       this.getExchange(exchangeName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
+      //       // Logger.log(`Fiat deposit balance: ${this.getExchange(exchangeName).getFiatAccount(creditCurrency).balance}`);
 
-          }
-          else if (this.isCrypto(creditCurrency)) { //Crypto deposit
+      //     }
+      //     else if (this.isCrypto(creditCurrency)) { //Crypto deposit
 
 
-          }
-        }
-      }
-      else if (action == 'Trade') { //Trade
+      //     }
+      //   }
+      // }
+      // else if (action == 'Trade') { //Trade
 
-        if (this.isFiat(debitCurrency) && this.isCrypto(creditCurrency)) {  //Buy crypto
+      //   if (this.isFiat(debitCurrency) && this.isCrypto(creditCurrency)) {  //Buy crypto
 
-          // Logger.log(`Trade buy crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
-          this.getExchange(exchangeName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
-          // Logger.log(`Trade fiat debit balance: ${this.getExchange(exchangeName).getFiatAccount(debitCurrency).balance}`);
+      //     // Logger.log(`Trade buy crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
+      //     this.getExchange(exchangeName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
+      //     // Logger.log(`Trade fiat debit balance: ${this.getExchange(exchangeName).getFiatAccount(debitCurrency).balance}`);
 
-          // Logger.log(`Trade buy crypto debit: ${debitCurrency} (exrate: ${debitExRate}) ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
-          let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
+      //     // Logger.log(`Trade buy crypto debit: ${debitCurrency} (exrate: ${debitExRate}) ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
+      //     let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
 
-          // Logger.log(`[${lot.date.toISOString()}] Lot 
-          // ${lot.creditCurrency} ${lot.creditAmountSatoshi / 10e8} - ${lot.creditFeeSatoshi / 10e8} = ${lot.satoshi / 10e8}
-          // ${lot.debitCurrency} (${lot.debitAmountSatoshi /10e8} - ${lot.debitFeeSatoshi /10e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
+      //     // Logger.log(`[${lot.date.toISOString()}] Lot 
+      //     // ${lot.creditCurrency} ${lot.creditAmountSatoshi / 10e8} - ${lot.creditFeeSatoshi / 10e8} = ${lot.satoshi / 10e8}
+      //     // ${lot.debitCurrency} (${lot.debitAmountSatoshi /10e8} - ${lot.debitFeeSatoshi /10e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
 
-          this.getExchange(exchangeName).getCryptoAccount(creditCurrency).deposit(lot);
-          // Logger.log(`Trade crypto credit balance: ${this.getExchange(exchangeName).getCryptoAccount(creditCurrency).balance}`);
+      //     this.getExchange(exchangeName).getCryptoAccount(creditCurrency).deposit(lot);
+      //     // Logger.log(`Trade crypto credit balance: ${this.getExchange(exchangeName).getCryptoAccount(creditCurrency).balance}`);
 
-        }
-        else if (this.isCrypto(debitCurrency) && this.isFiat(creditCurrency)) { //Sell crypto
+      //   }
+      //   else if (this.isCrypto(debitCurrency) && this.isFiat(creditCurrency)) { //Sell crypto
 
-          // Logger.log(`Trade sell crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
-          this.getExchange(exchangeName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
-          // Logger.log(`Trade fiat credit balance: ${this.getExchange(exchangeName).getFiatAccount(creditCurrency).balance}`);
+      //     // Logger.log(`Trade sell crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
+      //     this.getExchange(exchangeName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
+      //     // Logger.log(`Trade fiat credit balance: ${this.getExchange(exchangeName).getFiatAccount(creditCurrency).balance}`);
 
-        }
-        else {  //Exchange cyrptos
+      //   }
+      //   else {  //Exchange cyrptos
 
-        }
-      }
+      //   }
+      // }
     }
   }
 
@@ -149,92 +151,95 @@ class CryptoTracker {
     let action = ledgerRecord.action;
     let debitCurrency = ledgerRecord.debitCurrency;
     let debitExRate = ledgerRecord.debitExRate;
+    let debitAmount = ledgerRecord.debitAmount;
+    let debitWalletName = ledgerRecord.debitWalletName;
     let creditCurrency = ledgerRecord.creditCurrency;
     let creditExRate = ledgerRecord.creditExRate;
-    let exchangeName = ledgerRecord.exchangeName;
-    let walletName = ledgerRecord.walletName;
+    let creditAmount = ledgerRecord.creditAmount;
+    let creditFee = ledgerRecord.creditFee;
+    let creditWalletName = ledgerRecord.creditWalletName;
 
-    if (isNaN(date)) {
-      throw Error('Ledger record: missing date.');
-    }
-    else if (!exchangeName) {
-      throw Error(`[${date.toISOString()}] Ledger record: has no exchange specified.`);
-    }
-    else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
-      throw Error(`[${date.toISOString()}] Ledger record: debit currency (${debitCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
-    }
-    else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
-      throw Error(`[${date.toISOString()}] Ledger record: credit currency (${creditCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
-    }
-    else if (action == 'Transfer') {  //Transfer
-      if (!debitCurrency && !creditCurrency) {
-        throw Error(`[${date.toISOString()}] Ledger record : transfer with no currency specified.`);
-      }
-      else if (debitCurrency && creditCurrency) {
-        throw Error(`[${date.toISOString()}] Ledger record: transfer with both debit (${debitCurrency}) and credit (${creditCurrency}) currencies.`);
-      }
-      else if ((debitCurrency && this.isFiat(debitCurrency) || creditCurrency && this.isFiat(creditCurrency)) && walletName) { //Fiat transfer
-        throw Error(`[${date.toISOString()}] Ledger record: fiat transfer has wallet (${walletName}) specified. Leave field blank.`);
-      }
-      else if ((debitCurrency && this.isCrypto(debitCurrency) || creditCurrency && this.isCrypto(creditCurrency)) && !walletName) { //Crypto transfer
-        throw Error(`[${date.toISOString()}] Ledger record: crypto transfer has no wallet specified.`);
-      }
-      else if (debitExRate) {
-        throw Error(`[${date.toISOString()}] Ledger record: transfer. Leave debit exchange rate blank.`);
-      }
-      else if (creditExRate) {
-        throw Error(`[${date.toISOString()}] Ledger record: transfer. Leave credit exchange rate blank.`);
-      }
-    }
-    else if (action == 'Trade') { //Trade
-      if (!debitCurrency) {
-        throw Error(`[${date.toISOString()}] Ledger record: trade with no debit currency specified.`);
-      }
-      else if (!creditCurrency) {
-        throw Error(`[${date.toISOString()}] Ledger record: trade with no credit currency specified.`);
-      }
-      else if (this.isFiat(debitCurrency) && this.isFiat(creditCurrency)) {
-        throw Error(`[${date.toISOString()}] Ledger record: trade with both fiat debit currency (${debitCurrency}) and fiat credit currency (${creditCurrency}) not supported.`);
-      }
-      else if (walletName) {
-        throw Error(`[${date.toISOString()}] Ledger record: trade has wallet (${walletName}) specified. Leave field blank.`);
-      }
-      else if (this.isFiat(debitCurrency)) {//Buy crypto
-        if (this.isFiatConvert(debitCurrency)) {
-          if (debitExRate) {
-            throw Error(`[${date.toISOString()}] Ledger record: trade (buy crypto) debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
-          }
-        }
-        else {
-          if (!debitExRate || isNaN(debitExRate)) {
-            throw Error(`[${date.toISOString()}] Ledger record: trade (buy crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-          }
-        }
-      }
-      else if (this.isFiat(creditCurrency)) {//Sell crypto
-        if (this.isFiatConvert(creditCurrency)) {
-          if (creditExRate) {
-            throw Error(`[${date.toISOString()}] Ledger record: trade (sell crypto) credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
-          }
-        }
-        else {
-          if (!creditExRate || isNaN(debitExRate)) {
-            throw Error(`[${date.toISOString()}] Ledger record: trade (sell crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-          }
-        }
-      }
-      else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) {  //Exchange cyrptos
-        if (!debitExRate || isNaN(debitExRate)) {
-          throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-        }
-        else if (!creditExRate || isNaN(creditExRate)) {
-          throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-        }
-      }
-    }
-    else {
-      throw Error(`[${date.toISOString()}] Ledger record: action '${action}' is invalid.`);
-    }
+    // if (isNaN(date)) {
+    //   throw Error('Ledger record: missing date.');
+    // }
+    // else if (!exchangeName) {
+    //   throw Error(`[${date.toISOString()}] Ledger record: has no exchange specified.`);
+    // }
+    // else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
+    //   throw Error(`[${date.toISOString()}] Ledger record: debit currency (${debitCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
+    // }
+    // else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
+    //   throw Error(`[${date.toISOString()}] Ledger record: credit currency (${creditCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
+    // }
+    // else if (action == 'Transfer') {  //Transfer
+    //   if (!debitCurrency && !creditCurrency) {
+    //     throw Error(`[${date.toISOString()}] Ledger record : transfer with no currency specified.`);
+    //   }
+    //   else if (debitCurrency && creditCurrency) {
+    //     throw Error(`[${date.toISOString()}] Ledger record: transfer with both debit (${debitCurrency}) and credit (${creditCurrency}) currencies.`);
+    //   }
+    //   else if ((debitCurrency && this.isFiat(debitCurrency) || creditCurrency && this.isFiat(creditCurrency)) && walletName) { //Fiat transfer
+    //     throw Error(`[${date.toISOString()}] Ledger record: fiat transfer has wallet (${walletName}) specified. Leave field blank.`);
+    //   }
+    //   else if ((debitCurrency && this.isCrypto(debitCurrency) || creditCurrency && this.isCrypto(creditCurrency)) && !walletName) { //Crypto transfer
+    //     throw Error(`[${date.toISOString()}] Ledger record: crypto transfer has no wallet specified.`);
+    //   }
+    //   else if (debitExRate) {
+    //     throw Error(`[${date.toISOString()}] Ledger record: transfer. Leave debit exchange rate blank.`);
+    //   }
+    //   else if (creditExRate) {
+    //     throw Error(`[${date.toISOString()}] Ledger record: transfer. Leave credit exchange rate blank.`);
+    //   }
+    // }
+    // else if (action == 'Trade') { //Trade
+    //   if (!debitCurrency) {
+    //     throw Error(`[${date.toISOString()}] Ledger record: trade with no debit currency specified.`);
+    //   }
+    //   else if (!creditCurrency) {
+    //     throw Error(`[${date.toISOString()}] Ledger record: trade with no credit currency specified.`);
+    //   }
+    //   else if (this.isFiat(debitCurrency) && this.isFiat(creditCurrency)) {
+    //     throw Error(`[${date.toISOString()}] Ledger record: trade with both fiat debit currency (${debitCurrency}) and fiat credit currency (${creditCurrency}) not supported.`);
+    //   }
+    //   else if (walletName) {
+    //     throw Error(`[${date.toISOString()}] Ledger record: trade has wallet (${walletName}) specified. Leave field blank.`);
+    //   }
+    //   else if (this.isFiat(debitCurrency)) {//Buy crypto
+    //     if (this.isFiatConvert(debitCurrency)) {
+    //       if (debitExRate) {
+    //         throw Error(`[${date.toISOString()}] Ledger record: trade (buy crypto) debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
+    //       }
+    //     }
+    //     else {
+    //       if (!debitExRate || isNaN(debitExRate)) {
+    //         throw Error(`[${date.toISOString()}] Ledger record: trade (buy crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+    //       }
+    //     }
+    //   }
+    //   else if (this.isFiat(creditCurrency)) {//Sell crypto
+    //     if (this.isFiatConvert(creditCurrency)) {
+    //       if (creditExRate) {
+    //         throw Error(`[${date.toISOString()}] Ledger record: trade (sell crypto) credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
+    //       }
+    //     }
+    //     else {
+    //       if (!creditExRate || isNaN(debitExRate)) {
+    //         throw Error(`[${date.toISOString()}] Ledger record: trade (sell crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+    //       }
+    //     }
+    //   }
+    //   else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) {  //Exchange cyrptos
+    //     if (!debitExRate || isNaN(debitExRate)) {
+    //       throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+    //     }
+    //     else if (!creditExRate || isNaN(creditExRate)) {
+    //       throw Error(`[${date.toISOString()}] Ledger record: trade (exchange crypto) credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+    //     }
+    //   }
+    // }
+    // else {
+    //   throw Error(`[${date.toISOString()}] Ledger record: action '${action}' is invalid.`);
+    // }
   }
 
   getLedgerRecords() {
@@ -246,7 +251,7 @@ class CryptoTracker {
     ledgerDataRange = ledgerDataRange.offset(2, 0, ledgerDataRange.getHeight() - 2, 12);
 
     let debitExRatesDataRange = ledgerDataRange.offset(0, 3, ledgerDataRange.getHeight(), 1);
-    let creditExRatesDataRange = ledgerDataRange.offset(0, 7, ledgerDataRange.getHeight(), 1);
+    let creditExRatesDataRange = ledgerDataRange.offset(0, 8, ledgerDataRange.getHeight(), 1);
 
     let ledgerData = ledgerDataRange.getValues();
 

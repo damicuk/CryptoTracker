@@ -79,62 +79,72 @@ class CryptoTracker {
       //           Debit: ${debitWalletName} ${debitCurrency} Exrate ${debitExRate} Amount ${debitAmount} Fee ${debitFee}, 
       //           Credit: ${creditWalletName} ${creditCurrency} Exrate ${creditExRate} Amount ${creditAmount} Fee ${creditFee}`);
 
-      // if (action == 'Transfer') {  //Transfer
+      if (action == 'Transfer') {  //Transfer
 
-      //   if (debitCurrency) { //Withdrawal
-      //     if (this.isFiat(debitCurrency)) { //Fiat withdrawal
+        if (this.isFiat(debitCurrency)) { //Fiat transfer
 
-      //       this.getExchange(exchangeName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
-      //       // Logger.log(`Fiat withdrawal balance: ${this.getExchange(exchangeName).getFiatAccount(debitCurrency).balance}`);
+          if (debitWalletName) { //Fiat withdrawal
 
-      //     }
-      //     else if (this.isCrypto(debitCurrency)) { //Crypto withdrawal
+            this.getWallet(debitWalletName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
+            Logger.log(`Fiat withdrawal balance: ${this.getWallet(debitWalletName).getFiatAccount(debitCurrency).balance.toLocaleString()}`);
 
-      //     }
-      //   }
-      //   else {  //Deposit
-      //     if (this.isFiat(creditCurrency)) { //Fiat deposit
+          }
+          else if (creditWalletName) { //Fiat deposit
 
-      //       this.getExchange(exchangeName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
-      //       // Logger.log(`Fiat deposit balance: ${this.getExchange(exchangeName).getFiatAccount(creditCurrency).balance}`);
+            //debit amount and fee values used as credit values are empty to avoid data redundancy
+            this.getWallet(creditWalletName).getFiatAccount(debitCurrency).transfer(debitAmount).transfer(-debitFee);
+            Logger.log(`Fiat deposit balance: ${this.getWallet(creditWalletName).getFiatAccount(debitCurrency).balance.toLocaleString()}`);
 
-      //     }
-      //     else if (this.isCrypto(creditCurrency)) { //Crypto deposit
+          }
+        }
+        else if (this.isCrypto(debitCurrency)) {  //Crypto transfer
+
+          if (debitWalletName) {  //Crypto withdrawal
 
 
-      //     }
-      //   }
-      // }
-      // else if (action == 'Trade') { //Trade
 
-      //   if (this.isFiat(debitCurrency) && this.isCrypto(creditCurrency)) {  //Buy crypto
+          }
+          else if (creditWalletName) {  //Crypto deposit
 
-      //     // Logger.log(`Trade buy crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
-      //     this.getExchange(exchangeName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
-      //     // Logger.log(`Trade fiat debit balance: ${this.getExchange(exchangeName).getFiatAccount(debitCurrency).balance}`);
+            //debit values used as credit values are empty to avoid data redundancy
 
-      //     // Logger.log(`Trade buy crypto debit: ${debitCurrency} (exrate: ${debitExRate}) ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
-      //     let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
 
-      //     // Logger.log(`[${lot.date.toISOString()}] Lot 
-      //     // ${lot.creditCurrency} ${lot.creditAmountSatoshi / 10e8} - ${lot.creditFeeSatoshi / 10e8} = ${lot.satoshi / 10e8}
-      //     // ${lot.debitCurrency} (${lot.debitAmountSatoshi /10e8} - ${lot.debitFeeSatoshi /10e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
+          }
+        }
+      }
+      else if (action == 'Trade') { //Trade
 
-      //     this.getExchange(exchangeName).getCryptoAccount(creditCurrency).deposit(lot);
-      //     // Logger.log(`Trade crypto credit balance: ${this.getExchange(exchangeName).getCryptoAccount(creditCurrency).balance}`);
+        if (this.isFiat(debitCurrency) && this.isCrypto(creditCurrency)) {  //Buy crypto
 
-      //   }
-      //   else if (this.isCrypto(debitCurrency) && this.isFiat(creditCurrency)) { //Sell crypto
+          // Logger.log(`Trade buy crypto, debit: ${debitCurrency} ${debitAmount.toLocaleString()} fee ${debitFee.toLocaleString()}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
 
-      //     // Logger.log(`Trade sell crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
-      //     this.getExchange(exchangeName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
-      //     // Logger.log(`Trade fiat credit balance: ${this.getExchange(exchangeName).getFiatAccount(creditCurrency).balance}`);
+          this.getWallet(debitWalletName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
+          // Logger.log(`Trade fiat debit balance: ${this.getWallet(debitWalletName).getFiatAccount(debitCurrency).balance.toLocaleString()}`);
 
-      //   }
-      //   else {  //Exchange cyrptos
+          //     // Logger.log(`Trade buy crypto debit: ${debitCurrency} (exrate: ${debitExRate}) ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
+          //     let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
 
-      //   }
-      // }
+          //     // Logger.log(`[${lot.date.toISOString()}] Lot 
+          //     // ${lot.creditCurrency} ${lot.creditAmountSatoshi / 10e8} - ${lot.creditFeeSatoshi / 10e8} = ${lot.satoshi / 10e8}
+          //     // ${lot.debitCurrency} (${lot.debitAmountSatoshi /10e8} - ${lot.debitFeeSatoshi /10e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
+
+          //     this.getExchange(exchangeName).getCryptoAccount(creditCurrency).deposit(lot);
+          //     // Logger.log(`Trade crypto credit balance: ${this.getExchange(exchangeName).getCryptoAccount(creditCurrency).balance}`);
+
+        }
+        else if (this.isCrypto(debitCurrency) && this.isFiat(creditCurrency)) { //Sell crypto
+
+          // Logger.log(`Trade sell crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount.toLocaleString()} fee ${creditFee.toLocaleString()}`);
+          
+          //debit wallet name used as credit wallet name is empty to avoid data redundancy
+          this.getWallet(debitWalletName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
+          // Logger.log(`Trade fiat creditbalance: ${this.getWallet(debitWalletName).getFiatAccount(creditCurrency).balance.toLocaleString()}`);
+
+        }
+        else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos
+
+        }
+      }
     }
   }
 

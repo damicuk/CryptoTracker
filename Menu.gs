@@ -5,7 +5,7 @@ function onOpen() {
     .addItem('Process Trades', 'processTrades')
     .addSeparator()
     .addItem('Validate Ledger', 'processTrades')
-    .addItem('More Stuff', 'processTrades')
+    .addItem('Update Exchange Rates', 'updateExRates')
     .addSeparator()
     .addItem('More Stuff', 'processTrades')
     .addToUi();

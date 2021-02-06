@@ -291,18 +291,13 @@ class CryptoTracker {
     }
   }
 
-  getLedgerRecords() {
+  updateExRates() {
 
-    let ss = SpreadsheetApp.getActive();
-    let ledgerSheet = ss.getSheetByName('Ledger');
-
-    let ledgerDataRange = ledgerSheet.getDataRange();
-    ledgerDataRange = ledgerDataRange.offset(2, 0, ledgerDataRange.getHeight() - 2, 12);
+    let ledgerDataRange = this.getLedgerDataRange();
+    let ledgerData = ledgerDataRange.getValues();
 
     let debitExRatesDataRange = ledgerDataRange.offset(0, 3, ledgerDataRange.getHeight(), 1);
     let creditExRatesDataRange = ledgerDataRange.offset(0, 8, ledgerDataRange.getHeight(), 1);
-
-    let ledgerData = ledgerDataRange.getValues();
 
     //fill in any missing exchange rates with GOOGLEFINANCE formula
     const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#currency#", "#fiatConvert#")), "close", A#row#), 2,2)`;
@@ -402,9 +397,12 @@ class CryptoTracker {
       SpreadsheetApp.flush();
 
     }
+  }
 
-    //read in final results
-    ledgerData = ledgerDataRange.getValues();
+  getLedgerRecords() {
+
+    let ledgerDataRange = this.getLedgerDataRange();
+    let ledgerData = ledgerDataRange.getValues();
 
     //sort by date
     ledgerData.sort(function (a, b) {
@@ -420,6 +418,17 @@ class CryptoTracker {
 
     }
     return ledgerRecords;
+  }
+
+  getLedgerDataRange() {
+
+    let ss = SpreadsheetApp.getActive();
+    let ledgerSheet = ss.getSheetByName('Ledger');
+
+    let ledgerDataRange = ledgerSheet.getDataRange();
+    ledgerDataRange = ledgerDataRange.offset(2, 0, ledgerDataRange.getHeight() - 2, 12);
+
+    return ledgerDataRange;
   }
 
   removeInvalidExRates(exRates) {
@@ -447,5 +456,11 @@ function processTrades() {
 function validateLedger() {
 
   new CryptoTracker().validateLedger();
+
+}
+
+function updateExRates() {
+
+  new CryptoTracker().updateExRates();
 
 }

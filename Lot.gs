@@ -6,11 +6,11 @@ class Lot {
     this.debitWalletName = debitWalletName;
     this.debitCurrency = debitCurrency;
     this.debitExRate = debitExRate;
-    this.debitAmountSatoshi = Math.round(debitAmount * 10e8);
-    this.debitFeeSatoshi = Math.round(debitFee * 10e8);
+    this.debitAmountSatoshi = Math.round(debitAmount * 1e8);
+    this.debitFeeSatoshi = Math.round(debitFee * 1e8);
     this.creditCurrency = creditCurrency;
-    this.creditAmountSatoshi = Math.round(creditAmount * 10e8);
-    this.creditFeeSatoshi = Math.round(creditFee * 10e8);
+    this.creditAmountSatoshi = Math.round(creditAmount * 1e8);
+    this.creditFeeSatoshi = Math.round(creditFee * 1e8);
 
   }
 
@@ -22,7 +22,14 @@ class Lot {
 
   get costBasisCents() {
     
-    return Math.round(((this.debitAmountSatoshi - this.debitFeeSatoshi) * this.debitExRate) / 10e6);
+    let exRate = 1;
+    if(this.debitExRate) {
+
+        exRate = this.debitExRate;
+
+    }
+
+    return Math.round(((this.debitAmountSatoshi - this.debitFeeSatoshi) * exRate) / 1e6);
 
   }
 
@@ -30,7 +37,6 @@ class Lot {
 
     let splitLots = new Array();
     
-    //let satoshi = Math.round(amount * 10e8);
     let debitAmountSatoshi = Math.round((satoshi / this.satoshi) * this.debitAmountSatoshi);
     let debitFeeSatoshi = Math.round((satoshi / this.satoshi) * this.debitFeeSatoshi);
     let creditFeeSatoshi = Math.round((satoshi / this.satoshi) * this.creditFeeSatoshi);
@@ -40,11 +46,11 @@ class Lot {
                         this.debitWalletName,
                         this.debitCurrency,
                         this.debitExRate,
-                        debitAmountSatoshi / 10e8,
-                        debitFeeSatoshi / 10e8,
+                        debitAmountSatoshi / 1e8,
+                        debitFeeSatoshi / 1e8,
                         this.creditCurrency,
-                        creditAmountSatoshi / 10e8,
-                        creditFeeSatoshi / 10e8);
+                        creditAmountSatoshi / 1e8,
+                        creditFeeSatoshi / 1e8);
     
     splitLots.push(lot1);
     
@@ -52,11 +58,11 @@ class Lot {
                       this.debitWalletName,
                       this.debitCurrency,
                       this.debitExRate,
-                      (this.debitAmountSatoshi - lot1.debitAmountSatoshi) / 10e8,
-                      (this.debitFeeSatoshi - lot1.debitFeeSatoshi) / 10e8,
+                      (this.debitAmountSatoshi - lot1.debitAmountSatoshi) / 1e8,
+                      (this.debitFeeSatoshi - lot1.debitFeeSatoshi) / 1e8,
                       this.creditCurrency,
-                      (this.creditAmountSatoshi - lot1.creditAmountSatoshi) / 10e8,
-                      (this.creditFeeSatoshi - lot1.creditFeeSatoshi) / 10e8);
+                      (this.creditAmountSatoshi - lot1.creditAmountSatoshi) / 1e8,
+                      (this.creditFeeSatoshi - lot1.creditFeeSatoshi) / 1e8);
     
     splitLots.push(lot2);
 
@@ -69,7 +75,7 @@ function testSplitLots() {
 
   let lot = new Lot(new Date(Date.now()), 'Kraken', 'USD', 0, 105, 8, 'ADA', 110.678, 0.6);
 
-  let splitLots = lot.split(35.97 * 10e8);
+  let splitLots = lot.split(35.97 * 1e8);
   let lot1 = splitLots[0];
   let lot2 = splitLots[1];
 

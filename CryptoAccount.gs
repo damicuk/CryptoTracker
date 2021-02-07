@@ -20,7 +20,7 @@ class CryptoAccount {
 
   get balance() {
 
-    return this.satoshi / 10e8;
+    return this.satoshi / 1e8;
   }
 
   deposit(lots) {
@@ -34,8 +34,8 @@ class CryptoAccount {
 
   withdraw(amount, fee) {
 
-    let amountSatoshi = Math.round(amount * 10e8);
-    let feeSatoshi = Math.round(fee * 10e8);
+    let amountSatoshi = Math.round(amount * 1e8);
+    let feeSatoshi = Math.round(fee * 1e8);
     let neededSatoshi = amountSatoshi + feeSatoshi;
 
     if (neededSatoshi > this.satoshi) {

@@ -1,8 +1,8 @@
 class FiatAccount {
 
-  constructor(ticker) {
+  constructor(currency) {
 
-    this.ticker = ticker;
+    this.currency = currency;
     this.cents = 0;
 
   }

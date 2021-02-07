@@ -91,7 +91,7 @@ class CryptoTracker {
           }
           else if (creditWalletName) { //Fiat deposit
 
-            //debit amount and fee values used as credit values are empty to avoid data redundancy
+            //debit currency amount fee used as credit values are empty to avoid data redundancy
             this.getWallet(creditWalletName).getFiatAccount(debitCurrency).transfer(debitAmount).transfer(-debitFee);
             // Logger.log(`Fiat deposit balance: ${this.getWallet(creditWalletName).getFiatAccount(debitCurrency).balance}`);
 
@@ -99,17 +99,15 @@ class CryptoTracker {
         }
         else if (this.isCrypto(debitCurrency)) {  //Crypto transfer
 
-          if (debitWalletName) {  //Crypto withdrawal
+          Logger.log(`Trade crypto transfer: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance} - ${debitAmount} - ${debitFee} ${creditWalletName}`);
+          
+          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee);
+          Logger.log(`Trade crypto transfer balance: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance}`);
 
-
-
-          }
-          else if (creditWalletName) {  //Crypto deposit
-
-            //debit values used as credit values are empty to avoid data redundancy
-
-
-          }
+          //debit currency used as credit currency is empty to avoid data redundancy
+          this.getWallet(creditWalletName).getCryptoAccount(debitCurrency).deposit(lots);
+          Logger.log(`Trade crypto transfer balance: ${creditWalletName} ${debitCurrency} ${this.getWallet(creditWalletName).getCryptoAccount(debitCurrency).balance}`);
+          
         }
       }
       else if (action == 'Trade') { //Trade

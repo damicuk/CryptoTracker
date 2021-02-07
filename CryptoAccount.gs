@@ -1,10 +1,26 @@
 class CryptoAccount {
 
-  constructor(ticker) {
+  constructor(currency) {
 
-    this.ticker = ticker;
+    this.currency = currency;
     this.lots = new Array();
 
+  }
+
+  get satoshi() {
+
+    let satoshi = 0
+    for (let lot of this.lots) {
+
+      satoshi += lot.satoshi; //adding two integers - no need to round
+
+    }
+    return satoshi;
+  }
+
+  get balance() {
+
+    return this.satoshi / 10e8;
   }
 
   deposit(lots) {
@@ -12,18 +28,25 @@ class CryptoAccount {
     for (let lot of lots) {
 
       this.lots.push(lot);
-      
+
     }
   }
 
-  withdraw(satoshi) {
+  withdraw(amount, fee) {
+
+    let amountSatoshi = Math.round(amount * 10e8);
+    let feeSatoshi = Math.round(fee * 10e8);
+    let neededSatoshi = amountSatoshi + feeSatoshi;
+
+    if (neededSatoshi > this.satoshi) {
+      throw Error(`Crypto account withdraw ${this.currency} ${amount} + fee ${fee}, insufficient funds ${this.currency}  ${this.balance}`);
+    }
 
     //sort by date
-    lot.sort(function (a, b) {
+    this.lots.sort(function (a, b) {
       return a.date - b.date;
     });
 
-    let neededSatoshi = satoshi;
     let keepLots = new Array();
     let withdrawLots = new Array();
     for (let lot of this.lots) {
@@ -49,19 +72,23 @@ class CryptoAccount {
       }
     }
 
+    //apportion the fee to withdrawal lots
+    let totalSatoshi = amountSatoshi + feeSatoshi;
+    let remainingFeeSatoshi = feeSatoshi;
+
+    // loop through all except the last lot
+    for (let i = 0; i < withdrawLots.length - 1; i++) {
+
+      let lot = withdrawLots[i];
+      let apportionedFee = Math.round((lot.satoshi / totalSatoshi) * feeSatoshi);
+      lot.creditFeeSatoshi += Math.round((lot.satoshi / totalSatoshi) * feeSatoshi);
+      remainingFeeSatoshi -= apportionedFee;
+
+    }
+    //just add the remaining fee to the last lot to correct any accumulated rounding errors
+    withdrawLots[withdrawLots.length - 1].creditFeeSatoshi += remainingFeeSatoshi;
+
     this.lots = keepLots;
     return withdrawLots;
   }
-
-  get balance() {
-
-    let satoshi = 0
-    for (let lot of this.lots) {
-
-      satoshi += lot.satoshi; //adding two integers - no need to round
-
-    }
-    return satoshi / 10e8;
-  }
-
 }

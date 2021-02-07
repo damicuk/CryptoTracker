@@ -25,11 +25,11 @@ class Lot {
 
   }
 
-  split(amount) {
+  split(satoshi) {
 
     let splitLots = new Array();
     
-    let satoshi = Math.round(amount * 10e8);
+    //let satoshi = Math.round(amount * 10e8);
     let debitAmountSatoshi = Math.round((satoshi / this.satoshi) * this.debitAmountSatoshi);
     let debitFeeSatoshi = Math.round((satoshi / this.satoshi) * this.debitFeeSatoshi);
     let creditFeeSatoshi = Math.round((satoshi / this.satoshi) * this.creditFeeSatoshi);
@@ -66,7 +66,7 @@ function testSplitLots() {
 
   let lot = new Lot(new Date(Date.now()), 'USD', 0, 105, 8, 'ADA', 110.678, 0.6);
 
-  let splitLots = lot.split(35.97);
+  let splitLots = lot.split(35.97 * 10e8);
   let lot1 = splitLots[0];
   let lot2 = splitLots[1];
 

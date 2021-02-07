@@ -55,7 +55,7 @@ class CryptoTracker {
     return Array.from(this.settings['Cryptos']);
   }
 
-  closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee) {
+  closeLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee) {
 
     let closedLots = new Array();
 
@@ -81,14 +81,14 @@ class CryptoTracker {
       let apportionedAmountSatoshi = Math.round((lot.satoshi / totalSatoshi) * amountSatoshi);
       let apportionedFeeSatoshi = Math.round((lot.satoshi / totalSatoshi) * feeSatoshi);
       
-      closedLots.push(new ClosedLot(lot, date, creditCurrency, creditExRate, apportionedAmountSatoshi, apportionedFeeSatoshi));
+      closedLots.push(new ClosedLot(lot, date, creditWalletName, creditCurrency, creditExRate, apportionedAmountSatoshi, apportionedFeeSatoshi));
 
       remainingAmountSatoshi -= apportionedAmountSatoshi;
       remainingFeeSatoshi -= apportionedFeeSatoshi;
 
     }
     //just add the remaining amount fee to the last closed lot to correct for any accumulated rounding errors
-    closedLots.push(new ClosedLot(lots[lots.length - 1], date, creditCurrency, creditExRate, remainingAmountSatoshi, remainingFeeSatoshi));
+    closedLots.push(new ClosedLot(lots[lots.length - 1], date, creditWalletName, creditCurrency, creditExRate, remainingAmountSatoshi, remainingFeeSatoshi));
 
     return closedLots;
   }
@@ -166,7 +166,7 @@ class CryptoTracker {
 
           // Logger.log(`Trade buy crypto debit: ${debitCurrency} (exrate: ${debitExRate}) ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
 
-          let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
+          let lot = new Lot(date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
 
           // Logger.log(`[${lot.date.toISOString()}] Lot ${lot.creditCurrency} ${lot.creditAmountSatoshi / 10e8} - ${lot.creditFeeSatoshi / 10e8} = ${lot.satoshi / 10e8}
           //     ${lot.debitCurrency} (${lot.debitAmountSatoshi / 10e8} - ${lot.debitFeeSatoshi / 10e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
@@ -187,7 +187,8 @@ class CryptoTracker {
           this.getWallet(debitWalletName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
           // Logger.log(`Trade fiat creditbalance: ${this.getWallet(debitWalletName).getFiatAccount(creditCurrency).balance}`);
 
-          this.addClosedLots(this.closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee));
+          //debit wallet name used as credit wallet name is empty to avoid data redundancy
+          this.addClosedLots(this.closeLots(lots, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee));
 
         }
         else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos

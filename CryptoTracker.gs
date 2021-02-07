@@ -188,7 +188,8 @@ class CryptoTracker {
           // Logger.log(`Trade fiat creditbalance: ${this.getWallet(debitWalletName).getFiatAccount(creditCurrency).balance}`);
 
           //debit wallet name used as credit wallet name is empty to avoid data redundancy
-          this.addClosedLots(this.closeLots(lots, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee));
+          let closedLots = this.closeLots(lots, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
+          this.addClosedLots(closedLots);
 
         }
         else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos
@@ -509,7 +510,22 @@ class CryptoTracker {
 
 function processTrades() {
 
-  new CryptoTracker().processTrades();
+  let cryptoTracker = new CryptoTracker();
+  
+  cryptoTracker.processTrades();
+  let fiatConvert = cryptoTracker.fiatConvert;
+
+  for(let closedLot of cryptoTracker.closedLots) {
+
+    let lot = closedLot.lot; 
+    
+    Logger.log(`[${lot.date.toISOString()}] Lot ${lot.debitWalletName} ${lot.creditCurrency} ${lot.creditAmountSatoshi / 10e8} - ${lot.creditFeeSatoshi / 10e8} = ${lot.satoshi / 10e8}
+              ${lot.debitCurrency} (${lot.debitAmountSatoshi / 10e8} - ${lot.debitFeeSatoshi / 10e8}) x rate ${lot.debitExRate} = Cost Basis ${fiatConvert} ${lot.costBasisCents / 100}
+              [${closedLot.date.toISOString()}] Closed ${closedLot.creditWalletName}
+              ${closedLot.creditCurrency} (${closedLot.creditAmountSatoshi / 10e8} - ${closedLot.creditFeeSatoshi / 10e8}) x rate ${closedLot.creditExRate} = Proceeds ${fiatConvert} ${closedLot.proceedsCents / 100} 
+              `);
+
+  }
 
 }
 

@@ -12,4 +12,16 @@ class ClosedLot {
 
   }
 
+  get satoshi() {
+
+    return this.creditAmountSatoshi - this.creditFeeSatoshi;
+
+  }
+
+  get proceedsCents() {
+    
+    return Math.round(((this.creditAmountSatoshi - this.creditFeeSatoshi) * this.creditExRate) / 10e6);
+
+  }
+
 }

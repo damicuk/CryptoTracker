@@ -129,7 +129,7 @@ class CryptoTracker {
           //     ${lot.debitCurrency} (${lot.debitAmountSatoshi / 10e8} - ${lot.debitFeeSatoshi / 10e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
 
           //debit wallet name used as credit wallet name is empty to avoid data redundancy
-          this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit(lot);
+          this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
           // Logger.log(`Trade crypto credit balance: ${debitWalletName} ${creditCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).balance}`);
 
         }

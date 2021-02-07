@@ -7,10 +7,13 @@ class CryptoAccount {
 
   }
 
-  deposit(lot) {
+  deposit(lots) {
 
-    this.lots.push(lot);
+    for (let lot of lots) {
 
+      this.lots.push(lot);
+      
+    }
   }
 
   withdraw(satoshi) {

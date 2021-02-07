@@ -5,6 +5,7 @@ class CryptoTracker {
     this.settings = new Settings();
     this.wallets = new Map();
     this.fiatConvert = this.getFiatConvert();
+    this.closedLots = new Array();
 
   }
 
@@ -54,6 +55,50 @@ class CryptoTracker {
     return Array.from(this.settings['Cryptos']);
   }
 
+  closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee) {
+
+    let closedLots = new Array();
+
+    let amountSatoshi = Math.round(creditAmount * 10e8);
+    let feeSatoshi = Math.round(creditFee * 10e8);
+
+    //get total satoshi in lots
+    let totalSatoshi = 0;
+    for(let lot in lots) {
+
+      totalSatoshi += lot.satoshi;
+
+    }
+
+    //apportion creditAmount creditFee to lots
+    let remainingAmountSatoshi = creditAmount;
+    let remainingFeeSatoshi = creditFee;
+
+    // loop through all except the last lot
+    for (let i = 0; i < lots.length - 1; i++) {
+
+      let lot = lots[i];
+      let apportionedAmountSatoshi = Math.round((lot.satoshi / totalSatoshi) * amountSatoshi);
+      let apportionedFeeSatoshi = Math.round((lot.satoshi / totalSatoshi) * feeSatoshi);
+      
+      closedLots.push(new ClosedLot(lot, date, creditCurrency, creditExRate, apportionedAmountSatoshi, apportionedFeeSatoshi));
+
+      remainingAmountSatoshi -= apportionedAmountSatoshi;
+      remainingFeeSatoshi -= apportionedFeeSatoshi;
+
+    }
+    //just add the remaining amount fee to the last closed lot to correct for any accumulated rounding errors
+    closedLots.push(new ClosedLot(lots[lots.length - 1], date, creditCurrency, creditExRate, remainingAmountSatoshi, remainingFeeSatoshi));
+
+    return closedLots;
+  }
+
+  addClosedLots(closedLots) {
+
+    this.closedLots = this.closedLots.concat(closedLots);
+
+  }
+
   processTrades() {
 
     let ledgerRecords = this.getLedgerRecords();
@@ -100,14 +145,14 @@ class CryptoTracker {
         else if (this.isCrypto(debitCurrency)) {  //Crypto transfer
 
           // Logger.log(`Crypto transfer: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance} - ${debitAmount} - ${debitFee} ${creditWalletName}`);
-          
+
           let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee);
           // Logger.log(`Crypto transfer balance: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance}`);
 
           //debit currency used as credit currency is empty to avoid data redundancy
           this.getWallet(creditWalletName).getCryptoAccount(debitCurrency).deposit(lots);
           // Logger.log(`Crypto transfer balance: ${creditWalletName} ${debitCurrency} ${this.getWallet(creditWalletName).getCryptoAccount(debitCurrency).balance}`);
-          
+
         }
       }
       else if (action == 'Trade') { //Trade
@@ -141,6 +186,8 @@ class CryptoTracker {
           //debit wallet name used as credit wallet name is empty to avoid data redundancy
           this.getWallet(debitWalletName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
           // Logger.log(`Trade fiat creditbalance: ${this.getWallet(debitWalletName).getFiatAccount(creditCurrency).balance}`);
+
+          this.addClosedLots(this.closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee));
 
         }
         else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos

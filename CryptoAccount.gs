@@ -80,9 +80,9 @@ class CryptoAccount {
     for (let i = 0; i < withdrawLots.length - 1; i++) {
 
       let lot = withdrawLots[i];
-      let apportionedFee = Math.round((lot.satoshi / totalSatoshi) * feeSatoshi);
-      lot.creditFeeSatoshi += apportionedFee;
-      remainingFeeSatoshi -= apportionedFee;
+      let apportionedFeeSatoshi = Math.round((lot.satoshi / totalSatoshi) * feeSatoshi);
+      lot.creditFeeSatoshi += apportionedFeeSatoshi;
+      remainingFeeSatoshi -= apportionedFeeSatoshi;
 
     }
     //just add the remaining fee to the last lot to correct for any accumulated rounding errors

@@ -213,7 +213,7 @@ class CryptoTracker {
     }
   }
 
-  validateLedgerRecord(ledgerRecord) {
+  validateLedgerRecord(ledgerRecord, checkExRates = true) {
 
     let date = ledgerRecord.date;
     let action = ledgerRecord.action;
@@ -334,14 +334,16 @@ class CryptoTracker {
       if (this.debitCurrency == this.fiatConvert && debitExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
       }
-      else if (!this.isFiat(creditCurrency) && this.debitCurrency != this.fiatConvert && !debitExRate) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      }
       if (this.creditCurrency == this.fiatConvert && creditExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
       }
-      else if (!this.isFiat(debitCurrency) && this.creditCurrency != this.fiatConvert && !creditExRate) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+      else if (checkExRates) {
+        if (!this.isFiat(creditCurrency) && this.debitCurrency != this.fiatConvert && !debitExRate) {
+          throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+        }
+        else if (!this.isFiat(debitCurrency) && this.creditCurrency != this.fiatConvert && !creditExRate) {
+          throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
+        }
       }
     }
     else if (action == 'Reward') { //Reward

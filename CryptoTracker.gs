@@ -306,58 +306,18 @@ class CryptoTracker {
       else if (creditFee < 0) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0.`);
       }
-
-
       if (this.isFiatConvert(debitCurrency) && debitExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
       }
       else if ((!this.isFiat(creditCurrency) && !this.isFiatConvert(debitCurrency)) && (!debitExRate || isNaN(debitExRate))) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
       }
-
-
-
-
       if (this.isFiatConvert(creditCurrency) && creditExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
       }
       else if ((!this.isFiat(debitCurrency) && !this.isFiatConvert(creditCurrency)) && (!creditExRate || isNaN(creditExRate))) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
       }
-
-
-      // else if (this.isFiat(debitCurrency)) {  //Buy crypto
-      //   if (this.isFiatConvert(debitCurrency)) {
-      //     if (debitExRate) {
-      //       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
-      //     }
-      //   }
-      //   else {
-      //     if (!debitExRate || isNaN(debitExRate)) {
-      //       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      //     }
-      //   }
-      // }
-      // else if (this.isFiat(creditCurrency)) { //Sell crypto
-      //   if (this.isFiatConvert(creditCurrency)) {
-      //     if (creditExRate) {
-      //       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
-      //     }
-      //   }
-      //   else {
-      //     if (!creditExRate || isNaN(debitExRate)) {
-      //       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      //     }
-      //   }
-      // }
-      // else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos
-      //   if (!debitExRate || isNaN(debitExRate)) {
-      //     throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      //   }
-      //   else if (!creditExRate || isNaN(creditExRate)) {
-      //     throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
-      //   }
-      // }
     }
     else if (action == 'Reward') { //Reward
       if (debitCurrency) {
@@ -397,7 +357,6 @@ class CryptoTracker {
     else {
       throw Error(`[${date.toISOString()}] Ledger record: action (${action}) is invalid.`);
     }
-
   }
 
   updateExRates() {

@@ -4,12 +4,9 @@ function onOpen() {
   ui.createMenu('Crypto Tracker')
     .addItem('Process Trades', 'processTrades')
     .addSeparator()
-    .addItem(
-      'More Stuff', 'processTrades')
-    .addItem(
-      'More Stuff', 'processTrades')
+    .addItem('Validate Ledger', 'processTrades')
+    .addItem('Update Exchange Rates', 'updateExRates')
     .addSeparator()
-    .addItem(
-      'More Stuff', 'processTrades')
+    .addItem('More Stuff', 'processTrades')
     .addToUi();
 }

@@ -175,15 +175,15 @@ class CryptoTracker {
       }
       else if (action == 'Reward') { //Reward
 
-          //the cost base is the value of (credit exchange rate x credit amount)
-          let lot = new Lot(date, creditWalletName, creditCurrency, creditExRate, creditAmount, 0, creditCurrency, creditAmount, 0);
+        //the cost base is the value of (credit exchange rate x credit amount)
+        let lot = new Lot(date, creditWalletName, creditCurrency, creditExRate, creditAmount, 0, creditCurrency, creditAmount, 0);
 
-          // Logger.log(`[${lot.date.toISOString()}] Lot ${lot.creditCurrency} ${lot.creditAmountSatoshi / 1e8} - ${lot.creditFeeSatoshi / 1e8} = ${lot.satoshi / 1e8}
-          //     ${lot.debitCurrency} (${lot.debitAmountSatoshi / 1e8} - ${lot.debitFeeSatoshi / 1e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
+        // Logger.log(`[${lot.date.toISOString()}] Lot ${lot.creditCurrency} ${lot.creditAmountSatoshi / 1e8} - ${lot.creditFeeSatoshi / 1e8} = ${lot.satoshi / 1e8}
+        //     ${lot.debitCurrency} (${lot.debitAmountSatoshi / 1e8} - ${lot.debitFeeSatoshi / 1e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
 
 
-          this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
-          // Logger.log(`Reward crypto credit balance: ${creditWalletName} ${creditCurrency} ${this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).balance}`);
+        this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
+        // Logger.log(`Reward crypto credit balance: ${creditWalletName} ${creditCurrency} ${this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).balance}`);
       }
     }
   }
@@ -350,10 +350,10 @@ class CryptoTracker {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
       }
       else if (checkExRates) {
-        if (!this.isFiat(creditCurrency) && this.debitCurrency != this.fiatConvert && !debitExRate) {
+        if (!this.isFiat(creditCurrency) && this.debitCurrency != this.fiatConvert && (!debitExRate || debitExRate <= 0)) {
           throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
         }
-        else if (!this.isFiat(debitCurrency) && this.creditCurrency != this.fiatConvert && !creditExRate) {
+        else if (!this.isFiat(debitCurrency) && this.creditCurrency != this.fiatConvert && (!creditExRate || creditExRate <= 0)) {
           throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
         }
       }
@@ -431,13 +431,13 @@ class CryptoTracker {
 
       if (action == 'Trade') {
 
-        if (!this.isFiat(creditCurrency) && debitCurrency != this.fiatConvert && (!debitExRate || isNaN(debitExRate))) {
+        if (!this.isFiat(creditCurrency) && debitCurrency != this.fiatConvert && (!debitExRate || isNaN(debitExRate) || Number(debitExRate) <= 0)) {
 
           debitExRates[i][0] = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
           updateDebitExRates = true;
 
         }
-        else if (!this.isFiat(debitCurrency) && creditCurrency != this.fiatConvert && (!creditExRate || isNaN(creditExRate))) {
+        else if (!this.isFiat(debitCurrency) && creditCurrency != this.fiatConvert && (!creditExRate || isNaN(creditExRate) || Number(creditExRate) <= 0)) {
 
           creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
           updateCreditExRates = true;

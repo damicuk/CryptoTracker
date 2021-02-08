@@ -170,7 +170,20 @@ class CryptoTracker {
         }
         else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos
 
+
         }
+      }
+      else if (action == 'Reward') { //Reward
+
+          //the cost base is the value of (credit exchange rate x credit amount)
+          let lot = new Lot(date, creditWalletName, creditCurrency, creditExRate, creditAmount, 0, creditCurrency, creditAmount, 0);
+
+          // Logger.log(`[${lot.date.toISOString()}] Lot ${lot.creditCurrency} ${lot.creditAmountSatoshi / 1e8} - ${lot.creditFeeSatoshi / 1e8} = ${lot.satoshi / 1e8}
+          //     ${lot.debitCurrency} (${lot.debitAmountSatoshi / 1e8} - ${lot.debitFeeSatoshi / 1e8}) x rate ${lot.debitExRate} = Cost Basis ${this.fiatConvert} ${lot.costBasisCents / 100}`);
+
+
+          this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
+          // Logger.log(`Reward crypto credit balance: ${creditWalletName} ${creditCurrency} ${this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).balance}`);
       }
     }
   }
@@ -429,7 +442,7 @@ class CryptoTracker {
           creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
           updateCreditExRates = true;
 
-        } 
+        }
       }
     }
 

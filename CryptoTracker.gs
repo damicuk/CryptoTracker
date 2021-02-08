@@ -177,16 +177,25 @@ class CryptoTracker {
 
   validateSettings() {
 
+    //cross check fiats and cryptos
+    for (let fiat of this.fiats) {
+      for (let cyrpto of this.cryptos) {
+        if (fiat == cyrpto) {
+          throw Error(`Currency (${fiat}) is listed as both fiat (${this.fiats}) and crypto (${this.cryptos}) in the settings sheet.`);
+        }
+      }
+    }
+
+    //check fiat convert is fiat and not crypto
     if (!this.fiatConvert) {
       throw Error(`Fiat Convert is missing from the settings sheet.`);
     }
     else if (!this.isFiat(this.fiatConvert)) {
       throw Error(`Fiat Convert (${this.fiatConvert}) is not listed as fiat (${this.fiats}) in the settings sheet.`);
     }
-    else if (this.isCrypto(this.fiatConvert)) {
+    else if (this.isCrypto(this.fiatConvert)) { //never called
       throw Error(`Fiat Convert (${this.fiatConvert}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
     }
-
   }
 
   validateLedger() {
@@ -222,22 +231,22 @@ class CryptoTracker {
     if (isNaN(date)) {
       throw Error('Ledger record: missing date.');
     }
-    else if(isNaN(debitExRate)) {
+    else if (isNaN(debitExRate)) {
       throw Error('[${date.toISOString()}] [${action}] Ledger record debit exchange rate is not valid (number or blank).');
     }
-    else if(isNaN(debitAmount)) {
+    else if (isNaN(debitAmount)) {
       throw Error('[${date.toISOString()}] [${action}] Ledger record debit amount is not valid (number or blank).');
     }
-    else if(isNaN(debitFee)) {
+    else if (isNaN(debitFee)) {
       throw Error('[${date.toISOString()}] [${action}] Ledger record debit fee is not valid (number or blank).');
     }
-    else if(isNaN(creditExRate)) {
+    else if (isNaN(creditExRate)) {
       throw Error('[${date.toISOString()}] [${action}] Ledger record credit exchange rate is not valid (number or blank).');
     }
-    else if(isNaN(creditAmount)) {
+    else if (isNaN(creditAmount)) {
       throw Error('[${date.toISOString()}] [${action}] Ledger record credit amount is not valid (number or blank).');
     }
-    else if(isNaN(creditFee)) {
+    else if (isNaN(creditFee)) {
       throw Error('[${date.toISOString()}] [${action}] Ledger record credit fee is not valid (number or blank).');
     }
     else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
@@ -246,7 +255,7 @@ class CryptoTracker {
     else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
     }
-    else if (action == 'Transfer') {  //Transfer
+    else if (action == 'Transfer') { //Transfer
       if (!debitCurrency) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
       }

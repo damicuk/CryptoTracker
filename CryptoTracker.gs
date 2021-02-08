@@ -3,26 +3,10 @@ class CryptoTracker {
   constructor() {
 
     this.settings = new Settings();
+    this.validateSettings();
     this.wallets = new Map();
-    this.fiatConvert = this.getFiatConvert();
     this.closedLots = new Array();
 
-  }
-
-  getFiatConvert() {
-
-    let fiatConvert = this.settings['Fiat Convert'];
-
-    if (!fiatConvert) {
-      throw Error(`Fiat Convert is missing from the settings sheet.`);
-    }
-    else if (!this.isFiat(fiatConvert)) {
-      throw Error(`Fiat Convert (${fiatConvert}) is not listed as fiat (${this.fiats}) in the settings sheet.`);
-    }
-    else if (this.isCrypto(fiatConvert)) {
-      throw Error(`Fiat Convert (${fiatConvert}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
-    }
-    return fiatConvert;
   }
 
   getWallet(name) {
@@ -35,16 +19,16 @@ class CryptoTracker {
     return this.wallets.get(name);
   }
 
-  isFiatConvert(currency) {
-    return currency == this.fiatConvert;
-  }
-
   isFiat(currency) {
     return this.settings['Fiats'].has(currency);
   }
 
   isCrypto(currency) {
     return this.settings['Cryptos'].has(currency);
+  }
+
+  get fiatConvert() {
+    return this.settings['Fiat Convert'];
   }
 
   get fiats() {
@@ -191,6 +175,20 @@ class CryptoTracker {
     }
   }
 
+  validateSettings() {
+
+    if (!this.fiatConvert) {
+      throw Error(`Fiat Convert is missing from the settings sheet.`);
+    }
+    else if (!this.isFiat(this.fiatConvert)) {
+      throw Error(`Fiat Convert (${this.fiatConvert}) is not listed as fiat (${this.fiats}) in the settings sheet.`);
+    }
+    else if (this.isCrypto(this.fiatConvert)) {
+      throw Error(`Fiat Convert (${this.fiatConvert}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
+    }
+
+  }
+
   validateLedger() {
 
     let ledgerRecords = this.getLedgerRecords();
@@ -324,16 +322,16 @@ class CryptoTracker {
       else if (creditFee < 0) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0.`);
       }
-      if (this.isFiatConvert(debitCurrency) && debitExRate) {
+      if (this.debitCurrency == this.fiatConvert && debitExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
       }
-      else if ((!this.isFiat(creditCurrency) && !this.isFiatConvert(debitCurrency)) && !debitExRate) {
+      else if (!this.isFiat(creditCurrency) && this.debitCurrency != this.fiatConvert && !debitExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
       }
-      if (this.isFiatConvert(creditCurrency) && creditExRate) {
+      if (this.creditCurrency == this.fiatConvert && creditExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate blank.`);
       }
-      else if ((!this.isFiat(debitCurrency) && !this.isFiatConvert(creditCurrency)) && !creditExRate) {
+      else if (!this.isFiat(debitCurrency) && this.creditCurrency != this.fiatConvert && !creditExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) needs a valid fiat convert (${this.fiatConvert}) exchange rate.`);
       }
     }
@@ -408,7 +406,7 @@ class CryptoTracker {
 
       if (action == 'Trade') {
 
-        if (this.isFiat(debitCurrency) && !this.isFiatConvert(debitCurrency)) {  //Buy crypto
+        if (this.isFiat(debitCurrency) && this.debitCurrency != this.fiatConvert) {  //Buy crypto
 
           if (!debitExRate) {
             debitExRates[i][0] = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
@@ -416,7 +414,7 @@ class CryptoTracker {
 
           }
         }
-        else if (this.isFiat(creditCurrency) && !this.isFiatConvert(creditCurrency)) { //Sell crypto
+        else if (this.isFiat(creditCurrency) && this.creditCurrency != this.fiatConvert) { //Sell crypto
 
           if (!creditExRate) {
             creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());

@@ -198,18 +198,17 @@ class CryptoTracker {
     }
   }
 
-  validateLedger() {
+  validateLedger(checkExRates = true) {
 
     let ledgerRecords = this.getLedgerRecords();
-    this.validateLedgerRecords(ledgerRecords);
+    this.validateLedgerRecords(ledgerRecords, checkExRates);
 
-    SpreadsheetApp.getActive().toast('All looks good', 'Ledger Valid', 10);
   }
 
-  validateLedgerRecords(ledgerRecords) {
+  validateLedgerRecords(ledgerRecords, checkExRates = true) {
 
     for (let ledgerRecord of ledgerRecords) {
-      this.validateLedgerRecord(ledgerRecord);
+      this.validateLedgerRecord(ledgerRecord, checkExRates);
     }
   }
 
@@ -388,6 +387,8 @@ class CryptoTracker {
 
   updateExRates() {
 
+    this.validateLedger(false);
+
     let ledgerDataRange = this.getLedgerDataRange();
     let ledgerData = ledgerDataRange.getValues();
 
@@ -417,45 +418,19 @@ class CryptoTracker {
 
       if (action == 'Trade') {
 
-        if (this.isFiat(debitCurrency) && this.debitCurrency != this.fiatConvert) {  //Buy crypto
+        if (!this.isFiat(creditCurrency) && debitCurrency != this.fiatConvert && (!debitExRate || isNaN(debitExRate))) {
 
-          if (!debitExRate) {
-            debitExRates[i][0] = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
-            updateDebitExRates = true;
+          debitExRates[i][0] = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+          updateDebitExRates = true;
 
-          }
         }
-        else if (this.isFiat(creditCurrency) && this.creditCurrency != this.fiatConvert) { //Sell crypto
+        else if (!this.isFiat(debitCurrency) && creditCurrency != this.fiatConvert && (!creditExRate || isNaN(creditExRate))) {
 
-          if (!creditExRate) {
-            creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
-            updateCreditExRates = true;
-          }
-        }
-        else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) {  //Exchange cyrptos
+          creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+          updateCreditExRates = true;
 
-          if (!debitExRate) {
-            debitExRates[i][0] = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
-            updateDebitExRates = true;
-          }
-
-          if (!creditExRate) {
-            creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency.replace(/#fiatConvert#/, this.fiatConvert)).replace(/#row#/, (i + 3).toString());
-            updateCreditExRates = true;
-          }
-        }
-
+        } 
       }
-
-      //update if any invalid value found
-      if (debitExRate) {
-        updateDebitExRates = true;
-      }
-
-      if (creditExRate) {
-        updateCreditExRates = true;
-      }
-
     }
 
     //only update the ex rates if necessary (slow)
@@ -566,6 +541,8 @@ function processTrades() {
 function validateLedger() {
 
   new CryptoTracker().validateLedger();
+
+  SpreadsheetApp.getActive().toast('All looks good', 'Ledger Valid', 10);
 
 }
 

@@ -584,6 +584,32 @@ class CryptoTracker {
     }
     return validExRateValues;
   }
+
+  getFiatBalanceTable() {
+
+    //fiat currency column headers
+    let table = [[['Fiat Balances']]];
+    for (let fiat of this.fiats) {
+      table[0].push([fiat]);
+    }
+
+    //wallet name row headers and balances
+    let wallets = this.wallets.values();
+    for (let wallet of wallets) {
+      if (wallet.fiatAccounts.size > 0) {
+        table.push([[wallet.name]]);
+        for (let fiat of this.fiats) {
+          let balance = '0';
+          if (wallet.fiatAccounts.has(fiat)) {
+            balance = wallet.fiatAccounts.get(fiat).balance;
+          }
+          table[table.length - 1].push([balance]);
+        }
+      }
+    }
+
+    return table;
+  }
 }
 
 function processTrades() {
@@ -604,6 +630,9 @@ function processTrades() {
     //           `);
 
   }
+
+  let fiatBalanceTable = cryptoTracker.getFiatBalanceTable();
+  Logger.log(fiatBalanceTable);
 
 }
 

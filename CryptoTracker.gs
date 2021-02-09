@@ -82,6 +82,11 @@ class CryptoTracker {
 
     this.validateLedgerRecords(ledgerRecords);
 
+    //sort by date
+    ledgerRecords.sort(function (a, b) {
+      return a.date - b.date;
+    });
+
     for (let ledgerRecord of ledgerRecords) {
 
       let date = ledgerRecord.date;
@@ -524,11 +529,6 @@ class CryptoTracker {
 
     let ledgerDataRange = this.getLedgerDataRange();
     let ledgerData = ledgerDataRange.getValues();
-
-    //sort by date
-    // ledgerData.sort(function (a, b) {
-    //   return a[0] - b[0];
-    // });
 
     //convert raw data to object array
     let ledgerRecords = [];

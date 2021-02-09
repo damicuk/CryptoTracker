@@ -433,86 +433,91 @@ class CryptoTracker {
 
   updateExRates() {
 
-    this.validateLedger(false);
+    let ledgerRecords = this.getLedgerRecords();
+    this.validateLedgerRecords(ledgerRecords, false);
 
-    let ledgerDataRange = this.getLedgerDataRange();
-    let ledgerData = ledgerDataRange.getValues();
+    //array of values used to update the sheet
+    let debitExRateValues = [];
+    let creditExRateValues = [];
 
-    let debitExRatesDataRange = ledgerDataRange.offset(0, 3, ledgerDataRange.getHeight(), 1);
-    let creditExRatesDataRange = ledgerDataRange.offset(0, 8, ledgerDataRange.getHeight(), 1);
-
-    //fill in any missing exchange rates with GOOGLEFINANCE formula
+    // fill in any missing exchange rates with GOOGLEFINANCE formula
     const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#currency#", "#fiatConvert#")), "close", A#row#), 2,2)`;
-
-    let debitExRates = [];
-    let creditExRates = [];
 
     //do we need to update these columns?
     let updateDebitExRates = false;
     let updateCreditExRates = false;
 
-    for (let i = 0; i < ledgerData.length; i++) {
+    for (let i = 0; i < ledgerRecords.length; i++) {
 
-      let action = ledgerData[i][1];
-      let debitCurrency = ledgerData[i][2];
-      let debitExRate = ledgerData[i][3];
-      let creditCurrency = ledgerData[i][7];
-      let creditExRate = ledgerData[i][8];
+      let ledgerRecord = ledgerRecords[i];
+      let action = ledgerRecord.action;
+      let debitCurrency = ledgerRecord.debitCurrency;
+      let debitExRate = ledgerRecord.debitExRate;
+      let creditCurrency = ledgerRecord.creditCurrency;
+      let creditExRate = ledgerRecord.creditExRate;
+      let hasDebitExRate = ledgerRecord.hasDebitExRate;
+      let hasCreditExRate = ledgerRecord.hasCreditExRate;
 
-      debitExRates.push([debitExRate]);
-      creditExRates.push([creditExRate]);
+      //the value used to update the sheet
+      let debitExRateValue = '';
+      if (hasDebitExRate) {
+        debitExRateValue = debitExRate;
+      }
+
+      //the value used to update the sheet
+      let creditExRateValue = '';
+      if (hasCreditExRate) {
+        creditExRateValue = creditExRate;
+      }
 
       if (action == 'Trade') {
 
-        if (!this.isFiat(creditCurrency) && debitCurrency != this.fiatConvert && (!debitExRate || isNaN(debitExRate) || Number(debitExRate) <= 0)) {
-
-          debitExRates[i][0] = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
-          updateDebitExRates = true;
-
+        if (this.isCrypto(creditCurrency) && debitCurrency != this.fiatConvert) { //buy or exchange crypto
+          if (!hasDebitExRate || debitExRate <= 0) {
+            debitExRateValue = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+            updateDebitExRates = true;
+          }
         }
-        else if (!this.isFiat(debitCurrency) && creditCurrency != this.fiatConvert && (!creditExRate || isNaN(creditExRate) || Number(creditExRate) <= 0)) {
-
-          creditExRates[i][0] = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
-          updateCreditExRates = true;
-
+        else if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
+          if (!hasCreditExRate || creditExRate <= 0) {
+            creditExRateValue = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+            updateCreditExRates = true;
+          }
         }
       }
+
+      debitExRateValues.push([debitExRateValue]);
+      creditExRateValues.push([creditExRateValue]);
     }
 
-    //only update the ex rates if necessary (slow)
-    if (updateDebitExRates || updateCreditExRates) {
-
-      //apply the formula to calculate the values
-      if (updateDebitExRates) {
-        debitExRatesDataRange.setValues(debitExRates);
-      }
-
-      if (updateCreditExRates) {
-        creditExRatesDataRange.setValues(creditExRates);
-      }
-
-      //apply changes
-      SpreadsheetApp.flush();
-
-      //read in values calculated by the formula
-      //remove failed formula results and invalid values
-      //overwrite the formulas with hard coded values
-      if (updateDebitExRates) {
-        debitExRates = debitExRatesDataRange.getValues();
-        debitExRates = this.removeInvalidExRates(debitExRates);
-        debitExRatesDataRange.setValues(debitExRates);
-      }
-
-      if (updateCreditExRates) {
-        creditExRates = creditExRatesDataRange.getValues();
-        creditExRates = this.removeInvalidExRates(creditExRates);
-        creditExRatesDataRange.setValues(creditExRates);
-      }
-
-      //applies changes
-      SpreadsheetApp.flush();
-
+    if (updateDebitExRates) {
+      this.setExRates(3, debitExRateValues);
     }
+
+    if (updateCreditExRates) {
+      this.setExRates(8, creditExRateValues);
+    }
+  }
+
+  setExRates(colIndex, exRateValues) {
+
+    let ledgerDataRange = this.getLedgerDataRange();
+    let exRatesDataRange = ledgerDataRange.offset(0, colIndex, ledgerDataRange.getHeight(), 1);
+
+    exRatesDataRange.setValues(exRateValues);
+
+    //apply changes
+    SpreadsheetApp.flush();
+
+    //read in values calculated by the formula
+    //remove failed formula results and invalid values
+    //overwrite the formulas with hard coded values
+    exRateValues = exRatesDataRange.getValues();
+    exRateValues = this.removeInvalidExRates(exRateValues);
+    exRatesDataRange.setValues(exRateValues);
+
+    //applies changes
+    SpreadsheetApp.flush();
   }
 
   getLedgerRecords() {
@@ -521,9 +526,9 @@ class CryptoTracker {
     let ledgerData = ledgerDataRange.getValues();
 
     //sort by date
-    ledgerData.sort(function (a, b) {
-      return a[0] - b[0];
-    });
+    // ledgerData.sort(function (a, b) {
+    //   return a[0] - b[0];
+    // });
 
     //convert raw data to object array
     let ledgerRecords = [];

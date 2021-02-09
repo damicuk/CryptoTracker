@@ -255,22 +255,22 @@ class CryptoTracker {
       throw Error('Ledger record: missing date.');
     }
     else if (isNaN(debitExRate)) {
-      throw Error('[${date.toISOString()}] [${action}] Ledger record debit exchange rate is not valid (number or blank).');
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit exchange rate is not valid (number or blank).`);
     }
     else if (isNaN(debitAmount)) {
-      throw Error('[${date.toISOString()}] [${action}] Ledger record debit amount is not valid (number or blank).');
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit amount is not valid (number or blank).`);
     }
     else if (isNaN(debitFee)) {
-      throw Error('[${date.toISOString()}] [${action}] Ledger record debit fee is not valid (number or blank).');
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit fee is not valid (number or blank).`);
     }
     else if (isNaN(creditExRate)) {
-      throw Error('[${date.toISOString()}] [${action}] Ledger record credit exchange rate is not valid (number or blank).');
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate is not valid (number or blank).`);
     }
     else if (isNaN(creditAmount)) {
-      throw Error('[${date.toISOString()}] [${action}] Ledger record credit amount is not valid (number or blank).');
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit amount is not valid (number or blank).`);
     }
     else if (isNaN(creditFee)) {
-      throw Error('[${date.toISOString()}] [${action}] Ledger record credit fee is not valid (number or blank).');
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee is not valid (number or blank).`);
     }
     else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
@@ -515,11 +515,11 @@ class CryptoTracker {
     SpreadsheetApp.flush();
 
     //read in values calculated by the formula
-    //remove failed formula results and invalid values
+    //remove failed formula results
     //overwrite the formulas with hard coded values
-    exRateValues = exRatesDataRange.getValues();
-    exRateValues = this.removeInvalidExRates(exRateValues);
-    exRatesDataRange.setValues(exRateValues);
+    let calculatedExRateValues = exRatesDataRange.getValues();
+    let validExRateValues = this.removeInvalidExRates(calculatedExRateValues);
+    exRatesDataRange.setValues(validExRateValues);
 
     //applies changes
     SpreadsheetApp.flush();
@@ -570,19 +570,19 @@ class CryptoTracker {
     return ledgerDataRange;
   }
 
-  removeInvalidExRates(exRates) {
+  removeInvalidExRates(exRateValues) {
 
-    let validExRates = [];
+    let validExRateValues = [];
 
-    for (let exRate of exRates) {
-      if (isNaN(exRate[0])) {
-        validExRates.push(['']);
+    for (let exRateValue of exRateValues) {
+      if (isNaN(exRateValue[0])) {
+        validExRateValues.push(['']);
       }
       else {
-        validExRates.push(exRate);
+        validExRateValues.push(exRateValue);
       }
     }
-    return validExRates;
+    return validExRateValues;
   }
 }
 

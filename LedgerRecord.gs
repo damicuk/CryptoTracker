@@ -1,6 +1,23 @@
 class LedgerRecord {
 
-  constructor(date, action, debitCurrency, debitExRate, debitAmount, debitFee, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
+  constructor(date,
+              action,
+              debitCurrency,
+              debitExRate,
+              debitAmount,
+              debitFee,
+              debitWalletName,
+              creditCurrency,
+              creditExRate,
+              creditAmount,
+              creditFee,
+              creditWalletName,
+              hasDebitExRate,
+              hasDebitAmount,
+              hasDebitFee,
+              hasCreditExRate,
+              hasCreditAmount,
+              hasCreditFee) {
 
     this.date = new Date(date);
     this.action = action;
@@ -14,6 +31,14 @@ class LedgerRecord {
     this.creditAmount = Number(creditAmount);
     this.creditFee = Number(creditFee);
     this.creditWalletName = creditWalletName;
+
+    //were these fields blank? (to distinguish from zero)
+    this.hasDebitExRate = hasDebitExRate;
+    this.hasDebitAmount = hasDebitAmount;
+    this.hasDebitFee = hasDebitFee;
+    this.hasCreditExRate = hasCreditExRate;
+    this.hasCreditAmount = hasCreditAmount;
+    this.hasCreditFee = hasCreditFee;
 
   }
 

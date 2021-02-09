@@ -411,8 +411,8 @@ class CryptoTracker {
       else if (creditAmount <= 0) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit amount (${creditAmount.toLocaleString()}) must be greater than 0.`);
       }
-      else if (creditFee < 0) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
+      else if (hasCreditFee) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
       }
       else if (!creditWalletName) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record has no credit wallet specified.`);

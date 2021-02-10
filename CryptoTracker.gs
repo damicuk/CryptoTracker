@@ -190,6 +190,11 @@ class CryptoTracker {
         this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
         // Logger.log(`Reward crypto credit balance: ${creditWalletName} ${creditCurrency} ${this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).balance}`);
       }
+      else if (action == 'Fee') { //Fee
+
+        this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(0, debitFee);
+
+      }
     }
   }
 

@@ -461,7 +461,7 @@ class CryptoTracker {
       else if (creditCurrency) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank.`);
       }
-       else if (hasCreditExRate) {
+      else if (hasCreditExRate) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
       }
       else if (hasCreditAmount) {
@@ -531,6 +531,12 @@ class CryptoTracker {
             creditExRateValue = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
             updateCreditExRates = true;
           }
+        }
+      }
+      else if (action == 'Reward') {
+        if (!hasCreditExRate || creditExRate <= 0) {
+          creditExRateValue = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+          updateCreditExRates = true;
         }
       }
 

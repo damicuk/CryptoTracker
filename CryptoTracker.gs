@@ -4,27 +4,9 @@ class CryptoTracker {
 
     this.settings = new Settings();
     this.validateSettings();
-    this.wallets = new Map();
+    this._wallets = new Map();
     this.closedLots = new Array();
 
-  }
-
-  getWallet(name) {
-
-    if (!this.wallets.has(name)) {
-
-      this.wallets.set(name, new Wallet(name));
-
-    }
-    return this.wallets.get(name);
-  }
-
-  isFiat(currency) {
-    return this.settings['Fiats'].has(currency);
-  }
-
-  isCrypto(currency) {
-    return this.settings['Cryptos'].has(currency);
   }
 
   get fiatConvert() {
@@ -37,6 +19,61 @@ class CryptoTracker {
 
   get cryptos() {
     return Array.from(this.settings['Cryptos']);
+  }
+
+  get wallets() {
+    return Array.from(this._wallets.values());
+  }
+
+  getWallet(name) {
+
+    if (!this._wallets.has(name)) {
+
+      this._wallets.set(name, new Wallet(name));
+
+    }
+    return this._wallets.get(name);
+  }
+
+  isFiat(currency) {
+    return this.settings['Fiats'].has(currency);
+  }
+
+  isCrypto(currency) {
+    return this.settings['Cryptos'].has(currency);
+  }
+
+
+  getCents(fiat) {
+
+    let cents = 0;
+    for (let wallet of this.wallets) {
+      if (wallet.hasFiatAccount(fiat)) {
+        cents += wallet.getCents(fiat);
+      }
+    }
+    return cents;
+  }
+
+  getSatoshi(crypto) {
+
+    let satoshi = 0;
+    for (let wallet of this.wallets) {
+      if (wallet.hasCryptoAccount(crypto)) {
+        satoshi += wallet.getSatoshi(crypto);
+      }
+    }
+    return satoshi;
+  }
+
+  getFiatBalance(fiat) {
+
+    return this.getCents(fiat) / 100;
+  }
+
+  getCryptoBalance(crypto) {
+
+    return this.getSatoshi(crypto) / 1e8;
   }
 
   closeLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee) {
@@ -636,27 +673,25 @@ class CryptoTracker {
 
   getFiatTable() {
 
-    let fiats = this.fiats;
-
     //fiat currency column headers
-    let table = [[['Fiat Balances']]];
-    for (let fiat of fiats) {
-      table[0].push([fiat]);
-    }
+    let table = [['Wallet'].concat(this.fiats)];
 
     //wallet name row headers and balances
-    let wallets = this.wallets.values();
-    for (let wallet of wallets) {
-      if (wallet.fiatAccounts.size > 0) {
-        table.push([[wallet.name]]);
-        for (let fiat of fiats) {
-          let balance = '0';
-          if (wallet.fiatAccounts.has(fiat)) {
-            balance = wallet.fiatAccounts.get(fiat).balance;
-          }
-          table[table.length - 1].push([balance]);
+    for (let wallet of this.wallets) {
+      if (wallet.hasFiatAccounts) {
+        table.push([wallet.name]);
+        for (let fiat of this.fiats) {
+          let balance = wallet.getBalance(fiat)
+          table[table.length - 1].push(balance);
         }
       }
+    }
+
+    //total for each fiat
+    table.push(['total']);
+    for (let fiat of this.fiats) {
+      let cents = this.getCents(fiat);
+      table[table.length - 1].push(cents / 100);
     }
 
     return table;
@@ -664,32 +699,55 @@ class CryptoTracker {
 
   getCryptoTable() {
 
-    let cryptos = this.cryptos;
-
     //fiat currency column headers
-    let table = [[['Crypto Balances']]];
-    for (let crypto of cryptos) {
-      table[0].push([crypto]);
-    }
+    let table = [['Wallet'].concat(this.cryptos)];
 
     //wallet name row headers and balances
-    let wallets = this.wallets.values();
-    for (let wallet of wallets) {
-      if (wallet.cryptoAccounts.size > 0) {
-        table.push([[wallet.name]]);
-        for (let crypto of cryptos) {
-          let balance = '0';
-          if (wallet.cryptoAccounts.has(crypto)) {
-            balance = wallet.cryptoAccounts.get(crypto).balance;
-          }
-          table[table.length - 1].push([balance]);
+    for (let wallet of this.wallets) {
+      if (wallet.hasCryptoAccounts) {
+        table.push([wallet.name]);
+        for (let crypto of this.cryptos) {
+          let balance = wallet.getBalance(crypto);
+          table[table.length - 1].push(balance);
         }
       }
+    }
+
+    //total for each crypto
+    table.push(['total']);
+    for (let crypto of this.cryptos) {
+      let balance = this.getCryptoBalance(crypto);
+      table[table.length - 1].push(balance);
+    }
+
+    return table;
+  }
+
+  getProfitTable() {
+
+    let table = [['Crypto', 'Units', 'Cost Price', 'Cost Basis', 'Current Price', 'Value', 'Unrealized P/L', 'Unrealized P/L %']];
+
+    let cryptos = this.cryptos;
+    for (let crypto of cryptos) {
+      table.push([crypto]);
+
+      //total
+      let satoshi = this.getSatoshi(crypto)
+      table[table.length - 1].push(satoshi / 1e8);
+
+      table[table.length - 1].push('');
+      table[table.length - 1].push('');
+      table[table.length - 1].push('');
+      table[table.length - 1].push('');
+      table[table.length - 1].push('');
+      table[table.length - 1].push('');
+
     }
 
     return table;
   }
 }
+
 
 function processTrades() {
 
@@ -715,6 +773,27 @@ function processTrades() {
 
   let cryptoTable = cryptoTracker.getCryptoTable();
   Logger.log(cryptoTable);
+
+  let profitTable = cryptoTracker.getProfitTable();
+  Logger.log(profitTable);
+
+  ss = SpreadsheetApp.getActive();
+  let accountsSheet = ss.getSheetByName('Accounts');
+
+  if (!accountsSheet) {
+
+    ss.insertSheet('Accounts');
+  }
+
+  accountsSheet.clear();
+  let fiatDataRange = accountsSheet.getRange(1, 1, fiatTable.length, fiatTable[0].length);
+  fiatDataRange.setValues(fiatTable);
+
+  let cryptoDataRange = accountsSheet.getRange(fiatDataRange.getLastRow() + 2, 1, cryptoTable.length, cryptoTable[0].length);
+  cryptoDataRange.setValues(cryptoTable);
+
+  let profitDataRange = accountsSheet.getRange(cryptoDataRange.getLastRow() + 2, 1, profitTable.length, profitTable[0].length);
+  profitDataRange.setValues(profitTable);
 
 }
 

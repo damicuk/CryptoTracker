@@ -343,7 +343,7 @@ class CryptoTracker {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record has no debit wallet specified.`);
       }
       else if (creditWalletName) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record credit wallet (${creditWalletName}) is redundant, leave blank. It is inferred from the debit wallet (${debitWalletName}).`);
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`);
       }
       else if (!hasDebitAmount) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
@@ -429,6 +429,44 @@ class CryptoTracker {
         else if (creditExRate <= 0) {
           throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate must be greater than 0.`);
         }
+      }
+    }
+    else if (action == 'Fee') { //Fee
+      if (!debitCurrency) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
+      }
+      else if (!this.isCrypto(debitCurrency)) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) must be crypto (${this.cryptos}).`)
+      }
+      else if (hasDebitExRate) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
+      }
+      else if (hasDebitAmount) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit amount (${debitAmount.toLocaleString()}) blank.`);
+      }
+      else if (!hasDebitFee) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit fee specified.`);
+      }
+      else if (debitFee <= 0) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record debit fee (${debitFee.toLocaleString()}) must be greater than 0.`);
+      }
+      else if (!debitWalletName) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record has no debit wallet specified.`);
+      }
+      else if (creditCurrency) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank.`);
+      }
+       else if (hasCreditExRate) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
+      }
+      else if (hasCreditAmount) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit amount (${creditAmount.toLocaleString()}) blank.`);
+      }
+      else if (hasCreditFee) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
+      }
+      else if (creditWalletName) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank.`);
       }
     }
     else {
@@ -585,11 +623,13 @@ class CryptoTracker {
     return validExRateValues;
   }
 
-  getFiatBalanceTable() {
+  getFiatTable() {
+
+    let fiats = this.fiats;
 
     //fiat currency column headers
     let table = [[['Fiat Balances']]];
-    for (let fiat of this.fiats) {
+    for (let fiat of fiats) {
       table[0].push([fiat]);
     }
 
@@ -598,10 +638,38 @@ class CryptoTracker {
     for (let wallet of wallets) {
       if (wallet.fiatAccounts.size > 0) {
         table.push([[wallet.name]]);
-        for (let fiat of this.fiats) {
+        for (let fiat of fiats) {
           let balance = '0';
           if (wallet.fiatAccounts.has(fiat)) {
             balance = wallet.fiatAccounts.get(fiat).balance;
+          }
+          table[table.length - 1].push([balance]);
+        }
+      }
+    }
+
+    return table;
+  }
+
+  getCryptoTable() {
+
+    let cryptos = this.cryptos;
+
+    //fiat currency column headers
+    let table = [[['Crypto Balances']]];
+    for (let crypto of cryptos) {
+      table[0].push([crypto]);
+    }
+
+    //wallet name row headers and balances
+    let wallets = this.wallets.values();
+    for (let wallet of wallets) {
+      if (wallet.cryptoAccounts.size > 0) {
+        table.push([[wallet.name]]);
+        for (let crypto of cryptos) {
+          let balance = '0';
+          if (wallet.cryptoAccounts.has(crypto)) {
+            balance = wallet.cryptoAccounts.get(crypto).balance;
           }
           table[table.length - 1].push([balance]);
         }
@@ -631,8 +699,11 @@ function processTrades() {
 
   }
 
-  let fiatBalanceTable = cryptoTracker.getFiatBalanceTable();
-  Logger.log(fiatBalanceTable);
+  let fiatTable = cryptoTracker.getFiatTable();
+  Logger.log(fiatTable);
+
+  let cryptoTable = cryptoTracker.getCryptoTable();
+  Logger.log(cryptoTable);
 
 }
 

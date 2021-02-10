@@ -88,7 +88,7 @@ class CryptoTracker {
 
   getCostBasis(crypto) {
 
-     return this.getCostBasisCents(crypto) / 100;
+    return this.getCostBasisCents(crypto) / 100;
   }
 
   closeLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee) {
@@ -741,27 +741,28 @@ class CryptoTracker {
   getProfitTable() {
 
     let table = [['Crypto', 'Units', 'Cost Price', 'Cost Basis', 'Current Price', 'Value', 'Unrealized P/L', 'Unrealized P/L %']];
-
-    let cryptos = this.cryptos;
-    for (let crypto of cryptos) {
-      table.push([crypto]);
+    
+    for (let crypto of this.cryptos) {
 
       let balance = this.getCryptoBalance(crypto);
-      let costBasisCents = this.getCostBasisCents(crypto);
-      let costBasis = costBasisCents / 100;
-      let costPrice = Math.round(costBasisCents / balance) / 100;
-      
-      table[table.length - 1].push(balance);
 
-      table[table.length - 1].push(costPrice);
+      if (balance) {
+        table.push([crypto]);
+        let costBasisCents = this.getCostBasisCents(crypto);
+        let costBasis = costBasisCents / 100;
+        let costPrice = Math.round(costBasisCents / balance) / 100;
 
-      
-      table[table.length - 1].push(costBasis);
-      table[table.length - 1].push('');
-      table[table.length - 1].push('');
-      table[table.length - 1].push('');
-      table[table.length - 1].push('');
+        table[table.length - 1].push(balance);
 
+        table[table.length - 1].push(costPrice);
+
+
+        table[table.length - 1].push(costBasis);
+        table[table.length - 1].push('');
+        table[table.length - 1].push('');
+        table[table.length - 1].push('');
+        table[table.length - 1].push('');
+      }
     }
 
     return table;

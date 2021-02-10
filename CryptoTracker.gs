@@ -43,37 +43,52 @@ class CryptoTracker {
     return this.settings['Cryptos'].has(currency);
   }
 
-
-  getCents(fiat) {
+  getFiatCents(fiat) {
 
     let cents = 0;
     for (let wallet of this.wallets) {
-      if (wallet.hasFiatAccount(fiat)) {
-        cents += wallet.getCents(fiat);
-      }
+
+      cents += wallet.getFiatCents(fiat);
+
     }
     return cents;
   }
 
-  getSatoshi(crypto) {
+  getCryptoSatoshi(crypto) {
 
     let satoshi = 0;
     for (let wallet of this.wallets) {
-      if (wallet.hasCryptoAccount(crypto)) {
-        satoshi += wallet.getSatoshi(crypto);
-      }
+
+      satoshi += wallet.getCryptoSatoshi(crypto);
+
     }
     return satoshi;
   }
 
+  getCostBasisCents(crypto) {
+
+    let costBasisCents = 0;
+    for (let wallet of this.wallets) {
+
+      costBasisCents += wallet.getCostBasisCents(crypto);
+
+    }
+    return costBasisCents;
+  }
+
   getFiatBalance(fiat) {
 
-    return this.getCents(fiat) / 100;
+    return this.getFiatCents(fiat) / 100;
   }
 
   getCryptoBalance(crypto) {
 
-    return this.getSatoshi(crypto) / 1e8;
+    return this.getCryptoSatoshi(crypto) / 1e8;
+  }
+
+  getCostBasis(crypto) {
+
+     return this.getCostBasisCents(crypto) / 100;
   }
 
   closeLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee) {
@@ -681,7 +696,7 @@ class CryptoTracker {
       if (wallet.hasFiatAccounts) {
         table.push([wallet.name]);
         for (let fiat of this.fiats) {
-          let balance = wallet.getBalance(fiat)
+          let balance = wallet.getFiatBalance(fiat);
           table[table.length - 1].push(balance);
         }
       }
@@ -690,8 +705,8 @@ class CryptoTracker {
     //total for each fiat
     table.push(['total']);
     for (let fiat of this.fiats) {
-      let cents = this.getCents(fiat);
-      table[table.length - 1].push(cents / 100);
+      let balance = this.getFiatBalance(fiat);
+      table[table.length - 1].push(balance);
     }
 
     return table;
@@ -707,7 +722,7 @@ class CryptoTracker {
       if (wallet.hasCryptoAccounts) {
         table.push([wallet.name]);
         for (let crypto of this.cryptos) {
-          let balance = wallet.getBalance(crypto);
+          let balance = wallet.getCryptoBalance(crypto);
           table[table.length - 1].push(balance);
         }
       }
@@ -731,12 +746,17 @@ class CryptoTracker {
     for (let crypto of cryptos) {
       table.push([crypto]);
 
-      //total
-      let satoshi = this.getSatoshi(crypto)
-      table[table.length - 1].push(satoshi / 1e8);
+      let balance = this.getCryptoBalance(crypto);
+      let costBasisCents = this.getCostBasisCents(crypto);
+      let costBasis = costBasisCents / 100;
+      let costPrice = Math.round(costBasisCents / balance) / 100;
+      
+      table[table.length - 1].push(balance);
 
-      table[table.length - 1].push('');
-      table[table.length - 1].push('');
+      table[table.length - 1].push(costPrice);
+
+      
+      table[table.length - 1].push(costBasis);
       table[table.length - 1].push('');
       table[table.length - 1].push('');
       table[table.length - 1].push('');
@@ -754,19 +774,27 @@ function processTrades() {
   let cryptoTracker = new CryptoTracker();
 
   cryptoTracker.processTrades();
-  let fiatConvert = cryptoTracker.fiatConvert;
+  // let fiatConvert = cryptoTracker.fiatConvert;
 
-  for (let closedLot of cryptoTracker.closedLots) {
+  // for (let closedLot of cryptoTracker.closedLots) {
 
-    let lot = closedLot.lot;
+  //   let lot = closedLot.lot;
 
-    // Logger.log(`[${lot.date.toISOString()}] Lot ${lot.debitWalletName} ${lot.creditCurrency} ${lot.creditAmountSatoshi / 1e8} - ${lot.creditFeeSatoshi / 1e8} = ${lot.satoshi / 1e8}
-    //           ${lot.debitCurrency} (${lot.debitAmountSatoshi / 1e8} - ${lot.debitFeeSatoshi / 1e8}) x rate ${lot.debitExRate} = Cost Basis ${fiatConvert} ${lot.costBasisCents / 100}
-    //           [${closedLot.date.toISOString()}] Closed ${closedLot.creditWalletName}
-    //           ${closedLot.creditCurrency} (${closedLot.creditAmountSatoshi / 1e8} - ${closedLot.creditFeeSatoshi / 1e8}) x rate ${closedLot.creditExRate} = Proceeds ${fiatConvert} ${closedLot.proceedsCents / 100} 
-    //           `);
+  // Logger.log(`[${lot.date.toISOString()}] Lot ${lot.debitWalletName} ${lot.creditCurrency} ${lot.creditAmountSatoshi / 1e8} - ${lot.creditFeeSatoshi / 1e8} = ${lot.satoshi / 1e8}
+  //           ${lot.debitCurrency} (${lot.debitAmountSatoshi / 1e8} - ${lot.debitFeeSatoshi / 1e8}) x rate ${lot.debitExRate} = Cost Basis ${fiatConvert} ${lot.costBasisCents / 100}
+  //           [${closedLot.date.toISOString()}] Closed ${closedLot.creditWalletName}
+  //           ${closedLot.creditCurrency} (${closedLot.creditAmountSatoshi / 1e8} - ${closedLot.creditFeeSatoshi / 1e8}) x rate ${closedLot.creditExRate} = Proceeds ${fiatConvert} ${closedLot.proceedsCents / 100} 
+  //           `);
 
-  }
+  // }
+
+  //Logger.log(`processTrades cryptoTracker.getFiatBalance('EUR') ${cryptoTracker.getFiatBalance('EUR')}`);
+  // Logger.log(cryptoTracker.getWallet('Kraken').getFiatBalance('EUR'));
+  // Logger.log(cryptoTracker.getWallet('Ledger 2').getCryptoBalance('BTC'));
+  // Logger.log(cryptoTracker.getFiatBalance('EUR'));
+  // Logger.log(cryptoTracker.getFiatCents('EUR'));
+
+  // Logger.log(cryptoTracker.getCryptoBalance('BTC'));
 
   let fiatTable = cryptoTracker.getFiatTable();
   Logger.log(fiatTable);

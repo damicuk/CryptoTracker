@@ -27,19 +27,9 @@ class Wallet {
     return this._cryptoAccounts.has(crypto);
   }
 
-  getCents(fiat) {
-
-    return this._fiatAccounts.get(fiat).cents;
-  }
-
-  getSatoshi(crypto) {
-
-    return this._cryptoAccounts.get(crypto).satoshi;
-  }
-
   getFiatAccount(fiat) {
 
-    if (!this._fiatAccounts.has(fiat)) {
+    if (!this.hasFiatAccount(fiat)) {
 
       this._fiatAccounts.set(fiat, new FiatAccount(fiat));
 
@@ -49,7 +39,7 @@ class Wallet {
 
   getCryptoAccount(crypto) {
 
-    if (!this._cryptoAccounts.has(crypto)) {
+    if (!this.hasCryptoAccount(crypto)) {
 
       this._cryptoAccounts.set(crypto, new CryptoAccount(crypto));
 
@@ -57,21 +47,58 @@ class Wallet {
     return this._cryptoAccounts.get(crypto);
   }
 
-  getBalance(fiat) {
+  getFiatCents(fiat) {
+
+    let cents = 0;
+    if (this.hasFiatAccount(fiat)) {
+
+      cents = this.getFiatAccount(fiat).cents;
+
+    }
+    return cents;
+  }
+
+  getCryptoSatoshi(crypto) {
+
+    let satoshi = 0;
+    if (this.hasCryptoAccount(crypto)) {
+
+      satoshi = this.getCryptoAccount(crypto).satoshi;
+
+    }
+    return satoshi;
+  }
+
+  getFiatBalance(fiat) {
 
     let balance = '0';
-    if (this._fiatAccounts.has(fiat)) {
-      balance = this._fiatAccounts.get(fiat).balance;
+    if (this.hasFiatAccount(fiat)) {
+
+      balance = this.getFiatAccount(fiat).balance;
+
     }
     return balance;
   }
 
-  getBalance(crypto) {
+  getCryptoBalance(crypto) {
 
     let balance = '0';
-    if (this._cryptoAccounts.has(crypto)) {
-      balance = this._cryptoAccounts.get(crypto).balance;
+    if (this.hasCryptoAccount(crypto)) {
+
+      balance = this.getCryptoAccount(crypto).balance;
+
     }
     return balance;
+  }
+
+  getCostBasisCents(crypto) {
+
+    let costBasisCents = 0;
+    if (this.hasCryptoAccount(crypto)) {
+
+      costBasisCents = this.getCryptoAccount(crypto).costBasisCents;
+
+    }
+    return costBasisCents;
   }
 }

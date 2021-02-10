@@ -23,12 +23,27 @@ class CryptoAccount {
     return this.satoshi / 1e8;
   }
 
+  get costBasisCents() {
+
+    let costBasisCents = 0;
+    for (let lot of this.lots) {
+
+      costBasisCents += lot.costBasisCents; //adding two integers - no need to round
+
+    }
+    return costBasisCents;
+  }
+
+  get costBasis() {
+
+    return this.costBasisCents /  100
+  }
+
   deposit(lots) {
 
     for (let lot of lots) {
 
       this.lots.push(lot);
-
     }
   }
 

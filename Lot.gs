@@ -17,7 +17,6 @@ class Lot {
   get satoshi() {
 
     return this.creditAmountSatoshi - this.creditFeeSatoshi;
-
   }
 
   get costBasisCents() {
@@ -30,7 +29,6 @@ class Lot {
     }
 
     return Math.round(((this.debitAmountSatoshi - this.debitFeeSatoshi) * exRate) / 1e6);
-
   }
 
   split(satoshi) {

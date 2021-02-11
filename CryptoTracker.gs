@@ -703,7 +703,7 @@ class CryptoTracker {
     }
 
     //total for each fiat
-    table.push(['total']);
+    table.push(['Total']);
     for (let fiat of this.fiats) {
       let balance = this.getFiatBalance(fiat);
       table[table.length - 1].push(balance);
@@ -729,7 +729,7 @@ class CryptoTracker {
     }
 
     //total for each crypto
-    table.push(['total']);
+    table.push(['Total']);
     for (let crypto of this.cryptos) {
       let balance = this.getCryptoBalance(crypto);
       table[table.length - 1].push(balance);
@@ -741,7 +741,8 @@ class CryptoTracker {
   getProfitTable() {
 
     let table = [['Crypto', 'Units', 'Cost Price', 'Cost Basis', 'Current Price', 'Value', 'Unrealized P/L', 'Unrealized P/L %']];
-    
+
+    let totalCostBasisCents = 0;
     for (let crypto of this.cryptos) {
 
       let balance = this.getCryptoBalance(crypto);
@@ -749,6 +750,7 @@ class CryptoTracker {
       if (balance) {
         table.push([crypto]);
         let costBasisCents = this.getCostBasisCents(crypto);
+        totalCostBasisCents += costBasisCents;
         let costBasis = costBasisCents / 100;
         let costPrice = Math.round(costBasisCents / balance) / 100;
 
@@ -764,6 +766,16 @@ class CryptoTracker {
         table[table.length - 1].push('');
       }
     }
+    let totalCostBasis = totalCostBasisCents / 100;
+
+    table.push(['Total']);
+    table[table.length - 1].push('');
+    table[table.length - 1].push('');
+    table[table.length - 1].push(totalCostBasis);
+    table[table.length - 1].push('');
+    table[table.length - 1].push('');
+    table[table.length - 1].push('');
+    table[table.length - 1].push('');
 
     return table;
   }

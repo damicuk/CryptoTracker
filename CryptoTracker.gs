@@ -608,7 +608,7 @@ class CryptoTracker {
   setExRates(colIndex, exRateValues) {
 
     let ledgerDataRange = this.getLedgerDataRange();
-    let exRatesDataRange = ledgerDataRange.offset(0, colIndex, ledgerDataRange.getHeight(), 1);
+    let exRatesDataRange = ledgerDataRange.offset(0, colIndex, exRateValues.length, 1);
 
     exRatesDataRange.setValues(exRateValues);
 
@@ -653,6 +653,13 @@ class CryptoTracker {
         row[8] !== '',
         row[9] !== '',
         row[10] !== '');
+        
+      //Stop reading here
+      if(ledgerRecord.action == 'Stop') { 
+
+        break;
+
+      }
 
       ledgerRecords.push(ledgerRecord);
 
@@ -798,16 +805,6 @@ function processTrades() {
   //           [${closedLot.date.toISOString()}] Closed ${closedLot.creditWalletName}
   //           ${closedLot.creditCurrency} (${closedLot.creditAmountSatoshi / 1e8} - ${closedLot.creditFeeSatoshi / 1e8}) x rate ${closedLot.creditExRate} = Proceeds ${fiatConvert} ${closedLot.proceedsCents / 100} 
   //           `);
-
-  // }
-
-  //Logger.log(`processTrades cryptoTracker.getFiatBalance('EUR') ${cryptoTracker.getFiatBalance('EUR')}`);
-  // Logger.log(cryptoTracker.getWallet('Kraken').getFiatBalance('EUR'));
-  // Logger.log(cryptoTracker.getWallet('Ledger 2').getCryptoBalance('BTC'));
-  // Logger.log(cryptoTracker.getFiatBalance('EUR'));
-  // Logger.log(cryptoTracker.getFiatCents('EUR'));
-
-  // Logger.log(cryptoTracker.getCryptoBalance('BTC'));
 
   let fiatTable = cryptoTracker.getFiatTable();
   Logger.log(fiatTable);

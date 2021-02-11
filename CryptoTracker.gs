@@ -607,10 +607,10 @@ class CryptoTracker {
 
   setExRates(colIndex, exRateValues) {
 
-    let ledgerDataRange = this.getLedgerDataRange();
-    let exRatesDataRange = ledgerDataRange.offset(0, colIndex, exRateValues.length, 1);
+    let ledgerRange = this.getLedgerRange();
+    let exRatesRange = ledgerRange.offset(0, colIndex, exRateValues.length, 1);
 
-    exRatesDataRange.setValues(exRateValues);
+    exRatesRange.setValues(exRateValues);
 
     //apply changes
     SpreadsheetApp.flush();
@@ -618,9 +618,9 @@ class CryptoTracker {
     //read in values calculated by the formula
     //remove failed formula results
     //overwrite the formulas with hard coded values
-    let calculatedExRateValues = exRatesDataRange.getValues();
+    let calculatedExRateValues = exRatesRange.getValues();
     let validExRateValues = this.removeInvalidExRates(calculatedExRateValues);
-    exRatesDataRange.setValues(validExRateValues);
+    exRatesRange.setValues(validExRateValues);
 
     //applies changes
     SpreadsheetApp.flush();
@@ -628,8 +628,8 @@ class CryptoTracker {
 
   getLedgerRecords() {
 
-    let ledgerDataRange = this.getLedgerDataRange();
-    let ledgerData = ledgerDataRange.getValues();
+    let ledgerRange = this.getLedgerRange();
+    let ledgerData = ledgerRange.getValues();
 
     //convert raw data to object array
     let ledgerRecords = [];
@@ -667,15 +667,15 @@ class CryptoTracker {
     return ledgerRecords;
   }
 
-  getLedgerDataRange() {
+  getLedgerRange() {
 
     let ss = SpreadsheetApp.getActive();
     let ledgerSheet = ss.getSheetByName('Ledger');
 
-    let ledgerDataRange = ledgerSheet.getDataRange();
-    ledgerDataRange = ledgerDataRange.offset(2, 0, ledgerDataRange.getHeight() - 2, 12);
+    let ledgerRange = ledgerSheet.getDataRange();
+    ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 12);
 
-    return ledgerDataRange;
+    return ledgerRange;
   }
 
   removeInvalidExRates(exRateValues) {
@@ -899,18 +899,69 @@ function processTrades() {
     ss.insertSheet('Accounts');
   }
 
+  const rowOffset = 3
+  const colOffset = 2;
+
   accountsSheet.clear();
-  let fiatDataRange = accountsSheet.getRange(1, 1, fiatTable.length, fiatTable[0].length);
+  let fiatDataRange = accountsSheet.getRange(rowOffset, colOffset, fiatTable.length, fiatTable[0].length);
   fiatDataRange.setValues(fiatTable);
+  formatTable(fiatDataRange);
 
-  let cryptoDataRange = accountsSheet.getRange(fiatDataRange.getLastRow() + 2, 1, cryptoTable.length, cryptoTable[0].length);
+  let cryptoDataRange = accountsSheet.getRange(fiatDataRange.getLastRow() + rowOffset, colOffset, cryptoTable.length, cryptoTable[0].length);
   cryptoDataRange.setValues(cryptoTable);
+  formatTable(cryptoDataRange);
 
-  let profitDataRange = accountsSheet.getRange(cryptoDataRange.getLastRow() + 2, 1, profitTable.length, profitTable[0].length);
+  let profitDataRange = accountsSheet.getRange(cryptoDataRange.getLastRow() + rowOffset, colOffset, profitTable.length, profitTable[0].length);
   profitDataRange.setValues(profitTable);
+  formatTable(profitDataRange);
 
-  let closedDataRange = accountsSheet.getRange(profitDataRange.getLastRow() + 2, 1, closedTable.length, closedTable[0].length);
-  closedDataRange.setValues(closedTable)
+  let closedDataRange = accountsSheet.getRange(profitDataRange.getLastRow() + rowOffset, colOffset, closedTable.length, closedTable[0].length);
+  closedDataRange.setValues(closedTable);
+  formatTable(closedDataRange);
+
+  accountsSheet.autoResizeColumns(1, accountsSheet.getDataRange().getNumColumns());
+}
+
+function formatTable(dataRange) {
+
+  dataRange.setBorder(
+    true, true, true, true, null, null,
+    null,
+    SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+
+  let headerRange = dataRange.offset(0, 0, 1, dataRange.getNumColumns());
+
+  headerRange
+    .setFontWeight('bold')
+    .setFontColor('#ffffff')
+    .setBackgroundColor('#007272')
+    .setBorder(
+      true, true, true, true, null, null,
+      null,
+      SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+
+
+
+  let columnHeaderRange = dataRange.offset(0, 0, dataRange.getNumRows(), 1);
+
+  columnHeaderRange
+    .setFontWeight('bold')
+    .setFontStyle('italic')
+    .setBorder(
+      true, true, true, true, null, null,
+      null,
+      SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+
+  let totalRange = dataRange.offset(dataRange.getNumRows() - 1, 0, 1, dataRange.getNumColumns());
+
+  totalRange
+    .setFontWeight('bold')
+    //.setFontStyle('italic')
+    .setBackgroundColor('#76a5af')
+    .setBorder(
+      true, true, true, true, null, null,
+      null,
+      SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
 }
 

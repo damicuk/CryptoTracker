@@ -755,34 +755,37 @@ class CryptoTracker {
       let balance = this.getCryptoBalance(crypto);
 
       if (balance) {
-        table.push([crypto]);
+
         let costBasisCents = this.getCostBasisCents(crypto);
-        totalCostBasisCents += costBasisCents;
         let costBasis = costBasisCents / 100;
         let costPrice = Math.round(costBasisCents / balance) / 100;
 
-        table[table.length - 1].push(balance);
+        totalCostBasisCents += costBasisCents;
 
-        table[table.length - 1].push(costPrice);
+        table.push([crypto]);
+        let lastIndex = table.length - 1;
+        table[lastIndex].push(balance);
+        table[lastIndex].push(costPrice);
+        table[lastIndex].push(costBasis);
+        table[lastIndex].push('');
+        table[lastIndex].push('');
+        table[lastIndex].push('');
+        table[lastIndex].push('');
 
-
-        table[table.length - 1].push(costBasis);
-        table[table.length - 1].push('');
-        table[table.length - 1].push('');
-        table[table.length - 1].push('');
-        table[table.length - 1].push('');
       }
     }
+
     let totalCostBasis = totalCostBasisCents / 100;
 
     table.push(['Total']);
-    table[table.length - 1].push('');
-    table[table.length - 1].push('');
-    table[table.length - 1].push(totalCostBasis);
-    table[table.length - 1].push('');
-    table[table.length - 1].push('');
-    table[table.length - 1].push('');
-    table[table.length - 1].push('');
+    let lastIndex = table.length - 1;
+    table[lastIndex].push('');
+    table[lastIndex].push('');
+    table[lastIndex].push(totalCostBasis);
+    table[lastIndex].push('');
+    table[lastIndex].push('');
+    table[lastIndex].push('');
+    table[lastIndex].push('');
 
     return table;
   }
@@ -792,10 +795,9 @@ class CryptoTracker {
     let table = [['Crypto', 'Quantity', 'Av. Cost Price', 'Cost Basis', 'Av. Sell Price', 'Proceeds', 'Realized P/L', 'Realized P/L %']];
 
 
-
+    let totalCostBasisCents = 0;
+    let totalProceedsCent = 0;
     for (let crypto of this.cryptos) {
-
-      table.push([crypto]);
 
       let satoshi = 0;
       let costBasisCents = 0;
@@ -803,34 +805,57 @@ class CryptoTracker {
 
       for (let closedLot of this.closedLots) {
 
-        if(closedLot.crypto == crypto) {
-          
+        if (closedLot.crypto == crypto) {
+
           satoshi += closedLot.satoshi;
           costBasisCents += closedLot.costBasisCents;
           proceedsCents += closedLot.proceedsCents;
-
 
 
         }
       }
 
       let amount = satoshi / 1e8;
-      let costBasis = costBasisCents / 100;
-      let proceeds = proceedsCents / 100;
-      let costPrice = Math.round(costBasisCents / amount) / 100;
-      let sellPrice = Math.round(proceedsCents / amount) / 100;
-      let profit = (proceedsCents - costBasisCents) / 100;
-      let percentProfit = Math.round((proceedsCents - costBasisCents) * 100 / costBasisCents) / 100;
 
-      table[table.length - 1].push(amount);
-      table[table.length - 1].push(costPrice);
-      table[table.length - 1].push(costBasis);
-      table[table.length - 1].push(sellPrice);
-      table[table.length - 1].push(proceeds);
-      table[table.length - 1].push(profit);
-      table[table.length - 1].push(percentProfit);
+      if (amount) {
 
+        let costBasis = costBasisCents / 100;
+        let proceeds = proceedsCents / 100;
+        let costPrice = Math.round(costBasisCents / amount) / 100;
+        let sellPrice = Math.round(proceedsCents / amount) / 100;
+        let profit = (proceedsCents - costBasisCents) / 100;
+        let percentProfit = Math.round((proceedsCents - costBasisCents) * 100 / costBasisCents) / 100;
+
+        totalCostBasisCents += costBasisCents;
+        totalProceedsCent += proceedsCents;
+
+        table.push([crypto]);
+        let lastIndex = table.length - 1;
+        table[lastIndex].push(amount);
+        table[lastIndex].push(costPrice);
+        table[lastIndex].push(costBasis);
+        table[lastIndex].push(sellPrice);
+        table[lastIndex].push(proceeds);
+        table[lastIndex].push(profit);
+        table[lastIndex].push(percentProfit);
+
+      }
     }
+
+    let totalCostBasis = totalCostBasisCents / 100;
+    let totalProceeds = totalProceedsCent / 100;
+    let totalProfit = (totalProceedsCent - totalCostBasisCents) / 100;
+    let totalPercentProfit = Math.round((totalProceedsCent - totalCostBasisCents) * 100 / totalCostBasisCents) / 100;
+
+    table.push(['Total']);
+    let lastIndex = table.length - 1;
+    table[lastIndex].push('');
+    table[lastIndex].push('');
+    table[lastIndex].push(totalCostBasis);
+    table[lastIndex].push('');
+    table[lastIndex].push(totalProceeds);
+    table[lastIndex].push(totalProfit);
+    table[lastIndex].push(totalPercentProfit);
 
     return table;
   }

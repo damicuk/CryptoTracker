@@ -653,9 +653,9 @@ class CryptoTracker {
         row[8] !== '',
         row[9] !== '',
         row[10] !== '');
-        
+
       //Stop reading here
-      if(ledgerRecord.action == 'Stop') { 
+      if (ledgerRecord.action == 'Stop') {
 
         break;
 
@@ -747,7 +747,7 @@ class CryptoTracker {
 
   getProfitTable() {
 
-    let table = [['Crypto', 'Units', 'Cost Price', 'Cost Basis', 'Current Price', 'Value', 'Unrealized P/L', 'Unrealized P/L %']];
+    let table = [['Crypto', 'Quantity', 'Cost Price', 'Cost Basis', 'Current Price', 'Value', 'Unrealized P/L', 'Unrealized P/L %']];
 
     let totalCostBasisCents = 0;
     for (let crypto of this.cryptos) {
@@ -786,8 +786,55 @@ class CryptoTracker {
 
     return table;
   }
-}
 
+  getClosedTable() {
+
+    let table = [['Crypto', 'Quantity', 'Av. Cost Price', 'Cost Basis', 'Av. Sell Price', 'Proceeds', 'Realized P/L', 'Realized P/L %']];
+
+
+
+    for (let crypto of this.cryptos) {
+
+      table.push([crypto]);
+
+      let satoshi = 0;
+      let costBasisCents = 0;
+      let proceedsCents = 0;
+
+      for (let closedLot of this.closedLots) {
+
+        if(closedLot.crypto == crypto) {
+          
+          satoshi += closedLot.satoshi;
+          costBasisCents += closedLot.costBasisCents;
+          proceedsCents += closedLot.proceedsCents;
+
+
+
+        }
+      }
+
+      let amount = satoshi / 1e8;
+      let costBasis = costBasisCents / 100;
+      let proceeds = proceedsCents / 100;
+      let costPrice = Math.round(costBasisCents / amount) / 100;
+      let sellPrice = Math.round(proceedsCents / amount) / 100;
+      let profit = (proceedsCents - costBasisCents) / 100;
+      let percentProfit = Math.round((proceedsCents - costBasisCents) * 100 / costBasisCents) / 100;
+
+      table[table.length - 1].push(amount);
+      table[table.length - 1].push(costPrice);
+      table[table.length - 1].push(costBasis);
+      table[table.length - 1].push(sellPrice);
+      table[table.length - 1].push(proceeds);
+      table[table.length - 1].push(profit);
+      table[table.length - 1].push(percentProfit);
+
+    }
+
+    return table;
+  }
+}
 
 function processTrades() {
 
@@ -800,11 +847,12 @@ function processTrades() {
 
   //   let lot = closedLot.lot;
 
-  // Logger.log(`[${lot.date.toISOString()}] Lot ${lot.debitWalletName} ${lot.creditCurrency} ${lot.creditAmountSatoshi / 1e8} - ${lot.creditFeeSatoshi / 1e8} = ${lot.satoshi / 1e8}
+  //   Logger.log(`[${lot.date.toISOString()}] Lot ${lot.debitWalletName} ${lot.creditCurrency} ${lot.creditAmountSatoshi / 1e8} - ${lot.creditFeeSatoshi / 1e8} = ${lot.satoshi / 1e8}
   //           ${lot.debitCurrency} (${lot.debitAmountSatoshi / 1e8} - ${lot.debitFeeSatoshi / 1e8}) x rate ${lot.debitExRate} = Cost Basis ${fiatConvert} ${lot.costBasisCents / 100}
   //           [${closedLot.date.toISOString()}] Closed ${closedLot.creditWalletName}
   //           ${closedLot.creditCurrency} (${closedLot.creditAmountSatoshi / 1e8} - ${closedLot.creditFeeSatoshi / 1e8}) x rate ${closedLot.creditExRate} = Proceeds ${fiatConvert} ${closedLot.proceedsCents / 100} 
   //           `);
+  // }
 
   let fiatTable = cryptoTracker.getFiatTable();
   Logger.log(fiatTable);
@@ -814,6 +862,9 @@ function processTrades() {
 
   let profitTable = cryptoTracker.getProfitTable();
   Logger.log(profitTable);
+
+  let closedTable = cryptoTracker.getClosedTable();
+  Logger.log(closedTable);
 
   ss = SpreadsheetApp.getActive();
   let accountsSheet = ss.getSheetByName('Accounts');
@@ -832,6 +883,9 @@ function processTrades() {
 
   let profitDataRange = accountsSheet.getRange(cryptoDataRange.getLastRow() + 2, 1, profitTable.length, profitTable[0].length);
   profitDataRange.setValues(profitTable);
+
+  let closedDataRange = accountsSheet.getRange(profitDataRange.getLastRow() + 2, 1, closedTable.length, closedTable[0].length);
+  closedDataRange.setValues(closedTable)
 
 }
 

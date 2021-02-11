@@ -11,24 +11,41 @@ class ClosedLot {
     this.creditFeeSatoshi = Math.round(creditFee * 1e8);
 
   }
-  
+
+  get crypto() {
+
+    return this.lot.creditCurrency;
+
+  }
+
   get satoshi() {
+
+    return this.lot.satoshi;
+
+  }
+
+  get costBasisCents() {
+
+    return this.lot.costBasisCents;
+
+  }
+
+  get creditSatoshi() {
 
     return this.creditAmountSatoshi - this.creditFeeSatoshi;
 
   }
 
   get proceedsCents() {
-    
-    let exRate = 1;
-    if(this.creditExRate) {
 
-        exRate = this.creditExRate;
+    let exRate = 1;
+    if (this.creditExRate) {
+
+      exRate = this.creditExRate;
 
     }
 
-    return Math.round(((this.creditAmountSatoshi - this.creditFeeSatoshi) * exRate) / 1e6);
+    return Math.round((this.creditSatoshi * exRate) / 1e6);
 
   }
-
 }

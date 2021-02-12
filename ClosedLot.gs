@@ -1,10 +1,10 @@
 class ClosedLot {
 
-  constructor(lot, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee) {
+  constructor(lot, date, walletName, creditCurrency, creditExRate, creditAmount, creditFee) {
 
     this.lot = lot;
     this.date = date;
-    this.creditWalletName = creditWalletName;
+    this.walletName = walletName;
     this.creditCurrency = creditCurrency;
     this.creditExRate = creditExRate;
     this.creditAmountSatoshi = Math.round(creditAmount * 1e8);

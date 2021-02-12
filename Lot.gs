@@ -1,9 +1,9 @@
 class Lot {
 
-  constructor(date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee) {
+  constructor(date, walletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee) {
 
     this.date = date;
-    this.debitWalletName = debitWalletName;
+    this.walletName = walletName;
     this.debitCurrency = debitCurrency;
     this.debitExRate = debitExRate;
     this.debitAmountSatoshi = Math.round(debitAmount * 1e8);
@@ -41,7 +41,7 @@ class Lot {
     let creditAmountSatoshi = satoshi + creditFeeSatoshi;
 
     let lot1 = new Lot(this.date,
-                        this.debitWalletName,
+                        this.walletName,
                         this.debitCurrency,
                         this.debitExRate,
                         debitAmountSatoshi / 1e8,
@@ -53,7 +53,7 @@ class Lot {
     splitLots.push(lot1);
     
     let lot2 = new Lot(this.date,
-                      this.debitWalletName,
+                      this.walletName,
                       this.debitCurrency,
                       this.debitExRate,
                       (this.debitAmountSatoshi - lot1.debitAmountSatoshi) / 1e8,
@@ -77,7 +77,7 @@ function testSplitLots() {
   let lot1 = splitLots[0];
   let lot2 = splitLots[1];
 
-  Logger.log(`[${lot1.date.toISOString()}] ${lot1.debitWalletName} ${lot1.satoshi} ${lot1.debitCurrency} ${lot1.debitExRate} ${lot1.debitAmountSatoshi} ${lot1.debitFeeSatoshi} ${lot1.creditCurrency}  ${lot1.creditAmountSatoshi} ${lot1.creditFeeSatoshi}`);
-  Logger.log(`[${lot2.date.toISOString()}] ${lot2.debitWalletName} ${lot2.satoshi} ${lot2.debitCurrency} ${lot2.debitExRate} ${lot2.debitAmountSatoshi} ${lot2.debitFeeSatoshi} ${lot2.creditCurrency}  ${lot2.creditAmountSatoshi} ${lot2.creditFeeSatoshi}`);
+  Logger.log(`[${lot1.date.toISOString()}] ${lot1.walletName} ${lot1.satoshi} ${lot1.debitCurrency} ${lot1.debitExRate} ${lot1.debitAmountSatoshi} ${lot1.debitFeeSatoshi} ${lot1.creditCurrency}  ${lot1.creditAmountSatoshi} ${lot1.creditFeeSatoshi}`);
+  Logger.log(`[${lot2.date.toISOString()}] ${lot2.walletName} ${lot2.satoshi} ${lot2.debitCurrency} ${lot2.debitExRate} ${lot2.debitAmountSatoshi} ${lot2.debitFeeSatoshi} ${lot2.creditCurrency}  ${lot2.creditAmountSatoshi} ${lot2.creditFeeSatoshi}`);
 
 }

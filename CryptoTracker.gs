@@ -790,7 +790,7 @@ class CryptoTracker {
     return table;
   }
 
-  getClosedTable() {
+  getClosedSummaryTable() {
 
     let table = [['Crypto', 'Quantity', 'Av. Cost Price', 'Cost Basis', 'Av. Sell Price', 'Proceeds', 'Realized P/L', 'Realized P/L %']];
 
@@ -859,6 +859,86 @@ class CryptoTracker {
 
     return table;
   }
+
+  getClosedDetailsTable() {
+
+    let table = [['Date Sell',
+                  'Crypto',
+                  'Amount',
+                  'Proceeds',
+                  'Cost Basis',
+                  'Realized P/L',
+                  'Realized P/L %',
+                  'Date Buy',
+                  'Exchange Buy',
+                  'Credit Amount Buy',
+                  'Credit Fee Buy',
+                  'Debit Currency Buy',
+                  'Debit Amount Buy',
+                  'Debit Fee Buy',
+                  'Exchange Rate Buy',
+                  'Exchange Sell',
+                  'Credit Currency Sell',
+                  'Credit Amount Sell',
+                  'Fee Sell',
+                  'Exchange Rate Sell']];
+
+    for (let closedLot of this.closedLots) {
+
+      let lot = closedLot.lot;
+      
+      let dateSell = closedLot.date;
+      let crypto = closedLot.crypto;
+      let amount = closedLot.satoshi / 1e8;
+      let proceedsCents = closedLot.proceedsCents
+      let proceeds = proceedsCents / 100;
+      let costBasisCents = closedLot.costBasisCents;
+      let costBasis = costBasisCents / 100;
+
+      let profit = (proceedsCents - costBasisCents) / 100;
+      let percentProfit = Math.round((proceedsCents - costBasisCents) * 100 / costBasisCents) / 100; 
+
+      let dateBuy = lot.date;
+      let exchangeBuy = lot.walletName;
+      let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
+      let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
+
+      let debitCurrencyBuy = lot.debitCurrency;
+      let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
+      let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
+      let debitExRateBuy = lot.debitExRate;
+
+      let exchangeSell = closedLot.walletName;
+      let creditCurrencySell = closedLot.creditCurrency;
+      let creditAmountSell = closedLot.creditAmountSatoshi / 1e8;
+      let creditFeeSell = closedLot.creditFeeSatoshi / 1e8;
+      let creditExRateSell = closedLot.creditExRate;
+
+      table.push([dateSell,
+                  crypto,
+                  amount,
+                  proceeds,
+                  costBasis,
+                  profit,
+                  percentProfit,
+                  dateBuy,
+                  exchangeBuy,
+                  creditAmountBuy,
+                  creditFeeBuy,
+                  debitCurrencyBuy,
+                  debitAmountBuy,
+                  debitFeeBuy,
+                  debitExRateBuy,
+                  exchangeSell,
+                  creditCurrencySell,
+                  creditAmountSell,
+                  creditFeeSell,
+                  creditExRateSell]);
+    }
+
+    return table;
+
+  }
 }
 
 function processTrades() {
@@ -888,38 +968,62 @@ function processTrades() {
   let profitTable = cryptoTracker.getProfitTable();
   Logger.log(profitTable);
 
-  let closedTable = cryptoTracker.getClosedTable();
-  Logger.log(closedTable);
+  let closedSummaryTable = cryptoTracker.getClosedSummaryTable();
+  Logger.log(closedSummaryTable);
 
-  ss = SpreadsheetApp.getActive();
-  let accountsSheet = ss.getSheetByName('Accounts');
+  let closedDetailsTable = cryptoTracker.getClosedDetailsTable();
+  //Logger.log(closedDetailsTable);
 
-  if (!accountsSheet) {
-
-    ss.insertSheet('Accounts');
-  }
+  let accountsSheet = getSheet('Accounts');
 
   const rowOffset = 3
   const colOffset = 2;
 
-  accountsSheet.clear();
-  let fiatDataRange = accountsSheet.getRange(rowOffset, colOffset, fiatTable.length, fiatTable[0].length);
-  fiatDataRange.setValues(fiatTable);
-  formatTable(fiatDataRange);
+  let fiatRange = accountsSheet.getRange(rowOffset, colOffset, fiatTable.length, fiatTable[0].length);
+  fiatRange.setValues(fiatTable);
+  formatTable(fiatRange);
 
-  let cryptoDataRange = accountsSheet.getRange(fiatDataRange.getLastRow() + rowOffset, colOffset, cryptoTable.length, cryptoTable[0].length);
-  cryptoDataRange.setValues(cryptoTable);
-  formatTable(cryptoDataRange);
+  let cryptoRange = accountsSheet.getRange(fiatRange.getLastRow() + rowOffset, colOffset, cryptoTable.length, cryptoTable[0].length);
+  cryptoRange.setValues(cryptoTable);
+  formatTable(cryptoRange);
 
-  let profitDataRange = accountsSheet.getRange(cryptoDataRange.getLastRow() + rowOffset, colOffset, profitTable.length, profitTable[0].length);
-  profitDataRange.setValues(profitTable);
-  formatTable(profitDataRange);
+  let profitRange = accountsSheet.getRange(cryptoRange.getLastRow() + rowOffset, colOffset, profitTable.length, profitTable[0].length);
+  profitRange.setValues(profitTable);
+  formatTable(profitRange);
 
-  let closedDataRange = accountsSheet.getRange(profitDataRange.getLastRow() + rowOffset, colOffset, closedTable.length, closedTable[0].length);
-  closedDataRange.setValues(closedTable);
-  formatTable(closedDataRange);
+  let closedSummaryRange = accountsSheet.getRange(profitRange.getLastRow() + rowOffset, colOffset, closedSummaryTable.length, closedSummaryTable[0].length);
+  closedSummaryRange.setValues(closedSummaryTable);
+  formatTable(closedSummaryRange);
 
   accountsSheet.autoResizeColumns(1, accountsSheet.getDataRange().getNumColumns());
+
+  let closedDetailsSheet = getSheet('Closed');
+
+  let closedDetailsRange = closedDetailsSheet.getRange(1, 1, closedDetailsTable.length, closedDetailsTable[0].length);
+  closedDetailsRange.setValues(closedDetailsTable);
+  formatTable(closedDetailsRange);
+
+
+  closedDetailsSheet.autoResizeColumns(1, closedDetailsSheet.getDataRange().getNumColumns());
+
+}
+
+function getSheet(name) {
+
+  ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(name);
+
+  if (!sheet) {
+
+    ss.insertSheet(name);
+  }
+  else {
+
+    sheet.clear();
+
+  }
+
+  return sheet;
 }
 
 function formatTable(dataRange) {

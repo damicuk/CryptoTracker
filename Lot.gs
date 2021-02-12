@@ -28,7 +28,7 @@ class Lot {
 
     }
 
-    return Math.round(((this.debitAmountSatoshi - this.debitFeeSatoshi) * exRate) / 1e6);
+    return Math.round(((this.debitAmountSatoshi + this.debitFeeSatoshi) * exRate) / 1e6);
   }
 
   split(satoshi) {

@@ -762,30 +762,28 @@ class CryptoTracker {
 
         totalCostBasisCents += costBasisCents;
 
-        table.push([crypto]);
-        let lastIndex = table.length - 1;
-        table[lastIndex].push(balance);
-        table[lastIndex].push(costPrice);
-        table[lastIndex].push(costBasis);
-        table[lastIndex].push('');
-        table[lastIndex].push('');
-        table[lastIndex].push('');
-        table[lastIndex].push('');
+        table.push([crypto,
+                    balance,
+                   costPrice,
+                    costBasis,
+                    '',
+                    '',
+                    '',
+                    '']);
 
       }
     }
 
     let totalCostBasis = totalCostBasisCents / 100;
 
-    table.push(['Total']);
-    let lastIndex = table.length - 1;
-    table[lastIndex].push('');
-    table[lastIndex].push('');
-    table[lastIndex].push(totalCostBasis);
-    table[lastIndex].push('');
-    table[lastIndex].push('');
-    table[lastIndex].push('');
-    table[lastIndex].push('');
+    table.push(['Total',
+                '',
+                '',
+                totalCostBasis,
+                '',
+                '',
+                '',
+                '']);
 
     return table;
   }
@@ -829,15 +827,14 @@ class CryptoTracker {
         totalCostBasisCents += costBasisCents;
         totalProceedsCent += proceedsCents;
 
-        table.push([crypto]);
-        let lastIndex = table.length - 1;
-        table[lastIndex].push(amount);
-        table[lastIndex].push(costPrice);
-        table[lastIndex].push(costBasis);
-        table[lastIndex].push(sellPrice);
-        table[lastIndex].push(proceeds);
-        table[lastIndex].push(profit);
-        table[lastIndex].push(percentProfit);
+        table.push([crypto,
+                    amount,
+                    costPrice,
+                    costBasis,
+                    sellPrice,
+                    proceeds,
+                    profit,
+                    percentProfit]);
 
       }
     }
@@ -847,15 +844,14 @@ class CryptoTracker {
     let totalProfit = (totalProceedsCent - totalCostBasisCents) / 100;
     let totalPercentProfit = Math.round((totalProceedsCent - totalCostBasisCents) * 100 / totalCostBasisCents) / 100;
 
-    table.push(['Total']);
-    let lastIndex = table.length - 1;
-    table[lastIndex].push('');
-    table[lastIndex].push('');
-    table[lastIndex].push(totalCostBasis);
-    table[lastIndex].push('');
-    table[lastIndex].push(totalProceeds);
-    table[lastIndex].push(totalProfit);
-    table[lastIndex].push(totalPercentProfit);
+    table.push(['Total',
+                '',
+                '',
+                totalCostBasis,
+                '',
+                totalProceeds,
+                totalProfit,
+                totalPercentProfit]);
 
     return table;
   }
@@ -1001,8 +997,7 @@ function processTrades() {
 
   let closedDetailsRange = closedDetailsSheet.getRange(1, 1, closedDetailsTable.length, closedDetailsTable[0].length);
   closedDetailsRange.setValues(closedDetailsTable);
-  formatTable(closedDetailsRange);
-
+  //formatTable(closedDetailsRange);
 
   closedDetailsSheet.autoResizeColumns(1, closedDetailsSheet.getDataRange().getNumColumns());
 

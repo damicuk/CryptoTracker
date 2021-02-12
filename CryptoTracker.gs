@@ -914,15 +914,15 @@ class CryptoTracker {
         creditFeeBuy,
         dateBuy,
         debitCurrencyBuy,
+        debitExRateBuy,
         debitAmountBuy,
         debitFeeBuy,
-        debitExRateBuy,
         walletBuy,
         dateSell,
         creditCurrencySell,
+        creditExRateSell,
         creditAmountSell,
         creditFeeSell,
-        creditExRateSell,
         walletSell]);
     }
 

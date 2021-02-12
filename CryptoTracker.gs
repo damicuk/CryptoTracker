@@ -763,13 +763,13 @@ class CryptoTracker {
         totalCostBasisCents += costBasisCents;
 
         table.push([crypto,
-                    balance,
-                   costPrice,
-                    costBasis,
-                    '',
-                    '',
-                    '',
-                    '']);
+          balance,
+          costPrice,
+          costBasis,
+          '',
+          '',
+          '',
+          '']);
 
       }
     }
@@ -777,20 +777,27 @@ class CryptoTracker {
     let totalCostBasis = totalCostBasisCents / 100;
 
     table.push(['Total',
-                '',
-                '',
-                totalCostBasis,
-                '',
-                '',
-                '',
-                '']);
+      '',
+      '',
+      totalCostBasis,
+      '',
+      '',
+      '',
+      '']);
 
     return table;
   }
 
   getClosedSummaryTable() {
 
-    let table = [['Crypto', 'Quantity', 'Av. Cost Price', 'Cost Basis', 'Av. Sell Price', 'Proceeds', 'Realized P/L', 'Realized P/L %']];
+    let table = [['Crypto',
+      'Quantity',
+      'Av. Cost Price',
+      'Cost Basis',
+      'Av. Sell Price',
+      'Proceeds',
+      'Realized P/L',
+      'Realized P/L %']];
 
 
     let totalCostBasisCents = 0;
@@ -828,13 +835,13 @@ class CryptoTracker {
         totalProceedsCent += proceedsCents;
 
         table.push([crypto,
-                    amount,
-                    costPrice,
-                    costBasis,
-                    sellPrice,
-                    proceeds,
-                    profit,
-                    percentProfit]);
+          amount,
+          costPrice,
+          costBasis,
+          sellPrice,
+          proceeds,
+          profit,
+          percentProfit]);
 
       }
     }
@@ -845,92 +852,105 @@ class CryptoTracker {
     let totalPercentProfit = Math.round((totalProceedsCent - totalCostBasisCents) * 100 / totalCostBasisCents) / 100;
 
     table.push(['Total',
-                '',
-                '',
-                totalCostBasis,
-                '',
-                totalProceeds,
-                totalProfit,
-                totalPercentProfit]);
+      '',
+      '',
+      totalCostBasis,
+      '',
+      totalProceeds,
+      totalProfit,
+      totalPercentProfit]);
 
     return table;
   }
 
   getClosedDetailsTable() {
 
-    let table = [['Date Sell',
-                  'Crypto',
-                  'Amount',
-                  'Proceeds',
-                  'Cost Basis',
-                  'Realized P/L',
-                  'Realized P/L %',
-                  'Date Buy',
-                  'Exchange Buy',
-                  'Credit Amount Buy',
-                  'Credit Fee Buy',
-                  'Debit Currency Buy',
-                  'Debit Amount Buy',
-                  'Debit Fee Buy',
-                  'Exchange Rate Buy',
-                  'Exchange Sell',
-                  'Credit Currency Sell',
-                  'Credit Amount Sell',
-                  'Fee Sell',
-                  'Exchange Rate Sell']];
+    let table = [];
 
+    let totalCostBasisCents = 0;
+    let totalProceedsCent = 0;
     for (let closedLot of this.closedLots) {
 
       let lot = closedLot.lot;
-      
-      let dateSell = closedLot.date;
+
       let crypto = closedLot.crypto;
       let amount = closedLot.satoshi / 1e8;
-      let proceedsCents = closedLot.proceedsCents
-      let proceeds = proceedsCents / 100;
+
       let costBasisCents = closedLot.costBasisCents;
       let costBasis = costBasisCents / 100;
+      totalCostBasisCents += costBasisCents;
+
+      let proceedsCents = closedLot.proceedsCents;
+      let proceeds = proceedsCents / 100;
+      totalProceedsCent += proceedsCents;
 
       let profit = (proceedsCents - costBasisCents) / 100;
-      let percentProfit = Math.round((proceedsCents - costBasisCents) * 100 / costBasisCents) / 100; 
+      let percentProfit = Math.round((proceedsCents - costBasisCents) * 100 / costBasisCents) / 100;
 
-      let dateBuy = lot.date;
-      let exchangeBuy = lot.walletName;
       let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
       let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
 
-      let debitCurrencyBuy = lot.debitCurrency;
-      let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
-      let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
-      let debitExRateBuy = lot.debitExRate;
-
-      let exchangeSell = closedLot.walletName;
+      let dateSell = closedLot.date;
       let creditCurrencySell = closedLot.creditCurrency;
       let creditAmountSell = closedLot.creditAmountSatoshi / 1e8;
       let creditFeeSell = closedLot.creditFeeSatoshi / 1e8;
       let creditExRateSell = closedLot.creditExRate;
+      let walletSell = closedLot.walletName;
 
-      table.push([dateSell,
-                  crypto,
-                  amount,
-                  proceeds,
-                  costBasis,
-                  profit,
-                  percentProfit,
-                  dateBuy,
-                  exchangeBuy,
-                  creditAmountBuy,
-                  creditFeeBuy,
-                  debitCurrencyBuy,
-                  debitAmountBuy,
-                  debitFeeBuy,
-                  debitExRateBuy,
-                  exchangeSell,
-                  creditCurrencySell,
-                  creditAmountSell,
-                  creditFeeSell,
-                  creditExRateSell]);
+      let dateBuy = lot.date;
+      let debitCurrencyBuy = lot.debitCurrency;
+      let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
+      let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
+      let debitExRateBuy = lot.debitExRate;
+      let walletBuy = lot.walletName;
+
+      table.push([crypto,
+        amount,
+        costBasis,
+        proceeds,
+        profit,
+        percentProfit,
+        creditAmountBuy,
+        creditFeeBuy,
+        dateBuy,
+        debitCurrencyBuy,
+        debitAmountBuy,
+        debitFeeBuy,
+        debitExRateBuy,
+        walletBuy,
+        dateSell,
+        creditCurrencySell,
+        creditAmountSell,
+        creditFeeSell,
+        creditExRateSell,
+        walletSell]);
     }
+
+    let totalCostBasis = totalCostBasisCents / 100;
+    let totalProceeds = totalProceedsCent / 100;
+    let totalProfit = (totalProceedsCent - totalCostBasisCents) / 100;
+    let totalPercentProfit = Math.round((totalProceedsCent - totalCostBasisCents) * 100 / totalCostBasisCents) / 100;
+
+    table.push(['Total',
+      '',
+      '',
+      totalProceeds,
+      totalCostBasis,
+      totalProfit,
+      totalPercentProfit,
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '']);
 
     return table;
 
@@ -997,7 +1017,6 @@ function processTrades() {
 
   let closedDetailsRange = closedDetailsSheet.getRange(1, 1, closedDetailsTable.length, closedDetailsTable[0].length);
   closedDetailsRange.setValues(closedDetailsTable);
-  //formatTable(closedDetailsRange);
 
   closedDetailsSheet.autoResizeColumns(1, closedDetailsSheet.getDataRange().getNumColumns());
 

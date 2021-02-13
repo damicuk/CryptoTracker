@@ -50,15 +50,7 @@ function processTrades() {
   // formatTable(closedSummaryRange);
 
   // accountsSheet.autoResizeColumns(1, accountsSheet.getDataRange().getNumColumns());
-
-  // let closedDetailsSheet = getSheet('Closed');
-
-  // let closedDetailsRange = closedDetailsSheet.getRange(1, 1, closedTradesTable.length, closedTradesTable[0].length);
-  // closedDetailsRange.setValues(closedTradesTable);
-
-  // closedDetailsSheet.autoResizeColumns(1, closedDetailsSheet.getDataRange().getNumColumns());
-
-
+  
   let closedTradesTable = cryptoTracker.getClosedTradesTable();
   writeClosedTrades(closedTradesTable);
 
@@ -103,8 +95,8 @@ function writeClosedTrades(closedTradesTable) {
   }
 
   //write the fresh data
-  let closedDetailsRange = sheet.getRange(headerHeight + 1, 1, dataHeight, dataWidth);
-  closedDetailsRange.setValues(closedTradesTable);
+  let closedTradesRange = sheet.getRange(headerHeight + 1, 1, dataHeight, dataWidth);
+  closedTradesRange.setValues(closedTradesTable);
 
   //apply the formulas
   SpreadsheetApp.flush();

@@ -1,5 +1,5 @@
 function onOpen() {
-  
+
   let ui = SpreadsheetApp.getUi();
   ui.createMenu('Crypto Tracker')
     .addItem('Process Trades', 'processTrades')
@@ -10,3 +10,5 @@ function onOpen() {
     .addItem('More Stuff', 'processTrades')
     .addToUi();
 }
+
+

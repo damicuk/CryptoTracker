@@ -168,12 +168,10 @@ CryptoTracker.prototype.getClosedSummaryTable = function () {
   return table;
 }
 
-CryptoTracker.prototype.getClosedDetailsTable = function() {
+CryptoTracker.prototype.getClosedTradesTable = function() {
 
     let table = [];
 
-    let totalCostBasisCents = 0;
-    let totalProceedsCent = 0;
     for (let closedLot of this.closedLots) {
 
       let lot = closedLot.lot;
@@ -183,11 +181,9 @@ CryptoTracker.prototype.getClosedDetailsTable = function() {
 
       let costBasisCents = closedLot.costBasisCents;
       let costBasis = costBasisCents / 100;
-      totalCostBasisCents += costBasisCents;
 
       let proceedsCents = closedLot.proceedsCents;
       let proceeds = proceedsCents / 100;
-      totalProceedsCent += proceedsCents;
 
       let profit = (proceedsCents - costBasisCents) / 100;
       let percentProfit = Math.round((proceedsCents - costBasisCents) * 100 / costBasisCents) / 100;
@@ -230,32 +226,6 @@ CryptoTracker.prototype.getClosedDetailsTable = function() {
         creditFeeSell,
         walletSell]);
     }
-
-    let totalCostBasis = totalCostBasisCents / 100;
-    let totalProceeds = totalProceedsCent / 100;
-    let totalProfit = (totalProceedsCent - totalCostBasisCents) / 100;
-    let totalPercentProfit = Math.round((totalProceedsCent - totalCostBasisCents) * 100 / totalCostBasisCents) / 100;
-
-    table.push(['Total',
-      '',
-      totalProceeds,
-      totalCostBasis,
-      totalProfit,
-      totalPercentProfit,
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '']);
 
     return table;
 

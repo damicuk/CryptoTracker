@@ -27,10 +27,7 @@ function processTrades() {
 
   // let closedSummaryTable = cryptoTracker.getClosedSummaryTable();
   // Logger.log(closedSummaryTable);
-
-  let closedDetailsTable = cryptoTracker.getClosedDetailsTable();
-  //Logger.log(closedDetailsTable);
-
+  
   // let accountsSheet = getSheet('Accounts');
 
   // const rowOffset = 3
@@ -56,16 +53,18 @@ function processTrades() {
 
   // let closedDetailsSheet = getSheet('Closed');
 
-  // let closedDetailsRange = closedDetailsSheet.getRange(1, 1, closedDetailsTable.length, closedDetailsTable[0].length);
-  // closedDetailsRange.setValues(closedDetailsTable);
+  // let closedDetailsRange = closedDetailsSheet.getRange(1, 1, closedTradesTable.length, closedTradesTable[0].length);
+  // closedDetailsRange.setValues(closedTradesTable);
 
   // closedDetailsSheet.autoResizeColumns(1, closedDetailsSheet.getDataRange().getNumColumns());
 
-  writeClosedDetails(closedDetailsTable);
+
+  let closedTradesTable = cryptoTracker.getClosedTradesTable();
+  writeClosedTrades(closedTradesTable);
 
 }
 
-function writeClosedDetails(closedDetailsTable) {
+function writeClosedTrades(closedTradesTable) {
 
   ss = SpreadsheetApp.getActive();
   let sheet = ss.getSheetByName('Closed Trades');
@@ -73,19 +72,19 @@ function writeClosedDetails(closedDetailsTable) {
   //delete existing data rows but leave header, footer and at least one row to retain formatting
   const headerHeight = 2;
   const footerHeight = 1;
-  let existingDataRange = sheet.getDataRange();
-  let existingDataHeight = existingDataRange.getHeight() - headerHeight;
-  let existingDataWidth = existingDataRange.getWidth();
+  let dataRange = sheet.getDataRange();
+  let existingDataHeight = dataRange.getHeight() - headerHeight - footerHeight;
+  let existingDataWidth = dataRange.getWidth();
 
   if (existingDataHeight) {
 
-    let clearDataRange = existingDataRange.offset(headerHeight, 0, existingDataHeight, existingDataWidth);
+    let clearDataRange = dataRange.offset(headerHeight, 0, existingDataHeight, existingDataWidth);
     clearDataRange.clearContent();
 
   }
 
-  //delete all rows except header, footer and one data row to keep formaatting
-  const keepHeight = headerHeight + footerHeight + 1;
+  //delete all rows except header, footer and two data row to keep formatting and formulas sum formulas working
+  const keepHeight = headerHeight + 2 + footerHeight;
   const deleteHeight = sheet.getMaxRows() - keepHeight;
   if (deleteHeight) {
 
@@ -94,21 +93,22 @@ function writeClosedDetails(closedDetailsTable) {
   }
 
   // //write fresh data
-  let dataHeight = closedDetailsTable.length
-  let dataWidth = closedDetailsTable[0].length;
+  let dataHeight = closedTradesTable.length
+  let dataWidth = closedTradesTable[0].length;
 
   //insert rows to keep formatting
-  const insertHeight = headerHeight + dataHeight- sheet.getMaxRows();
+  const insertHeight = headerHeight + dataHeight + footerHeight - sheet.getMaxRows();
   if (insertHeight) {
     sheet.insertRowsAfter(headerHeight + 1, insertHeight);
   }
 
   //write the fresh data
   let closedDetailsRange = sheet.getRange(headerHeight + 1, 1, dataHeight, dataWidth);
-  closedDetailsRange.setValues(closedDetailsTable);
+  closedDetailsRange.setValues(closedTradesTable);
 
+  //apply the formulas
+  SpreadsheetApp.flush();
   sheet.autoResizeColumns(1, dataWidth);
-
 }
 
 function getSheet(name) {

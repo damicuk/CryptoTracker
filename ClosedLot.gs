@@ -12,23 +12,23 @@ class ClosedLot {
 
   }
 
-  get crypto() {
+  // get crypto() {
 
-    return this.lot.creditCurrency;
+  //   return this.lot.creditCurrency;
 
-  }
+  // }
 
-  get satoshi() {
+  // get satoshi() {
 
-    return this.lot.satoshi;
+  //   return this.lot.satoshi;
 
-  }
+  // }
 
-  get costBasisCents() {
+  // get costBasisCents() {
 
-    return this.lot.costBasisCents;
+  //   return this.lot.costBasisCents;
 
-  }
+  // }
 
   get creditSatoshi() {
 

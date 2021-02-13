@@ -168,66 +168,55 @@ CryptoTracker.prototype.getClosedSummaryTable = function () {
   return table;
 }
 
-CryptoTracker.prototype.getClosedTradesTable = function() {
+CryptoTracker.prototype.getClosedTradesTable = function () {
 
-    let table = [];
+  let table = [];
 
-    for (let closedLot of this.closedLots) {
+  for (let closedLot of this.closedLots) {
 
-      let lot = closedLot.lot;
+    let lot = closedLot.lot;
 
-      let crypto = closedLot.crypto;
-      let amount = closedLot.satoshi / 1e8;
+    let creditCurrencyBuy = lot.creditCurrency;
+    let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
+    let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
 
-      let costBasisCents = closedLot.costBasisCents;
-      let costBasis = costBasisCents / 100;
+    let dateSell = closedLot.date;
+    let creditCurrencySell = closedLot.creditCurrency;
+    let creditAmountSell = closedLot.creditAmountSatoshi / 1e8;
+    let creditFeeSell = closedLot.creditFeeSatoshi / 1e8;
+    let creditExRateSell = closedLot.creditExRate;
+    let walletSell = closedLot.walletName;
 
-      let proceedsCents = closedLot.proceedsCents;
-      let proceeds = proceedsCents / 100;
+    let dateBuy = lot.date;
+    let debitCurrencyBuy = lot.debitCurrency;
+    let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
+    let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
+    let debitExRateBuy = lot.debitExRate;
+    let walletBuy = lot.walletName;
 
-      let profit = (proceedsCents - costBasisCents) / 100;
-      let percentProfit = Math.round((proceedsCents - costBasisCents) * 100 / costBasisCents) / 100;
+    table.push([
 
-      let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
-      let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
+      creditCurrencyBuy,
+      creditAmountBuy,
+      creditFeeBuy,
 
-      let dateSell = closedLot.date;
-      let creditCurrencySell = closedLot.creditCurrency;
-      let creditAmountSell = closedLot.creditAmountSatoshi / 1e8;
-      let creditFeeSell = closedLot.creditFeeSatoshi / 1e8;
-      let creditExRateSell = closedLot.creditExRate;
-      let walletSell = closedLot.walletName;
+      dateBuy,
+      debitCurrencyBuy,
+      debitExRateBuy,
+      debitAmountBuy,
+      debitFeeBuy,
+      walletBuy,
 
-      let dateBuy = lot.date;
-      let debitCurrencyBuy = lot.debitCurrency;
-      let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
-      let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
-      let debitExRateBuy = lot.debitExRate;
-      let walletBuy = lot.walletName;
-
-      table.push([crypto,
-        amount,
-        costBasis,
-        proceeds,
-        profit,
-        percentProfit,
-        creditAmountBuy,
-        creditFeeBuy,
-        dateBuy,
-        debitCurrencyBuy,
-        debitExRateBuy,
-        debitAmountBuy,
-        debitFeeBuy,
-        walletBuy,
-        dateSell,
-        creditCurrencySell,
-        creditExRateSell,
-        creditAmountSell,
-        creditFeeSell,
-        walletSell]);
-    }
-
-    return table;
-
+      dateSell,
+      creditCurrencySell,
+      creditExRateSell,
+      creditAmountSell,
+      creditFeeSell,
+      walletSell
+    ]);
   }
+
+  return table;
+
+}
 

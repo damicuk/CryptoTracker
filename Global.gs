@@ -61,21 +61,23 @@ function writeClosedTrades(closedTradesTable) {
   ss = SpreadsheetApp.getActive();
   let sheet = ss.getSheetByName('Closed Trades');
 
-  //delete existing data rows but leave header, footer and at least one row to retain formatting
+  //get existing data range
   const headerHeight = 2;
   const footerHeight = 1;
+  const dataWidth = 15;
+
   let dataRange = sheet.getDataRange();
   let existingDataHeight = dataRange.getHeight() - headerHeight - footerHeight;
-  let existingDataWidth = dataRange.getWidth();
 
+  //clear existing data
   if (existingDataHeight) {
 
-    let clearDataRange = dataRange.offset(headerHeight, 0, existingDataHeight, existingDataWidth);
+    let clearDataRange = dataRange.offset(headerHeight, 0, existingDataHeight, dataWidth);
     clearDataRange.clearContent();
 
   }
 
-  //delete all rows except header, footer and two data row to keep formatting and formulas sum formulas working
+  //delete all rows except header, footer and two data row to keep formatting and sum formulas working
   const keepHeight = headerHeight + 2 + footerHeight;
   const deleteHeight = sheet.getMaxRows() - keepHeight;
   if (deleteHeight) {
@@ -85,22 +87,21 @@ function writeClosedTrades(closedTradesTable) {
   }
 
   // //write fresh data
-  let dataHeight = closedTradesTable.length
-  let dataWidth = closedTradesTable[0].length;
+  let freshDataHeight = closedTradesTable.length;
 
   //insert rows to keep formatting
-  const insertHeight = headerHeight + dataHeight + footerHeight - sheet.getMaxRows();
+  const insertHeight = headerHeight + freshDataHeight + footerHeight - sheet.getMaxRows();
   if (insertHeight) {
     sheet.insertRowsAfter(headerHeight + 1, insertHeight);
   }
 
   //write the fresh data
-  let closedTradesRange = sheet.getRange(headerHeight + 1, 1, dataHeight, dataWidth);
-  closedTradesRange.setValues(closedTradesTable);
+  let freshDataRange = sheet.getRange(headerHeight + 1, 1, freshDataHeight, dataWidth);
+  freshDataRange.setValues(closedTradesTable);
 
   //apply the formulas
   SpreadsheetApp.flush();
-  sheet.autoResizeColumns(1, dataWidth);
+  sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
 }
 
 function getSheet(name) {

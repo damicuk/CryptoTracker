@@ -115,12 +115,12 @@ CryptoTracker.prototype.getClosedSummaryTable = function () {
 
     for (let closedLot of this.closedLots) {
 
-      if (closedLot.crypto == crypto) {
+      let lot = closedLot.lot;
+      if (lot.creditCurrency == crypto) {
 
-        satoshi += closedLot.satoshi;
-        costBasisCents += closedLot.costBasisCents;
+        satoshi += lot.satoshi;
+        costBasisCents += lot.costBasisCents;
         proceedsCents += closedLot.proceedsCents;
-
 
       }
     }

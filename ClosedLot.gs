@@ -12,24 +12,6 @@ class ClosedLot {
 
   }
 
-  // get crypto() {
-
-  //   return this.lot.creditCurrency;
-
-  // }
-
-  // get satoshi() {
-
-  //   return this.lot.satoshi;
-
-  // }
-
-  // get costBasisCents() {
-
-  //   return this.lot.costBasisCents;
-
-  // }
-
   get creditSatoshi() {
 
     return this.creditAmountSatoshi - this.creditFeeSatoshi;

@@ -4,44 +4,45 @@ function processTrades() {
 
   cryptoTracker.processTrades();
 
-  let fiatTable = cryptoTracker.getFiatTable();
+  // let fiatTable = cryptoTracker.getFiatTable();
 
-  let cryptoTable = cryptoTracker.getCryptoTable();
+  // let cryptoTable = cryptoTracker.getCryptoTable();
 
-  let profitTable = cryptoTracker.getProfitTable();
+  // let profitTable = cryptoTracker.getProfitTable();
 
-  let closedSummaryTable = cryptoTracker.getClosedSummaryTable();
-  Logger.log(closedSummaryTable);
+  // let closedSummaryTable = cryptoTracker.getClosedSummaryTable();
   
-  let accountsSheet = getSheet('Accounts');
+  // let accountsSheet = getSheet('Accounts');
 
-  const rowOffset = 3
-  const colOffset = 2;
+  // const rowOffset = 3
+  // const colOffset = 2;
 
-  let fiatRange = accountsSheet.getRange(rowOffset, colOffset, fiatTable.length, fiatTable[0].length);
-  fiatRange.setValues(fiatTable);
-  formatTable(fiatRange);
+  // let fiatRange = accountsSheet.getRange(rowOffset, colOffset, fiatTable.length, fiatTable[0].length);
+  // fiatRange.setValues(fiatTable);
+  // formatTable(fiatRange);
 
-  let cryptoRange = accountsSheet.getRange(fiatRange.getLastRow() + rowOffset, colOffset, cryptoTable.length, cryptoTable[0].length);
-  cryptoRange.setValues(cryptoTable);
-  formatTable(cryptoRange);
+  // let cryptoRange = accountsSheet.getRange(fiatRange.getLastRow() + rowOffset, colOffset, cryptoTable.length, cryptoTable[0].length);
+  // cryptoRange.setValues(cryptoTable);
+  // formatTable(cryptoRange);
 
-  let profitRange = accountsSheet.getRange(cryptoRange.getLastRow() + rowOffset, colOffset, profitTable.length, profitTable[0].length);
-  profitRange.setValues(profitTable);
-  formatTable(profitRange);
+  // let profitRange = accountsSheet.getRange(cryptoRange.getLastRow() + rowOffset, colOffset, profitTable.length, profitTable[0].length);
+  // profitRange.setValues(profitTable);
+  // formatTable(profitRange);
 
-  let closedSummaryRange = accountsSheet.getRange(profitRange.getLastRow() + rowOffset, colOffset, closedSummaryTable.length, closedSummaryTable[0].length);
-  closedSummaryRange.setValues(closedSummaryTable);
-  formatTable(closedSummaryRange);
+  // let closedSummaryRange = accountsSheet.getRange(profitRange.getLastRow() + rowOffset, colOffset, closedSummaryTable.length, closedSummaryTable[0].length);
+  // closedSummaryRange.setValues(closedSummaryTable);
+  // formatTable(closedSummaryRange);
 
-  accountsSheet.autoResizeColumns(1, accountsSheet.getDataRange().getNumColumns());
+  // accountsSheet.autoResizeColumns(1, accountsSheet.getDataRange().getNumColumns());
   
-  let closedTradesTable = cryptoTracker.getClosedTradesTable();
-  writeClosedTrades(closedTradesTable);
+  let openCryptosTable = cryptoTracker.getOpenCryptosTable();
+  
+  let closedCryptosTable = cryptoTracker.getClosedCryptosTable();
+  writeClosedTrades(closedCryptosTable);
 
 }
 
-function writeClosedTrades(closedTradesTable) {
+function writeClosedTrades(closedCryptosTable) {
 
   ss = SpreadsheetApp.getActive();
   let sheet = ss.getSheetByName('Closed Trades');
@@ -73,7 +74,7 @@ function writeClosedTrades(closedTradesTable) {
   }
 
   // //write fresh data
-  let freshDataHeight = closedTradesTable.length;
+  let freshDataHeight = closedCryptosTable.length;
 
   //insert rows to keep formatting
   const insertHeight = headerHeight + freshDataHeight + footerHeight - sheet.getMaxRows();
@@ -88,7 +89,7 @@ function writeClosedTrades(closedTradesTable) {
 
   //write the fresh data
   let freshDataRange = sheet.getRange(headerHeight + 1, 1, freshDataHeight, dataWidth);
-  freshDataRange.setValues(closedTradesTable);
+  freshDataRange.setValues(closedCryptosTable);
 
   //apply the formulas
   SpreadsheetApp.flush();

@@ -10,18 +10,22 @@ class CryptoTracker {
   }
 
   get fiatConvert() {
+
     return this.settings['Fiat Convert'];
   }
 
   get fiats() {
+
     return Array.from(this.settings['Fiats']);
   }
 
   get cryptos() {
+
     return Array.from(this.settings['Cryptos']);
   }
 
   get wallets() {
+
     return Array.from(this._wallets.values());
   }
 
@@ -36,10 +40,12 @@ class CryptoTracker {
   }
 
   isFiat(currency) {
+
     return this.settings['Fiats'].has(currency);
   }
 
   isCrypto(currency) {
+    
     return this.settings['Cryptos'].has(currency);
   }
 

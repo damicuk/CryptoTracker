@@ -168,7 +168,52 @@ CryptoTracker.prototype.getClosedSummaryTable = function () {
   return table;
 }
 
-CryptoTracker.prototype.getClosedTradesTable = function () {
+CryptoTracker.prototype.getOpenCryptosTable = function () {
+
+  let table = [];
+
+  for (let wallet of this.wallets) {
+    for (let cryptoAccount of wallet.cryptoAccounts) {
+      for (let lot of cryptoAccount.lots) {
+
+        let creditCurrency = lot.creditCurrency;
+        let creditAmount = lot.creditAmountSatoshi / 1e8;
+        let creditFee = lot.creditFeeSatoshi / 1e8;
+
+        let date = lot.date;
+        let debitCurrency = lot.debitCurrency;
+        let debitAmount = lot.debitAmountSatoshi / 1e8;
+        let debitFee = lot.debitFeeSatoshi / 1e8;
+        let debitExRate = lot.debitExRate;
+        let wallet = lot.walletName;
+
+        table.push([
+
+          creditCurrency,
+          creditAmount,
+          creditFee,
+
+          date,
+          debitCurrency,
+          debitExRate,
+          debitAmount,
+          debitFee,
+          wallet
+        ]);
+      }
+    }
+  }
+
+  //sort by date
+  const dateIndex = 3;
+  table.sort(function (a, b) {
+    return a[dateIndex] - b[dateIndex];
+  });
+
+  return table;
+}
+
+CryptoTracker.prototype.getClosedCryptosTable = function () {
 
   let table = [];
 
@@ -216,7 +261,12 @@ CryptoTracker.prototype.getClosedTradesTable = function () {
     ]);
   }
 
-  return table;
+  //sort by sell date
+  const dateIndex = 9;
+  table.sort(function (a, b) {
+    return a[dateIndex] - b[dateIndex];
+  });
 
+  return table;
 }
 

@@ -7,6 +7,16 @@ class Wallet {
     this._cryptoAccounts = new Map();
   }
 
+  get fiatAccounts() {
+
+    return Array.from(this._fiatAccounts.values());
+  }
+
+  get cryptoAccounts() {
+
+    return Array.from(this._cryptoAccounts.values());
+  }
+
   get hasFiatAccounts() {
 
     return this._fiatAccounts.size > 0;

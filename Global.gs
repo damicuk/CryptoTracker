@@ -102,60 +102,6 @@ function writeCryptosTable(cryptosTable, sheetName, headerHeight, footerHeight) 
 
 }
 
-function writeClosedCryptos(closedCryptosTable) {
-
-  ss = SpreadsheetApp.getActive();
-  let sheet = ss.getSheetByName('Closed Trades');
-
-  //get existing data range
-  const headerHeight = 2;
-  const footerHeight = 1;
-  const dataWidth = 15;
-
-  let dataRange = sheet.getDataRange();
-  const existingDataHeight = dataRange.getHeight() - headerHeight - footerHeight;
-  const formulaWidth = dataRange.getWidth() - dataWidth;
-
-  //clear existing data
-  if (existingDataHeight) {
-
-    let clearDataRange = dataRange.offset(headerHeight, 0, existingDataHeight, dataWidth);
-    clearDataRange.clearContent();
-
-  }
-
-  //delete all rows except header, footer and two data row to keep formatting and sum formulas working
-  const keepHeight = headerHeight + 2 + footerHeight;
-  const deleteHeight = sheet.getMaxRows() - keepHeight;
-  if (deleteHeight) {
-
-    sheet.deleteRows(headerHeight + 1, deleteHeight);
-
-  }
-
-  // //write fresh data
-  let freshDataHeight = closedCryptosTable.length;
-
-  //insert rows to keep formatting
-  const insertHeight = headerHeight + freshDataHeight + footerHeight - sheet.getMaxRows();
-  if (insertHeight) {
-    sheet.insertRowsAfter(headerHeight + 1, insertHeight);
-  }
-
-  //copy first row with the formulas to all the inserted rows
-  let formulaRange = sheet.getRange(headerHeight + 1, dataWidth + 1, freshDataHeight, formulaWidth);
-  let firstFormulaRow = formulaRange.offset(0, 0, 1, formulaWidth);
-  firstFormulaRow.copyTo(formulaRange);
-
-  //write the fresh data
-  let freshDataRange = sheet.getRange(headerHeight + 1, 1, freshDataHeight, dataWidth);
-  freshDataRange.setValues(closedCryptosTable);
-
-  //apply the formulas
-  SpreadsheetApp.flush();
-  sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
-}
-
 function getSheet(name) {
 
   ss = SpreadsheetApp.getActive();

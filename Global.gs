@@ -11,7 +11,7 @@ function processTrades() {
   // let profitTable = cryptoTracker.getProfitTable();
 
   // let closedSummaryTable = cryptoTracker.getClosedSummaryTable();
-  
+
   // let accountsSheet = getSheet('Accounts');
 
   // const rowOffset = 3
@@ -34,15 +34,75 @@ function processTrades() {
   // formatTable(closedSummaryRange);
 
   // accountsSheet.autoResizeColumns(1, accountsSheet.getDataRange().getNumColumns());
-  
+
   let openCryptosTable = cryptoTracker.getOpenCryptosTable();
-  
+  writeCryptosTable(openCryptosTable, 'Open Positions', 2, 1);
+
   let closedCryptosTable = cryptoTracker.getClosedCryptosTable();
-  writeClosedTrades(closedCryptosTable);
+  writeCryptosTable(closedCryptosTable, 'Closed Trades', 2, 1);
 
 }
 
-function writeClosedTrades(closedCryptosTable) {
+function writeCryptosTable(cryptosTable, sheetName, headerHeight, footerHeight) {
+
+  if (cryptosTable.length == 0) {
+    return;
+  }
+
+  ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (!sheet) {
+
+    throw Error(`Sheet (${sheetName}) does not exist.`)
+
+  }
+
+  let dataRange = sheet.getDataRange();
+
+  const dataWidth = cryptosTable[0].length;
+  const formulaWidth = dataRange.getWidth() - dataWidth;
+
+  const existingDataHeight = dataRange.getHeight() - headerHeight - footerHeight;
+  const freshDataHeight = cryptosTable.length;
+
+  //leave at least two rows to sum formulas working 
+  const addRows = Math.max(freshDataHeight, 2) - existingDataHeight;
+
+  //clear existing data
+  if (existingDataHeight) {
+
+    let clearDataRange = dataRange.offset(headerHeight, 0, existingDataHeight, dataWidth);
+    clearDataRange.clearContent();
+
+  }
+
+  if (addRows > 0) {
+
+    sheet.insertRowsAfter(headerHeight + 1, addRows);
+
+    //copy first row with the formulas to all the inserted rows
+    let formulaRange = sheet.getRange(headerHeight + 1, dataWidth + 1, freshDataHeight, formulaWidth);
+    let firstFormulaRow = formulaRange.offset(0, 0, 1, formulaWidth);
+    firstFormulaRow.copyTo(formulaRange);
+  }
+  else if (addRows < 0) {
+
+    //delete all rows but not header footer and at least two data row to keep formatting and sum formulas working
+    sheet.deleteRows(headerHeight + 1, -addRows);
+  }
+
+  //write the fresh data
+  let freshDataRange = sheet.getRange(headerHeight + 1, 1, freshDataHeight, dataWidth);
+  freshDataRange.setValues(cryptosTable);
+
+  //apply the formulas
+  SpreadsheetApp.flush();
+  sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
+
+}
+
+function writeClosedCryptos(closedCryptosTable) {
 
   ss = SpreadsheetApp.getActive();
   let sheet = ss.getSheetByName('Closed Trades');
@@ -51,7 +111,7 @@ function writeClosedTrades(closedCryptosTable) {
   const headerHeight = 2;
   const footerHeight = 1;
   const dataWidth = 15;
-  
+
   let dataRange = sheet.getDataRange();
   const existingDataHeight = dataRange.getHeight() - headerHeight - footerHeight;
   const formulaWidth = dataRange.getWidth() - dataWidth;

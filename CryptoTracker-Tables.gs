@@ -174,6 +174,7 @@ CryptoTracker.prototype.getOpenCryptosTable = function () {
 
   for (let wallet of this.wallets) {
     for (let cryptoAccount of wallet.cryptoAccounts) {
+
       for (let lot of cryptoAccount.lots) {
 
         let creditCurrency = lot.creditCurrency;
@@ -185,7 +186,8 @@ CryptoTracker.prototype.getOpenCryptosTable = function () {
         let debitAmount = lot.debitAmountSatoshi / 1e8;
         let debitFee = lot.debitFeeSatoshi / 1e8;
         let debitExRate = lot.debitExRate;
-        let wallet = lot.walletName;
+        let buyWallet = lot.walletName;
+        let currentWallet = wallet.name;
 
         table.push([
 
@@ -198,7 +200,8 @@ CryptoTracker.prototype.getOpenCryptosTable = function () {
           debitExRate,
           debitAmount,
           debitFee,
-          wallet
+          buyWallet,
+          currentWallet
         ]);
       }
     }

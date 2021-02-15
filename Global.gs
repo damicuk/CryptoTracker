@@ -35,71 +35,52 @@ function processTrades() {
 
   // accountsSheet.autoResizeColumns(1, accountsSheet.getDataRange().getNumColumns());
 
-  let openCryptosTable = cryptoTracker.getOpenCryptosTable();
-  writeCryptosTable(openCryptosTable, 'Open Positions', 2, 1);
+  let openPositionsTable = cryptoTracker.getOpenPositionsTable();
+  dumpData(openPositionsTable, 'Open Positions Data');
 
-  let closedCryptosTable = cryptoTracker.getClosedCryptosTable();
-  writeCryptosTable(closedCryptosTable, 'Closed Trades', 2, 1);
+  let closedPositionsTable = cryptoTracker.getClosedPositionsTable();
+  dumpData(closedPositionsTable, 'Closed Positions Data');
 
 }
 
-function writeCryptosTable(cryptosTable, sheetName, headerHeight, footerHeight) {
-
-  if (cryptosTable.length == 0) {
-    return;
-  }
+function dumpData(dataTable, sheetName) {
 
   ss = SpreadsheetApp.getActive();
   let sheet = ss.getSheetByName(sheetName);
 
   if (!sheet) {
-
-    throw Error(`Sheet (${sheetName}) does not exist.`)
-
+    sheet = ss.insertSheet(sheetName);
   }
 
-  let dataRange = sheet.getDataRange();
+  sheet.clear();
 
-  const dataWidth = cryptosTable[0].length;
-  const formulaWidth = dataRange.getWidth() - dataWidth;
+  const dataRows = dataTable.length;
+  if (dataTable.length > 0) {
 
-  const existingDataHeight = dataRange.getHeight() - headerHeight - footerHeight;
-  const freshDataHeight = cryptosTable.length;
+    const dataColumns = dataTable[0].length;
 
-  //leave at least two rows to sum formulas working 
-  const addRows = Math.max(freshDataHeight, 2) - existingDataHeight;
+    //Trim the sheet to fit the data
+    const totalColumns = sheet.getMaxColumns();
+    const totalRows = sheet.getMaxRows();
 
-  //clear existing data
-  if (existingDataHeight) {
+    const excessColumns = totalColumns - dataColumns;
+    const excessRows = totalRows - dataRows;
 
-    let clearDataRange = dataRange.offset(headerHeight, 0, existingDataHeight, dataWidth);
-    clearDataRange.clearContent();
+    if (excessColumns) {
+      sheet.deleteColumns(dataColumns + 1, excessColumns);
+    }
+
+    if (excessRows) {
+      sheet.deleteRows(dataRows + 1, excessRows);
+    }
+
+    //write the fresh data
+    let dataRange = sheet.getRange(1, 1, dataRows, dataColumns);
+    dataRange.setValues(dataTable);
+
+    sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
 
   }
-
-  if (addRows > 0) {
-
-    sheet.insertRowsAfter(headerHeight + 1, addRows);
-
-    //copy first row with the formulas to all the inserted rows
-    let formulaRange = sheet.getRange(headerHeight + 1, dataWidth + 1, freshDataHeight, formulaWidth);
-    let firstFormulaRow = formulaRange.offset(0, 0, 1, formulaWidth);
-    firstFormulaRow.copyTo(formulaRange);
-  }
-  else if (addRows < 0) {
-
-    //delete all rows but not header footer and at least two data row to keep formatting and sum formulas working
-    sheet.deleteRows(headerHeight + 1, -addRows);
-  }
-
-  //write the fresh data
-  let freshDataRange = sheet.getRange(headerHeight + 1, 1, freshDataHeight, dataWidth);
-  freshDataRange.setValues(cryptosTable);
-
-  //apply the formulas
-  SpreadsheetApp.flush();
-  sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
-
 }
 
 function getSheet(name) {
@@ -120,48 +101,48 @@ function getSheet(name) {
   return sheet;
 }
 
-function formatTable(range) {
+// function formatTable(range) {
 
-  range.setBorder(
-    true, true, true, true, null, null,
-    null,
-    SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+//   range.setBorder(
+//     true, true, true, true, null, null,
+//     null,
+//     SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
-  let headerRange = range.offset(0, 0, 1, range.getNumColumns());
+//   let headerRange = range.offset(0, 0, 1, range.getNumColumns());
 
-  headerRange
-    .setFontWeight('bold')
-    .setFontColor('#ffffff')
-    .setBackgroundColor('#007272')
-    .setBorder(
-      true, true, true, true, null, null,
-      null,
-      SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+//   headerRange
+//     .setFontWeight('bold')
+//     .setFontColor('#ffffff')
+//     .setBackgroundColor('#007272')
+//     .setBorder(
+//       true, true, true, true, null, null,
+//       null,
+//       SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
 
 
-  let columnHeaderRange = range.offset(0, 0, range.getNumRows(), 1);
+//   let columnHeaderRange = range.offset(0, 0, range.getNumRows(), 1);
 
-  columnHeaderRange
-    .setFontWeight('bold')
-    .setFontStyle('italic')
-    .setBorder(
-      true, true, true, true, null, null,
-      null,
-      SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+//   columnHeaderRange
+//     .setFontWeight('bold')
+//     .setFontStyle('italic')
+//     .setBorder(
+//       true, true, true, true, null, null,
+//       null,
+//       SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
-  let totalRange = range.offset(range.getNumRows() - 1, 0, 1, range.getNumColumns());
+//   let totalRange = range.offset(range.getNumRows() - 1, 0, 1, range.getNumColumns());
 
-  totalRange
-    .setFontWeight('bold')
-    //.setFontStyle('italic')
-    .setBackgroundColor('#76a5af')
-    .setBorder(
-      true, true, true, true, null, null,
-      null,
-      SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+//   totalRange
+//     .setFontWeight('bold')
+//     //.setFontStyle('italic')
+//     .setBackgroundColor('#76a5af')
+//     .setBorder(
+//       true, true, true, true, null, null,
+//       null,
+//       SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
-}
+// }
 
 function validateLedger() {
 

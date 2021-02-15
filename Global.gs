@@ -10,6 +10,9 @@ function processTrades() {
   let closedPositionsTable = cryptoTracker.getClosedPositionsTable();
   cryptoTracker.dumpData(closedPositionsTable, 'Closed Positions Data');
 
+  let fiatTable = cryptoTracker.getFiatTable();
+  cryptoTracker.dumpData(fiatTable, 'Fiat Accounts Data')
+
 }
 
 function getSheet(name) {

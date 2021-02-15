@@ -1,28 +1,28 @@
-// CryptoTracker.prototype.getFiatTable = function () {
+CryptoTracker.prototype.getFiatTable = function () {
 
-//   //fiat currency column headers
-//   let table = [['Wallet'].concat(this.fiats)];
+  //fiat currency column headers
+  let table = [['Wallet'].concat(this.fiats)];
 
-//   //wallet name row headers and balances
-//   for (let wallet of this.wallets) {
-//     if (wallet.hasFiatAccounts) {
-//       table.push([wallet.name]);
-//       for (let fiat of this.fiats) {
-//         let balance = wallet.getFiatBalance(fiat);
-//         table[table.length - 1].push(balance);
-//       }
-//     }
-//   }
+  //wallet name row headers and balances
+  for (let wallet of this.wallets) {
+    if (wallet.hasFiatAccounts) {
+      table.push([wallet.name]);
+      for (let fiat of this.fiats) {
+        let balance = wallet.getFiatBalance(fiat);
+        table[table.length - 1].push(balance);
+      }
+    }
+  }
 
-//   //total for each fiat
-//   table.push(['Total']);
-//   for (let fiat of this.fiats) {
-//     let balance = this.getFiatBalance(fiat);
-//     table[table.length - 1].push(balance);
-//   }
+  // //total for each fiat
+  // table.push(['Total']);
+  // for (let fiat of this.fiats) {
+  //   let balance = this.getFiatBalance(fiat);
+  //   table[table.length - 1].push(balance);
+  // }
 
-//   return table;
-// }
+  return table;
+}
 
 CryptoTracker.prototype.getOpenPositionsTable = function () {
 

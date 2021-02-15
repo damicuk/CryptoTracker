@@ -63,15 +63,24 @@ function dumpData(dataTable, sheetName) {
     const totalColumns = sheet.getMaxColumns();
     const totalRows = sheet.getMaxRows();
 
-    const excessColumns = totalColumns - dataColumns;
-    const excessRows = totalRows - dataRows;
+    //keep at least header and one row for arrayformula references
+    const neededRows = Math.max(dataRows, 2);
 
-    if (excessColumns) {
-      sheet.deleteColumns(dataColumns + 1, excessColumns);
+    const extraColumns = totalColumns - dataColumns;
+    const extraRows = totalRows - neededRows;
+
+    if (extraColumns > 0) {
+      sheet.deleteColumns(dataColumns + 1, extraColumns);
     }
-
-    if (excessRows) {
-      sheet.deleteRows(dataRows + 1, excessRows);
+    else if(extraColumns < 0) {
+      sheet.insertColumnsAfter(totalColumns, -extraColumns);
+    }
+    
+    if (extraRows > 0) {
+      sheet.deleteRows(dataRows + 1, extraRows);
+    }
+    else if (extraRows < 0) {
+      sheet.insertRowsAfter(totalRows, -extraRows);
     }
 
     //write the fresh data

@@ -45,17 +45,17 @@ function processTrades() {
 
 function dumpData(dataTable, sheetName) {
 
-  ss = SpreadsheetApp.getActive();
-  let sheet = ss.getSheetByName(sheetName);
-
-  if (!sheet) {
-    sheet = ss.insertSheet(sheetName);
-  }
-
-  sheet.clear();
-
   const dataRows = dataTable.length;
   if (dataTable.length > 0) {
+
+    ss = SpreadsheetApp.getActive();
+    let sheet = ss.getSheetByName(sheetName);
+
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+    }
+
+    sheet.clear();
 
     const dataColumns = dataTable[0].length;
 
@@ -72,10 +72,10 @@ function dumpData(dataTable, sheetName) {
     if (extraColumns > 0) {
       sheet.deleteColumns(dataColumns + 1, extraColumns);
     }
-    else if(extraColumns < 0) {
+    else if (extraColumns < 0) {
       sheet.insertColumnsAfter(totalColumns, -extraColumns);
     }
-    
+
     if (extraRows > 0) {
       sheet.deleteRows(dataRows + 1, extraRows);
     }
@@ -88,7 +88,6 @@ function dumpData(dataTable, sheetName) {
     dataRange.setValues(dataTable);
 
     sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
-
   }
 }
 

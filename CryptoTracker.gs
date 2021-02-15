@@ -45,7 +45,7 @@ class CryptoTracker {
   }
 
   isCrypto(currency) {
-    
+
     return this.settings['Cryptos'].has(currency);
   }
 
@@ -641,7 +641,8 @@ class CryptoTracker {
     let ledgerRecords = [];
     for (let row of ledgerData) {
 
-      let ledgerRecord = new LedgerRecord(row[0],
+      let ledgerRecord = new LedgerRecord(
+        row[0],
         row[1],
         row[2],
         row[3],
@@ -658,7 +659,8 @@ class CryptoTracker {
         row[5] !== '',
         row[8] !== '',
         row[9] !== '',
-        row[10] !== '');
+        row[10] !== ''
+      );
 
       //Stop reading here
       if (ledgerRecord.action == 'Stop') {

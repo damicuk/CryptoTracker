@@ -13,14 +13,7 @@ CryptoTracker.prototype.getFiatTable = function () {
       }
     }
   }
-
-  // //total for each fiat
-  // table.push(['Total']);
-  // for (let fiat of this.fiats) {
-  //   let balance = this.getFiatBalance(fiat);
-  //   table[table.length - 1].push(balance);
-  // }
-
+  
   return table;
 }
 

@@ -160,7 +160,7 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
   return table;
 }
 
-CryptoTracker.prototype.dumpData = function (dataTable, sheetName) {
+CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 1) {
 
   const dataRows = dataTable.length;
   if (dataTable.length > 0) {
@@ -181,7 +181,7 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName) {
     const totalRows = sheet.getMaxRows();
 
     //keep at least header and one row for arrayformula references
-    const neededRows = Math.max(dataRows, 2);
+    const neededRows = Math.max(dataRows, headerRows + 1);
 
     const extraColumns = totalColumns - dataColumns;
     const extraRows = totalRows - neededRows;

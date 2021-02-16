@@ -15,6 +15,15 @@ function processTrades() {
 
 }
 
+function getCryptoData() {
+
+  let cryptoTracker = new CryptoTracker();
+  // let cryptoDataTable = cryptoTracker.getCoinMarketCapTable();
+  let cryptoDataTable = cryptoTracker.getCryptoCompareTable();
+  cryptoTracker.dumpData(cryptoDataTable, 'Current Crypto Data');
+
+}
+
 function getSheet(name) {
 
   ss = SpreadsheetApp.getActive();

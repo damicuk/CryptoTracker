@@ -29,12 +29,12 @@ class Settings {
       }
       else if (settingType == 'single') {  // single value
 
-        this[key] = filteredArray[0]
+        this[key] = filteredArray[0];
 
       }
       else if (settingType == 'multiple') {  //multiple values
         
-        this[key] = new Set(filteredArray)
+        this[key] = new Set(filteredArray);
 
       }
     }

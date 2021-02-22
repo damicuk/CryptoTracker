@@ -6,6 +6,7 @@ class CryptoTracker {
     this.validateSettings();
     this._wallets = new Map();
     this.closedLots = new Array();
+    this.lotMatching = this.defaultLotMatching;
 
   }
 
@@ -37,6 +38,11 @@ class CryptoTracker {
   get fiatConvert() {
 
     return this.settings['Fiat Convert'];
+  }
+
+  get defaultLotMatching() {
+
+    return this.settings['Default Lot Matching']
   }
 
   get fiats() {
@@ -211,7 +217,7 @@ class CryptoTracker {
 
           // Logger.log(`Crypto transfer: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance} - ${debitAmount} - ${debitFee} ${creditWalletName}`);
 
-          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee);
+          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, date, this.lotMatching);
           // Logger.log(`Crypto transfer balance: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance}`);
 
           //debit currency used as credit currency is empty to avoid data redundancy
@@ -245,7 +251,7 @@ class CryptoTracker {
 
           // Logger.log(`Trade sell crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
 
-          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee);
+          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, date, this.lotMatching);
           // Logger.log(`Trade crypto balance: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance}`);
 
           //debit wallet name used as credit wallet name is empty to avoid data redundancy
@@ -275,7 +281,7 @@ class CryptoTracker {
       }
       else if (action == 'Fee') { //Fee
 
-        this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(0, debitFee);
+        this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(0, debitFee, date, this.lotMatching);
 
       }
     }
@@ -302,25 +308,23 @@ class CryptoTracker {
     else if (this.isCrypto(this.fiatConvert)) { //never called
       throw Error(`Fiat Convert (${this.fiatConvert}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
     }
-
-    if(!this.ledgerSheetName) {
+    else if(!this.ledgerSheetName) {
       throw Error(`Ledger Sheet is missing from the settings sheet.`);
     }
-
-    if(!this.openPositionsSheetName) {
+    else if(!this.openPositionsSheetName) {
       throw Error(`Open Positions Sheet is missing from the settings sheet.`);
     }
-
-    if(!this.closedPositionsSheetName) {
+    else if(!this.closedPositionsSheetName) {
       throw Error(`Closed Positions Sheet is missing from the settings sheet.`);
     }
-
-    if(!this.fiatAccountsSheetName) {
+    else if(!this.fiatAccountsSheetName) {
       throw Error(`Fiat Accounts Sheet is missing from the settings sheet.`);
     }
-
-    if(!this.cryptoDataSheetName) {
+    else if(!this.cryptoDataSheetName) {
       throw Error(`Crypto Data Sheet is missing from the settings sheet.`);
+    }
+    else if(!this.defaultLotMatching) {
+      throw Error(`Default Lot Matching is missing from the settings sheet.`);
     }
 
     return true;

@@ -36,7 +36,7 @@ class CryptoAccount {
 
   get costBasis() {
 
-    return this.costBasisCents /  100
+    return this.costBasisCents / 100
   }
 
   deposit(lots) {
@@ -47,7 +47,7 @@ class CryptoAccount {
     }
   }
 
-  withdraw(amount, fee) {
+  withdraw(amount, fee, date, lotMatching) {
 
     let amountSatoshi = Math.round(amount * 1e8);
     let feeSatoshi = Math.round(fee * 1e8);
@@ -57,10 +57,7 @@ class CryptoAccount {
       throw Error(`Crypto account withdraw ${this.currency} ${amount} + fee ${fee}, insufficient funds ${this.currency}  ${this.balance}`);
     }
 
-    //sort by date
-    this.lots.sort(function (a, b) {
-      return a.date - b.date;
-    });
+    this.lots.sort(this.lotComparator(date, lotMatching));
 
     let keepLots = new Array();
     let withdrawLots = new Array();
@@ -105,5 +102,37 @@ class CryptoAccount {
 
     this.lots = keepLots;
     return withdrawLots;
+  }
+
+  lotComparator(date, lotMatching) {
+
+    if (lotMatching == 'FIFO') {
+
+      return function (lot1, lot2) {
+        lot1.date - lot2.date;
+      }
+
+    }
+    else if (lotMatching == 'LIFO') {
+
+      return function (lot1, lot2) {
+        return lot2.date - lot1.date;
+      }
+    }
+    else if (lotMatching == 'Highest Cost') {
+
+      return function (lot1, lot2) {
+        return lot1.costBasisCents - lot2.costBasisCents;
+      }
+    }
+    else if (lotMatching == 'Lowest Cost') {
+
+      return function (lot1, lot2) {
+        return lot2.costBasisCents - lot1.costBasisCents;
+      }
+    }
+    else {
+      throw Error(`Lot Matching Method (${lotMatching}) not recognized.`);
+    }
   }
 }

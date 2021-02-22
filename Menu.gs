@@ -1,21 +1,21 @@
 function onOpen() {
 
   let ui = SpreadsheetApp.getUi();
+
+  var cryptoDataMenu = ui.createMenu('Update Crypto Prices')
+    .addItem('Fetch CoinMarketCap Prices', 'getCoinMarketCapData')
+    .addItem('Fetch CryptoComapare Prices', 'getCryptoCompareData');
+
   ui.createMenu('Crypto Tracker')
-    //.addSubMenu('Ledger')
-    .addItem('Process Trades', 'processTrades')
-    .addItem('Validate Ledger', 'processTrades')
+    .addItem('Validate Ledger', 'validateLedger')
+    .addItem('Process Ledger', 'processLedger')
     .addItem('Update Exchange Rates (Google Finance)', 'updateExRates')
     .addSeparator()
-    //.addSubMenu('Latest Crypto Prices')
-    .addItem('Fetch CoinMarketCap Prices', 'getCoinMarketCapData')
-    .addItem('Fetch CryptoComapare Prices', 'getCryptoCompareData')
-    .addSeparator()
-    .addItem('More Stuff', 'processTrades')
+    .addSubMenu(cryptoDataMenu)
     .addToUi();
 }
 
-function processTrades() {
+function processLedger() {
 
   new CryptoTracker().processLedger();
 }

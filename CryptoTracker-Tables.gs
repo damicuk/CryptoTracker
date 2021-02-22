@@ -208,3 +208,30 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 
   }
 }
 
+CryptoTracker.prototype.processLedger = function() {
+
+  this.processLedgerRecords();
+
+  let openPositionsTable = this.getOpenPositionsTable();
+  this.dumpData(openPositionsTable, this.openPositionsSheetName);
+
+  let closedPositionsTable = this.getClosedPositionsTable();
+  this.dumpData(closedPositionsTable, this.closedPositionsSheetName);
+
+  let fiatTable = this.getFiatTable();
+  this.dumpData(fiatTable, this.fiatAccountsSheetName);
+
+}
+
+CryptoTracker.prototype.getCoinMarketCapData = function() {
+
+  let cryptoDataTable = this.getCoinMarketCapTable();
+  this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
+}
+
+CryptoTracker.prototype.getCryptoCompareData = function() {
+
+  let cryptoDataTable = this.getCryptoCompareTable();
+  this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
+}
+

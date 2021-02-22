@@ -9,6 +9,31 @@ class CryptoTracker {
 
   }
 
+  get ledgerSheetName() {
+
+    return this.settings['Ledger Sheet'];
+  }
+
+  get openPositionsSheetName() {
+
+    return this.settings['Open Positions Sheet'];
+  }
+
+  get closedPositionsSheetName() {
+
+    return this.settings['Closed Positions Sheet'];
+  }
+
+  get fiatAccountsSheetName() {
+
+    return this.settings['Fiat Accounts Sheet'];
+  }
+
+  get cryptoDataSheetName() {
+
+    return this.settings['Crypto Data Sheet'];
+  }
+
   get fiatConvert() {
 
     return this.settings['Fiat Convert'];
@@ -134,7 +159,7 @@ class CryptoTracker {
 
   }
 
-  processTrades() {
+  processLedgerRecords() {
 
     let ledgerRecords = this.getLedgerRecords();
 
@@ -277,6 +302,28 @@ class CryptoTracker {
     else if (this.isCrypto(this.fiatConvert)) { //never called
       throw Error(`Fiat Convert (${this.fiatConvert}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
     }
+
+    if(!this.ledgerSheetName) {
+      throw Error(`Ledger Sheet is missing from the settings sheet.`);
+    }
+
+    if(!this.openPositionsSheetName) {
+      throw Error(`Open Positions Sheet is missing from the settings sheet.`);
+    }
+
+    if(!this.closedPositionsSheetName) {
+      throw Error(`Closed Positions Sheet is missing from the settings sheet.`);
+    }
+
+    if(!this.fiatAccountsSheetName) {
+      throw Error(`Fiat Accounts Sheet is missing from the settings sheet.`);
+    }
+
+    if(!this.cryptoDataSheetName) {
+      throw Error(`Crypto Data Sheet is missing from the settings sheet.`);
+    }
+
+    return true;
   }
 
   validateLedger(checkExRates = true) {
@@ -535,6 +582,8 @@ class CryptoTracker {
     else {
       throw Error(`[${date.toISOString()}] Ledger record: action (${action}) is invalid.`);
     }
+
+    return true;
   }
 
   updateExRates() {
@@ -678,7 +727,7 @@ class CryptoTracker {
   getLedgerRange() {
 
     let ss = SpreadsheetApp.getActive();
-    let ledgerSheet = ss.getSheetByName('Ledger');
+    let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
 
     let ledgerRange = ledgerSheet.getDataRange();
     ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 12);

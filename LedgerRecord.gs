@@ -12,6 +12,7 @@ class LedgerRecord {
               creditAmount,
               creditFee,
               creditWalletName,
+              lotMatching,
               hasDebitExRate,
               hasDebitAmount,
               hasDebitFee,
@@ -31,6 +32,7 @@ class LedgerRecord {
     this.creditAmount = Number(creditAmount);
     this.creditFee = Number(creditFee);
     this.creditWalletName = creditWalletName;
+    this.lotMatching = lotMatching;
 
     //were these fields blank? (to distinguish from zero)
     this.hasDebitExRate = hasDebitExRate;

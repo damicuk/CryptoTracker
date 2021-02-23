@@ -7,6 +7,7 @@ class CryptoTracker {
     this._wallets = new Map();
     this.closedLots = new Array();
     this.lotMatching = this.defaultLotMatching;
+    this.lotMatchingArray = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
 
   }
 
@@ -358,6 +359,7 @@ class CryptoTracker {
     let creditAmount = ledgerRecord.creditAmount;
     let creditFee = ledgerRecord.creditFee;
     let creditWalletName = ledgerRecord.creditWalletName;
+    let lotMatching = ledgerRecord.lotMatching;
     let hasDebitExRate = ledgerRecord.hasDebitExRate;
     let hasDebitAmount = ledgerRecord.hasDebitAmount;
     let hasDebitFee = ledgerRecord.hasDebitFee;
@@ -391,6 +393,9 @@ class CryptoTracker {
     }
     else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`)
+    }
+    else if(lotMatching && !this.lotMatchingArray.includes(lotMatching)) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record lot matching (${lotMatching}) is not valid (${this.lotMatchingArray}) or blank.`);
     }
     else if (action == 'Transfer') { //Transfer
       if (!debitCurrency) {
@@ -707,6 +712,7 @@ class CryptoTracker {
         row[9],
         row[10],
         row[11],
+        row[12],
         row[3] !== '',
         row[4] !== '',
         row[5] !== '',
@@ -734,7 +740,7 @@ class CryptoTracker {
     let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
 
     let ledgerRange = ledgerSheet.getDataRange();
-    ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 12);
+    ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 13);
 
     return ledgerRange;
   }

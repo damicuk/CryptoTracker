@@ -118,16 +118,16 @@ class CryptoAccount {
         return lot2.date - lot1.date;
       }
     }
-    else if (lotMatching == 'HIFO') {
-
-      return function (lot1, lot2) {
-        return lot2.costBasisCents - lot1.costBasisCents;
-      }
-    }
     else if (lotMatching == 'LOFO') {
 
       return function (lot1, lot2) {
         return lot1.costBasisCents - lot2.costBasisCents;
+      }
+    }
+    else if (lotMatching == 'HIFO') {
+
+      return function (lot1, lot2) {
+        return lot2.costBasisCents - lot1.costBasisCents;
       }
     }
     else {

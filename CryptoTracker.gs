@@ -191,6 +191,11 @@ class CryptoTracker {
       let creditAmount = ledgerRecord.creditAmount;
       let creditFee = ledgerRecord.creditFee;
       let creditWalletName = ledgerRecord.creditWalletName;
+      let lotMatching = ledgerRecord.lotMatching;
+      
+      if(lotMatching) {
+        this.lotMatching = lotMatching;
+      }
 
       // Logger.log(`Date: ${date.toISOString()}, Action; ${action}, 
       //           Debit: ${debitWalletName} ${debitCurrency} Exrate ${debitExRate} Amount ${debitAmount} Fee ${debitFee}, 

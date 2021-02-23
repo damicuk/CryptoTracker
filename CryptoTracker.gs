@@ -217,7 +217,7 @@ class CryptoTracker {
 
           // Logger.log(`Crypto transfer: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance} - ${debitAmount} - ${debitFee} ${creditWalletName}`);
 
-          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, date, this.lotMatching);
+          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
           // Logger.log(`Crypto transfer balance: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance}`);
 
           //debit currency used as credit currency is empty to avoid data redundancy
@@ -251,7 +251,7 @@ class CryptoTracker {
 
           // Logger.log(`Trade sell crypto, debit: ${debitCurrency} ${debitAmount} fee ${debitFee}, credit: ${creditCurrency} ${creditAmount} fee ${creditFee}`);
 
-          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, date, this.lotMatching);
+          let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
           // Logger.log(`Trade crypto balance: ${debitWalletName} ${debitCurrency} ${this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).balance}`);
 
           //debit wallet name used as credit wallet name is empty to avoid data redundancy
@@ -281,7 +281,7 @@ class CryptoTracker {
       }
       else if (action == 'Fee') { //Fee
 
-        this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(0, debitFee, date, this.lotMatching);
+        this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(0, debitFee, this.lotMatching);
 
       }
     }

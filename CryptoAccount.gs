@@ -121,13 +121,13 @@ class CryptoAccount {
     else if (lotMatching == 'LOFO') {
 
       return function (lot1, lot2) {
-        return lot1.costBasisCents - lot2.costBasisCents;
+        return (lot1.costBasisCents / lot1.satoshi) - (lot2.costBasisCents / lot2.satoshi);
       }
     }
     else if (lotMatching == 'HIFO') {
 
       return function (lot1, lot2) {
-        return lot2.costBasisCents - lot1.costBasisCents;
+        return (lot2.costBasisCents / lot2.satoshi) - (lot1.costBasisCents / lot1.satoshi);
       }
     }
     else {

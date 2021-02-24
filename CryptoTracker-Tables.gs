@@ -1,16 +1,12 @@
 CryptoTracker.prototype.getFiatTable = function () {
 
-  //fiat currency column headers
-  let table = [['Wallet'].concat(this.fiats)];
-
-  //wallet name row headers and balances
+  //column headers
+  let table = [['Wallet', 'Currency', 'Balance']];
+  
   for (let wallet of this.wallets) {
-    if (wallet.hasFiatAccounts) {
-      table.push([wallet.name]);
-      for (let fiat of this.fiats) {
-        let balance = wallet.getFiatBalance(fiat);
-        table[table.length - 1].push(balance);
-      }
+    let fiatAccounts = wallet.fiatAccounts;
+    for(let fiatAccount of fiatAccounts) {
+      table.push([wallet.name, fiatAccount.currency, fiatAccount.balance])
     }
   }
   

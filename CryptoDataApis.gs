@@ -30,10 +30,10 @@ CryptoTracker.prototype.getCoinMarketCapTable = function () {
   let returnText = httpRequest.getContentText();
   let data = JSON.parse(returnText).data;
 
-  let cryptoDataTable = [[`Crypto`, `Price (${fiatConvert})`, `% Change 24h`]];
+  let cryptoDataTable = [[`Date Time`, `Crypto`, `Fiat Convert`, `Ex Rate`]];
   for (let coin in data) {
 
-    cryptoDataTable.push([data[coin].symbol, data[coin].quote[fiatConvert].price, data[coin].quote[fiatConvert].percent_change_24h]);
+    cryptoDataTable.push([data[coin].quote[fiatConvert].last_updated, data[coin].symbol, fiatConvert, data[coin].quote[fiatConvert].price]);
 
   }
 
@@ -53,14 +53,15 @@ CryptoTracker.prototype.getCryptoCompareTable = function () {
 
   let url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos}&tsyms=${fiatConvert}&api_key=${apiKey}`;
 
+  let timestamp = new Date().toISOString();
   let httpRequest = UrlFetchApp.fetch(url);
   let returnText = httpRequest.getContentText();
   let data = JSON.parse(returnText);
 
-  let cryptoDataTable = [[`Crypto`, `Price (${fiatConvert})`]];
+  let cryptoDataTable = [[`Date Time`, `Crypto`, `Fiat Convert`, `Ex Rate`]];
   for (let coin in data) {
 
-    cryptoDataTable.push([coin, data[coin][fiatConvert]]);
+    cryptoDataTable.push([timestamp ,coin, fiatConvert, data[coin][fiatConvert]]);
 
   }
 

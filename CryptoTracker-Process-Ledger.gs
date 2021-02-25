@@ -99,9 +99,9 @@ CryptoTracker.prototype.processLedgerRecords = function () {
       this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
 
     }
-    else if (action == 'Fee') { //Fee
+    else if (action == 'Gift' || action == 'Fee') { //Gift or Fee
 
-      this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(0, debitFee, this.lotMatching);
+      this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
     }
   }

@@ -258,6 +258,44 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
       }
     }
   }
+  else if (action == 'Gift') { //Gift
+    if (!debitCurrency) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
+    }
+    else if (!this.isCrypto(debitCurrency)) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) must be crypto (${this.cryptos}).`)
+    }
+    else if (hasDebitExRate) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
+    }
+    else if (!hasDebitAmount) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
+    }
+    else if (debitAmount <= 0) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit amount (${debitAmount.toLocaleString()}) must be greater than 0.`);
+    }
+    else if (debitFee < 0) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
+    }
+    else if (!debitWalletName) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record has no debit wallet specified.`);
+    }
+    else if (creditCurrency) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank.`);
+    }
+    else if (hasCreditExRate) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
+    }
+    else if (hasCreditAmount) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit amount (${creditAmount.toLocaleString()}) blank.`);
+    }
+    else if (hasCreditFee) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
+    }
+    else if (creditWalletName) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank.`);
+    }
+  }
   else if (action == 'Fee') { //Fee
     if (!debitCurrency) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);

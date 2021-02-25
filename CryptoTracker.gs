@@ -437,6 +437,10 @@ class CryptoTracker {
     let ss = SpreadsheetApp.getActive();
     let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
 
+    if(!ledgerSheet) {
+      throw Error(`Ledger Sheet (${this.ledgerSheetName}) (specified in the settings sheet) not found.`)
+    }
+
     let ledgerRange = ledgerSheet.getDataRange();
     ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 13);
 

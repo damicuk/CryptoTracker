@@ -1,24 +1,24 @@
 class LedgerRecord {
 
   constructor(date,
-              action,
-              debitCurrency,
-              debitExRate,
-              debitAmount,
-              debitFee,
-              debitWalletName,
-              creditCurrency,
-              creditExRate,
-              creditAmount,
-              creditFee,
-              creditWalletName,
-              lotMatching,
-              hasDebitExRate,
-              hasDebitAmount,
-              hasDebitFee,
-              hasCreditExRate,
-              hasCreditAmount,
-              hasCreditFee) {
+    action,
+    debitCurrency,
+    debitExRate,
+    debitAmount,
+    debitFee,
+    debitWalletName,
+    creditCurrency,
+    creditExRate,
+    creditAmount,
+    creditFee,
+    creditWalletName,
+    lotMatching,
+    hasDebitExRate,
+    hasDebitAmount,
+    hasDebitFee,
+    hasCreditExRate,
+    hasCreditAmount,
+    hasCreditFee) {
 
     this.date = new Date(date);
     this.action = action;

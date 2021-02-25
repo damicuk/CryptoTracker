@@ -2,7 +2,7 @@ CryptoTracker.prototype.getCoinMarketCapTable = function () {
 
   let apiKey = this.settings['CoinMarketCap ApiKey'];
 
-  if(!apiKey) {
+  if (!apiKey) {
     throw Error(`CoinMarketCap ApiKey is missing from the settings sheet.`);
   }
 
@@ -44,7 +44,7 @@ CryptoTracker.prototype.getCryptoCompareTable = function () {
 
   let apiKey = this.settings['CryptoCompare ApiKey'];
 
-  if(!apiKey) {
+  if (!apiKey) {
     throw Error(`CryptoCompare ApiKey is missing from the settings sheet.`);
   }
 

@@ -2,14 +2,14 @@ CryptoTracker.prototype.getFiatTable = function () {
 
   //column headers
   let table = [['Wallet', 'Currency', 'Balance']];
-  
+
   for (let wallet of this.wallets) {
     let fiatAccounts = wallet.fiatAccounts;
-    for(let fiatAccount of fiatAccounts) {
+    for (let fiatAccount of fiatAccounts) {
       table.push([wallet.name, fiatAccount.currency, fiatAccount.balance])
     }
   }
-  
+
   return table;
 }
 
@@ -204,7 +204,7 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 
   }
 }
 
-CryptoTracker.prototype.processLedger = function() {
+CryptoTracker.prototype.processLedger = function () {
 
   this.processLedgerRecords();
 
@@ -219,13 +219,13 @@ CryptoTracker.prototype.processLedger = function() {
 
 }
 
-CryptoTracker.prototype.getCoinMarketCapData = function() {
+CryptoTracker.prototype.getCoinMarketCapData = function () {
 
   let cryptoDataTable = this.getCoinMarketCapTable();
   this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
 }
 
-CryptoTracker.prototype.getCryptoCompareData = function() {
+CryptoTracker.prototype.getCryptoCompareData = function () {
 
   let cryptoDataTable = this.getCryptoCompareTable();
   this.dumpData(cryptoDataTable, this.cryptoDataSheetName);

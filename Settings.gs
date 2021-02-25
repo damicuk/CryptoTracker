@@ -1,7 +1,7 @@
 class Settings {
 
   constructor() {
-    
+
     let activeSheet = SpreadsheetApp.getActiveSpreadsheet();
     let multiArray = activeSheet.getSheetByName("Settings").getDataRange().getValues();
     multiArray.shift() //remove header row
@@ -33,7 +33,7 @@ class Settings {
 
       }
       else if (settingType == 'multiple') {  //multiple values
-        
+
         this[key] = new Set(filteredArray);
 
       }

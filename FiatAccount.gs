@@ -4,7 +4,7 @@ class FiatAccount {
 
     this.currency = currency;
     this.cents = 0;
-    
+
   }
 
   transfer(amount) {

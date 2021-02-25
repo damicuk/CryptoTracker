@@ -68,16 +68,3 @@ class Lot {
 
   }
 }
-
-function testSplitLots() {
-
-  let lot = new Lot(new Date(Date.now()), 'Kraken', 'USD', 0, 105, 8, 'ADA', 110.678, 0.6);
-
-  let splitLots = lot.split(35.97 * 1e8);
-  let lot1 = splitLots[0];
-  let lot2 = splitLots[1];
-
-  Logger.log(`[${lot1.date.toISOString()}] ${lot1.walletName} ${lot1.satoshi} ${lot1.debitCurrency} ${lot1.debitExRate} ${lot1.debitAmountSatoshi} ${lot1.debitFeeSatoshi} ${lot1.creditCurrency}  ${lot1.creditAmountSatoshi} ${lot1.creditFeeSatoshi}`);
-  Logger.log(`[${lot2.date.toISOString()}] ${lot2.walletName} ${lot2.satoshi} ${lot2.debitCurrency} ${lot2.debitExRate} ${lot2.debitAmountSatoshi} ${lot2.debitFeeSatoshi} ${lot2.creditCurrency}  ${lot2.creditAmountSatoshi} ${lot2.creditFeeSatoshi}`);
-
-}

@@ -175,29 +175,11 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 
 
   const dataColumns = dataTable[0].length;
 
-  //Trim the sheet to fit the data
-  const totalColumns = sheet.getMaxColumns();
-  const totalRows = sheet.getMaxRows();
-
   //keep at least header and one row for arrayformula references
   const neededRows = Math.max(dataRows, headerRows + 1);
 
-  const extraColumns = totalColumns - dataColumns;
-  const extraRows = totalRows - neededRows;
-
-  if (extraColumns > 0) {
-    sheet.deleteColumns(dataColumns + 1, extraColumns);
-  }
-  else if (extraColumns < 0) {
-    sheet.insertColumnsAfter(totalColumns, -extraColumns);
-  }
-
-  if (extraRows > 0) {
-    sheet.deleteRows(dataRows + 1, extraRows);
-  }
-  else if (extraRows < 0) {
-    sheet.insertRowsAfter(totalRows, -extraRows);
-  }
+  //Trim the sheet to fit the data
+  this.trimSheet(sheet, neededRows, dataColumns);
 
   //write the fresh data
   let dataRange = sheet.getRange(1, 1, dataRows, dataColumns);
@@ -205,6 +187,68 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 
 
   sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
 
+}
+
+CryptoTracker.prototype.appendData = function (dataTable, sheetName, headerRows = 1) {
+
+  if (dataTable.length == 0) {
+    return;
+  }
+
+  ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+  }
+
+  const exisitingDataRows = sheet.getLastRow();
+
+  //remove header from table if exists in sheet
+  const shiftTable = Math.min(Math.min(headerRows, exisitingDataRows), dataTable.length);
+  for (i = 0; i < shiftTable; i++) {
+    dataTable.shift();
+  }
+
+  if (dataTable.length == 0) {
+    return;
+  }
+
+  const dataRows = dataTable.length;
+  const dataColumns = dataTable[0].length;
+
+  //Trim the sheet to fit the data
+  this.trimSheet(sheet, exisitingDataRows + dataRows, dataColumns);
+
+  //write the fresh data
+  let dataRange = sheet.getRange(exisitingDataRows + 1, 1, dataRows, dataColumns);
+  dataRange.setValues(dataTable);
+
+  sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
+
+}
+
+CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) {
+
+  const totalRows = sheet.getMaxRows();
+  const totalColumns = sheet.getMaxColumns();
+
+  const extraRows = totalRows - neededRows;
+  const extraColumns = totalColumns - neededColumns;
+
+  if (extraRows > 0) {
+    sheet.deleteRows(neededRows + 1, extraRows);
+  }
+  else if (extraRows < 0) {
+    sheet.insertRowsAfter(totalRows, -extraRows);
+  }
+
+  if (extraColumns > 0) {
+    sheet.deleteColumns(neededColumns + 1, extraColumns);
+  }
+  else if (extraColumns < 0) {
+    sheet.insertColumnsAfter(totalColumns, -extraColumns);
+  }
 }
 
 CryptoTracker.prototype.processLedger = function () {
@@ -226,11 +270,17 @@ CryptoTracker.prototype.getCoinMarketCapData = function () {
 
   let cryptoDataTable = this.getCoinMarketCapTable();
   this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
+  if(this.saveCryptoData) {
+    this.appendData(cryptoDataTable, this.histCryptoDataSheetName);
+  }
 }
 
 CryptoTracker.prototype.getCryptoCompareData = function () {
 
   let cryptoDataTable = this.getCryptoCompareTable();
   this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
+  if(this.saveCryptoData) {
+    this.appendData(cryptoDataTable, this.histCryptoDataSheetName);
+  }
 }
 

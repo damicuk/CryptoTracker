@@ -27,12 +27,12 @@ class Settings {
         this[key] = null;
 
       }
-      else if (settingType == 'single') {  // single value
+      else if (settingType == 'single') { // single value
 
         this[key] = filteredArray[0];
 
       }
-      else if (settingType == 'multiple') {  //multiple values
+      else if (settingType == 'multiple') { //multiple values
 
         this[key] = new Set(filteredArray);
 

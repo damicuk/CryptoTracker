@@ -36,6 +36,16 @@ class CryptoTracker {
     return this.settings['Crypto Data Sheet'];
   }
 
+  get histCryptoDataSheetName() {
+
+    return this.settings['Historical Crypto Data Sheet'];
+  }
+
+  get saveCryptoData() {
+
+    return this.settings['Save Crypto Data'];
+  }
+
   get fiatConvert() {
 
     return this.settings['Fiat Convert'];

@@ -34,6 +34,9 @@ CryptoTracker.prototype.validateSettings = function () {
   else if (!this.cryptoDataSheetName) {
     throw Error(`Crypto Data Sheet is missing from the settings sheet.`);
   }
+  else if (this.saveCryptoData && !this.histCryptoDataSheetName) {
+    throw Error(`Historical Crypto Data Sheet is missing from the settings sheet.`);
+  }
   else if (!this.defaultLotMatching) {
     throw Error(`Default Lot Matching is missing from the settings sheet.`);
   }

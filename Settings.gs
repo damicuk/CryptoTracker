@@ -5,10 +5,10 @@ class Settings {
     let activeSheet = SpreadsheetApp.getActiveSpreadsheet();
     let multiArray = activeSheet.getSheetByName("Settings").getDataRange().getValues();
     multiArray.shift() //remove header row
-
-    for (let i = 0; i < multiArray.length; i++) {
-
-      let filteredArray = multiArray[i].filter(function (item) { //remove empty strings
+    
+    for (let array of multiArray) {
+      
+      let filteredArray = array.filter(function (item) { //remove empty strings
 
         return item !== '';
 

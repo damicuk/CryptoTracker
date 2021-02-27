@@ -10,7 +10,7 @@ class Settings {
 
       let filteredArray = multiArray[i].filter(function (item) { //remove empty strings
 
-        return item != '';
+        return item !== '';
 
       });
 
@@ -27,12 +27,12 @@ class Settings {
         this[key] = null;
 
       }
-      else if (settingType == 'single') { // single value
+      else if (settingType == 'single') {
 
         this[key] = filteredArray[0];
 
       }
-      else if (settingType == 'multiple') { //multiple values
+      else if (settingType == 'multiple') {
 
         this[key] = new Set(filteredArray);
 

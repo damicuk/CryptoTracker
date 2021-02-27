@@ -1,6 +1,7 @@
 class LedgerRecord {
 
-  constructor(date,
+  constructor(
+    date,
     action,
     debitCurrency,
     debitExRate,

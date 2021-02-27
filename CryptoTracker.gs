@@ -36,14 +36,19 @@ class CryptoTracker {
     return this.settings['Crypto Data Sheet'];
   }
 
-  get histCryptoDataSheetName() {
+  get histCryptoSheetName() {
 
-    return this.settings['Historical Crypto Data Sheet'];
+    return this.settings['Historical Crypto Sheet'];
   }
 
   get saveCryptoData() {
 
     return this.settings['Save Crypto Data'];
+  }
+
+  get exRateMinutesMargin() {
+
+    return this.settings['ExRate Minutes Margin'];
   }
 
   get fiatConvert() {
@@ -226,7 +231,7 @@ class CryptoTracker {
     let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
 
     if (!ledgerSheet) {
-      throw Error(`Ledger Sheet (${this.ledgerSheetName}) (specified in the settings sheet) not found.`)
+      throw Error(`Ledger Sheet (${this.ledgerSheetName}) specified in the settings sheet not found.`);
     }
 
     let ledgerRange = ledgerSheet.getDataRange();

@@ -4,7 +4,7 @@ function onOpen() {
 
   let exRatesMenu = ui.createMenu('Complete Ledger Exchange Rates')
     .addItem('Fetch Google Finance Rates', 'updateExRates')
-    .addItem('Fetch Historical Crypto Rates', 'updateExRates');
+    .addItem('Fetch Historical Crypto Rates', 'getCryptoDataExRates');
 
   let cryptoDataMenu = ui.createMenu('Fetch Current Crypto Prices')
     .addItem('Fetch CoinMarketCap Prices', 'getCoinMarketCapData')
@@ -45,6 +45,11 @@ function validateLedger() {
 function updateExRates() {
 
   new CryptoTracker().updateExRates();
+}
+
+function getCryptoDataExRates() {
+
+  new CryptoTracker().getCryptoDataExRates();
 }
 
 

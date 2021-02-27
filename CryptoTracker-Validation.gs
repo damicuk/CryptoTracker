@@ -34,11 +34,20 @@ CryptoTracker.prototype.validateSettings = function () {
   else if (!this.cryptoDataSheetName) {
     throw Error(`Crypto Data Sheet is missing from the settings sheet.`);
   }
-  else if (this.saveCryptoData && !this.histCryptoDataSheetName) {
+  else if (this.saveCryptoData && !this.histCryptoSheetName) {
     throw Error(`Historical Crypto Data Sheet is missing from the settings sheet.`);
   }
   else if (!this.defaultLotMatching) {
     throw Error(`Default Lot Matching is missing from the settings sheet.`);
+  }
+  else if(this.exRateMinutesMargin == null) {
+    throw Error(`ExRate Minutes Margin is missing from the settings sheet.`);
+  }
+  else if(isNaN(this.exRateMinutesMargin)) {
+    throw Error(`ExRate Minutes Margin (${this.exRateMinutesMargin}) is not valid (number).`);
+  }
+  else if(this.exRateMinutesMargin < 0) {
+    throw Error(`ExRate Minutes Margin (${this.exRateMinutesMargin}) is must be greater or equal to 0.`);
   }
 }
 

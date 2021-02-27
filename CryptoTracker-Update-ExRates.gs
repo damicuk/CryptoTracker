@@ -45,7 +45,7 @@ CryptoTracker.prototype.updateExRates = function () {
           updateDebitExRates = true;
         }
       }
-      else if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
+      if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
         if (!hasCreditExRate || creditExRate <= 0) {
           creditExRateValue = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
           updateCreditExRates = true;

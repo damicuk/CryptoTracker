@@ -2,14 +2,19 @@ function onOpen() {
 
   let ui = SpreadsheetApp.getUi();
 
-  var cryptoDataMenu = ui.createMenu('Update Crypto Prices')
+  let exRatesMenu = ui.createMenu('Complete Ledger Exchange Rates')
+    .addItem('Fetch Google Finance Rates', 'updateExRates')
+    .addItem('Fetch Historical Crypto Rates', 'updateExRates');
+
+  let cryptoDataMenu = ui.createMenu('Fetch Current Crypto Prices')
     .addItem('Fetch CoinMarketCap Prices', 'getCoinMarketCapData')
     .addItem('Fetch CryptoComapare Prices', 'getCryptoCompareData');
 
   ui.createMenu('Crypto Tracker')
     .addItem('Validate Ledger', 'validateLedger')
     .addItem('Process Ledger', 'processLedger')
-    .addItem('Update Exchange Rates (Google Finance)', 'updateExRates')
+    .addSeparator()
+    .addSubMenu(exRatesMenu)
     .addSeparator()
     .addSubMenu(cryptoDataMenu)
     .addToUi();

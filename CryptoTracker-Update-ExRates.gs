@@ -97,8 +97,6 @@ CryptoTracker.prototype.getHistCryptoRecords = function () {
   let histCryptoRange = this.getHistCryptoRange();
   let histCryptoData = histCryptoRange.getValues();
 
-
-
   //convert raw data to object array
   let histCryptoRecords = [];
   for (let row of histCryptoData) {
@@ -192,15 +190,15 @@ CryptoTracker.prototype.getGoogleFinanceExRates = function () {
   }
 
   if (updateDebitExRates) {
-    this.setExRates(3, debitExRates);
+    this.setExRates(3, debitExRates, true);
   }
 
   if (updateCreditExRates) {
-    this.setExRates(8, creditExRates);
+    this.setExRates(8, creditExRates, true);
   }
 }
 
-CryptoTracker.prototype.setExRates = function (colIndex, exRates) {
+CryptoTracker.prototype.setExRates = function (colIndex, exRates, overwrite = false) {
 
   let ledgerRange = this.getLedgerRange();
   let exRatesRange = ledgerRange.offset(0, colIndex, exRates.length, 1);
@@ -210,15 +208,17 @@ CryptoTracker.prototype.setExRates = function (colIndex, exRates) {
   //apply changes
   SpreadsheetApp.flush();
 
-  //read in values calculated by the formula
-  //remove failed formula results
-  //overwrite the formulas with hard coded values
-  let calculatedExRates = exRatesRange.getValues();
-  let validExRates = this.removeInvalidExRates(calculatedExRates);
-  exRatesRange.setValues(validExRates);
+  if (overwrite) {
+    //read in values calculated by the formula
+    //remove failed formula results
+    //overwrite the formulas with hard coded values
+    let calculatedExRates = exRatesRange.getValues();
+    let validExRates = this.removeInvalidExRates(calculatedExRates);
+    exRatesRange.setValues(validExRates);
 
-  //applies changes
-  SpreadsheetApp.flush();
+    //applies changes
+    SpreadsheetApp.flush();
+  }
 }
 
 CryptoTracker.prototype.removeInvalidExRates = function (exRates) {

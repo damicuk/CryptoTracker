@@ -203,13 +203,7 @@ class CryptoTracker {
         row[9],
         row[10],
         row[11],
-        row[12],
-        row[3] !== '',
-        row[4] !== '',
-        row[5] !== '',
-        row[8] !== '',
-        row[9] !== '',
-        row[10] !== ''
+        row[12]
       );
 
       //Stop reading here

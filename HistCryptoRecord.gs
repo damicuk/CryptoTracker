@@ -9,7 +9,7 @@ class HistCryptoRecord {
     this.date = new Date(date);
     this.crypto = crypto;
     this.fiat = fiat;
-    this.exRate = Number(exRate);
+    this.exRate = exRate;
 
   }
 

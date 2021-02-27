@@ -80,12 +80,6 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
   let creditFee = ledgerRecord.creditFee;
   let creditWalletName = ledgerRecord.creditWalletName;
   let lotMatching = ledgerRecord.lotMatching;
-  let hasDebitExRate = ledgerRecord.hasDebitExRate;
-  let hasDebitAmount = ledgerRecord.hasDebitAmount;
-  let hasDebitFee = ledgerRecord.hasDebitFee;
-  let hasCreditExRate = ledgerRecord.hasCreditExRate;
-  let hasCreditAmount = ledgerRecord.hasCreditAmount;
-  let hasCreditFee = ledgerRecord.hasCreditFee;
 
   if (isNaN(date)) {
     throw Error('Ledger record: missing date.');
@@ -124,10 +118,10 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (creditCurrency) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank. It is inferred from the debit currency (${debitCurrency}).`);
     }
-    else if (hasDebitExRate) {
+    else if (debitExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
     }
-    else if (!hasDebitAmount) {
+    else if (debitAmount === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
     }
     else if (debitAmount <= 0) {
@@ -136,13 +130,13 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (debitFee < 0) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record transfer debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
-    else if (hasCreditExRate) {
+    else if (creditExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
     }
-    else if (hasCreditAmount) {
+    else if (creditAmount !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave transfer credit amount (${creditAmount.toLocaleString()}) blank. It is inferred from the debit amount (${debitAmount.toLocaleString()}) and debit fee (${debitFee.toLocaleString()}).`);
     }
-    else if (hasCreditFee) {
+    else if (creditFee !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
     }
     else if (!debitWalletName && !creditWalletName) {
@@ -184,7 +178,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (creditWalletName) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`);
     }
-    else if (!hasDebitAmount) {
+    else if (debitAmount === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
     }
     else if (debitAmount < 0) {
@@ -193,7 +187,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (debitFee < 0) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
-    else if (!hasCreditAmount) {
+    else if (creditAmount === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no credit amount specified.`);
     }
     else if (creditAmount < 0) {
@@ -202,15 +196,15 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (creditFee < 0) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
-    if (debitCurrency == this.fiatConvert && hasDebitExRate) {
+    if (debitCurrency == this.fiatConvert && debitExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate (${debitExRate}) blank.`);
     }
-    if (creditCurrency == this.fiatConvert && hasCreditExRate) {
+    if (creditCurrency == this.fiatConvert && creditExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate (${creditExRate}) blank.`);
     }
     else if (checkExRates) {
       if (this.isCrypto(creditCurrency) && debitCurrency != this.fiatConvert) { //buy or exchange crypto
-        if (!hasDebitExRate) {
+        if (debitExRate === '') {
           throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) fiat convert (${this.fiatConvert}) exchange rate.`);
         }
         else if (debitExRate <= 0) {
@@ -218,7 +212,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
         }
       }
       if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
-        if (!hasCreditExRate) {
+        if (creditExRate === '') {
           throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) fiat convert (${this.fiatConvert}) exchange rate.`);
         }
         else if (creditExRate <= 0) {
@@ -231,13 +225,13 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     if (debitCurrency) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit currency (${debitCurrency}) blank.`);
     }
-    else if (hasDebitExRate) {
+    else if (debitExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
     }
-    else if (hasDebitAmount) {
+    else if (debitAmount !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit amount (${debitAmount.toLocaleString()}) blank.`);
     }
-    else if (hasDebitFee) {
+    else if (debitFee !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit fee (${debitFee.toLocaleString()}) blank.`);
     }
     else if (debitWalletName) {
@@ -249,20 +243,20 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (!this.isCrypto(creditCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) must be crypto (${this.cryptos}).`)
     }
-    else if (!hasCreditAmount) {
+    else if (creditAmount === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no credit amount specified.`);
     }
     else if (creditAmount <= 0) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit amount (${creditAmount.toLocaleString()}) must be greater than 0.`);
     }
-    else if (hasCreditFee) {
+    else if (creditFee !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
     }
     else if (!creditWalletName) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record has no credit wallet specified.`);
     }
     else if (checkExRates) {
-      if (!hasCreditExRate) {
+      if (creditExRate === '') {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) fiat convert (${this.fiatConvert}) exchange rate.`);
       }
       else if (creditExRate <= 0) {
@@ -277,7 +271,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (!this.isCrypto(debitCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) must be crypto (${this.cryptos}).`)
     }
-    else if (hasDebitExRate) {
+    else if (debitExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
     }
     else if (!hasDebitAmount) {
@@ -295,13 +289,13 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (creditCurrency) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank.`);
     }
-    else if (hasCreditExRate) {
+    else if (creditExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
     }
-    else if (hasCreditAmount) {
+    else if (creditAmount !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit amount (${creditAmount.toLocaleString()}) blank.`);
     }
-    else if (hasCreditFee) {
+    else if (creditFee !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
     }
     else if (creditWalletName) {
@@ -315,13 +309,13 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (!this.isCrypto(debitCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) must be crypto (${this.cryptos}).`)
     }
-    else if (hasDebitExRate) {
+    else if (debitExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
     }
     else if (hasDebitAmount) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit amount (${debitAmount.toLocaleString()}) blank.`);
     }
-    else if (!hasDebitFee) {
+    else if (debitFee === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit fee specified.`);
     }
     else if (debitFee <= 0) {
@@ -333,13 +327,13 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (creditCurrency) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank.`);
     }
-    else if (hasCreditExRate) {
+    else if (creditExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
     }
-    else if (hasCreditAmount) {
+    else if (creditAmount !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit amount (${creditAmount.toLocaleString()}) blank.`);
     }
-    else if (hasCreditFee) {
+    else if (creditFee !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
     }
     else if (creditWalletName) {

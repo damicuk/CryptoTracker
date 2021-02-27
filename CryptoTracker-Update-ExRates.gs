@@ -6,8 +6,8 @@ CryptoTracker.prototype.getCryptoDataExRates = function () {
   let histCryptoRecords = this.getHistCryptoRecords();
 
   //array of values used to update the sheet
-  let debitExRateValues = [];
-  let creditExRateValues = [];
+  let debitExRates = [];
+  let creditExRates = [];
 
   //do we need to update these columns?
   let updateDebitExRates = false;
@@ -22,62 +22,48 @@ CryptoTracker.prototype.getCryptoDataExRates = function () {
     let debitExRate = ledgerRecord.debitExRate;
     let creditCurrency = ledgerRecord.creditCurrency;
     let creditExRate = ledgerRecord.creditExRate;
-    let hasDebitExRate = ledgerRecord.hasDebitExRate;
-    let hasCreditExRate = ledgerRecord.hasCreditExRate;
-
-    //the value used to update the sheet
-    let debitExRateValue = '';
-    if (hasDebitExRate) {
-      debitExRateValue = debitExRate;
-    }
-
-    //the value used to update the sheet
-    let creditExRateValue = '';
-    if (hasCreditExRate) {
-      creditExRateValue = creditExRate;
-    }
 
     if (action == 'Trade') {
 
       if (this.isCrypto(creditCurrency) && debitCurrency != this.fiatConvert) { //buy or exchange crypto
-        if (!hasDebitExRate || debitExRate <= 0) {
+        if (debitExRate === '' || debitExRate <= 0) {
           let exRate = this.lookupExRate(histCryptoRecords, date, debitCurrency);
           if (exRate) {
-            debitExRateValue = exRate;
+            debitExRate = exRate;
             updateDebitExRates = true;
           }
         }
       }
       if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
-        if (!hasCreditExRate || creditExRate <= 0) {
+        if (creditExRate === '' || creditExRate <= 0) {
           let exRate = this.lookupExRate(histCryptoRecords, date, creditCurrency);
           if (exRate) {
-            creditExRateValue = exRate;
+            creditExRate = exRate;
             updateCreditExRates = true;
           }
         }
       }
     }
     else if (action == 'Reward') {
-      if (!hasCreditExRate || creditExRate <= 0) {
+      if (creditExRate === '' || creditExRate <= 0) {
         let exRate = this.lookupExRate(histCryptoRecords, date, creditCurrency);
         if (exRate) {
-          creditExRateValue = exRate;
+          creditExRate = exRate;
           updateCreditExRates = true;
         }
       }
     }
 
-    debitExRateValues.push([debitExRateValue]);
-    creditExRateValues.push([creditExRateValue]);
+    debitExRates.push([debitExRate]);
+    creditExRates.push([creditExRate]);
   }
 
   if (updateDebitExRates) {
-    this.setExRates(3, debitExRateValues);
+    this.setExRates(3, debitExRates);
   }
 
   if (updateCreditExRates) {
-    this.setExRates(8, creditExRateValues);
+    this.setExRates(8, creditExRates);
   }
 }
 
@@ -87,7 +73,7 @@ CryptoTracker.prototype.lookupExRate = function (histCryptoRecords, date, curren
   let bestDiff = -(new Date(0, 0, 0)).valueOf();
   let currDiff;
   let marginMs = this.exRateMinutesMargin * 60000
-  
+
   for (let record of histCryptoRecords) {
     if (record.crypto == currency && record.fiat == this.fiatConvert) {
       currDiff = Math.abs(record.date - date);
@@ -98,10 +84,10 @@ CryptoTracker.prototype.lookupExRate = function (histCryptoRecords, date, curren
     }
   }
 
-  if(bestRecord) {
+  if (bestRecord) {
     return bestRecord.exRate;
   }
-  
+
   return 0;
 
 }
@@ -160,8 +146,8 @@ CryptoTracker.prototype.updateExRates = function () {
   this.validateLedgerRecords(ledgerRecords, false);
 
   //array of values used to update the sheet
-  let debitExRateValues = [];
-  let creditExRateValues = [];
+  let debitExRates = [];
+  let creditExRates = [];
 
   // fill in any missing exchange rates with GOOGLEFINANCE formula
   const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#currency#", "#fiatConvert#")), "close", A#row#), 2,2)`;
@@ -178,64 +164,48 @@ CryptoTracker.prototype.updateExRates = function () {
     let debitExRate = ledgerRecord.debitExRate;
     let creditCurrency = ledgerRecord.creditCurrency;
     let creditExRate = ledgerRecord.creditExRate;
-    let hasDebitExRate = ledgerRecord.hasDebitExRate;
-    let hasCreditExRate = ledgerRecord.hasCreditExRate;
-
-    //the value used to update the sheet
-    let debitExRateValue = '';
-    if (hasDebitExRate) {
-      debitExRateValue = debitExRate;
-    }
-
-    //the value used to update the sheet
-    let creditExRateValue = '';
-    if (hasCreditExRate) {
-      creditExRateValue = creditExRate;
-    }
 
     if (action == 'Trade') {
 
       if (this.isCrypto(creditCurrency) && debitCurrency != this.fiatConvert) { //buy or exchange crypto
-        if (!hasDebitExRate || debitExRate <= 0) {
-          debitExRateValue = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+        if (debitExRate === '' || debitExRate <= 0) {
+          debitExRate = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
           updateDebitExRates = true;
         }
       }
       if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
-        if (!hasCreditExRate || creditExRate <= 0) {
-          creditExRateValue = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+        if (creditExRate === '' || creditExRate <= 0) {
+          creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
           updateCreditExRates = true;
         }
       }
     }
     else if (action == 'Reward') {
-      if (!hasCreditExRate || creditExRate <= 0) {
-        creditExRateValue = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+      if (creditExRate === '' || creditExRate <= 0) {
+        creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
         updateCreditExRates = true;
       }
     }
 
-    debitExRateValues.push([debitExRateValue]);
-    creditExRateValues.push([creditExRateValue]);
+    debitExRates.push([debitExRate]);
+    creditExRates.push([creditExRate]);
   }
 
   if (updateDebitExRates) {
-    this.setExRates(3, debitExRateValues);
+    this.setExRates(3, debitExRates);
   }
 
   if (updateCreditExRates) {
-    this.setExRates(8, creditExRateValues);
+    this.setExRates(8, creditExRates);
   }
 }
 
-
-
-CryptoTracker.prototype.setExRates = function (colIndex, exRateValues) {
+CryptoTracker.prototype.setExRates = function (colIndex, exRates) {
 
   let ledgerRange = this.getLedgerRange();
-  let exRatesRange = ledgerRange.offset(0, colIndex, exRateValues.length, 1);
+  let exRatesRange = ledgerRange.offset(0, colIndex, exRates.length, 1);
 
-  exRatesRange.setValues(exRateValues);
+  exRatesRange.setValues(exRates);
 
   //apply changes
   SpreadsheetApp.flush();
@@ -243,25 +213,25 @@ CryptoTracker.prototype.setExRates = function (colIndex, exRateValues) {
   //read in values calculated by the formula
   //remove failed formula results
   //overwrite the formulas with hard coded values
-  let calculatedExRateValues = exRatesRange.getValues();
-  let validExRateValues = this.removeInvalidExRates(calculatedExRateValues);
-  exRatesRange.setValues(validExRateValues);
+  let calculatedExRates = exRatesRange.getValues();
+  let validExRates = this.removeInvalidExRates(calculatedExRates);
+  exRatesRange.setValues(validExRates);
 
   //applies changes
   SpreadsheetApp.flush();
 }
 
-CryptoTracker.prototype.removeInvalidExRates = function (exRateValues) {
+CryptoTracker.prototype.removeInvalidExRates = function (exRates) {
 
-  let validExRateValues = [];
+  let validExRates = [];
 
-  for (let exRateValue of exRateValues) {
-    if (isNaN(exRateValue[0])) {
-      validExRateValues.push(['']);
+  for (let exRate of exRates) {
+    if (isNaN(exRate[0])) {
+      validExRates.push(['']);
     }
     else {
-      validExRateValues.push(exRateValue);
+      validExRates.push(exRate);
     }
   }
-  return validExRateValues;
+  return validExRates;
 }

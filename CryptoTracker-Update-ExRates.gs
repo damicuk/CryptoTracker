@@ -140,7 +140,7 @@ CryptoTracker.prototype.getHistCryptoRange = function () {
 
 }
 
-CryptoTracker.prototype.updateExRates = function () {
+CryptoTracker.prototype.getGoogleFinanceExRates = function () {
 
   let ledgerRecords = this.getLedgerRecords();
   this.validateLedgerRecords(ledgerRecords, false);

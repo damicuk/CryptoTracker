@@ -3,10 +3,10 @@ function onOpen() {
   let ui = SpreadsheetApp.getUi();
 
   let exRatesMenu = ui.createMenu('Complete Ledger Exchange Rates')
-    .addItem('Fetch Google Finance Rates', 'updateExRates')
+    .addItem('Fetch Google Finance Rates', 'getGoogleFinanceExRates')
     .addItem('Fetch Historical Crypto Rates', 'getCryptoDataExRates');
 
-  let cryptoDataMenu = ui.createMenu('Fetch Current Crypto Prices')
+  let cryptoDataMenu = ui.createMenu('Update Current Crypto Prices')
     .addItem('Fetch CoinMarketCap Prices', 'getCoinMarketCapData')
     .addItem('Fetch CryptoComapare Prices', 'getCryptoCompareData');
 
@@ -42,9 +42,9 @@ function validateLedger() {
   SpreadsheetApp.getActive().toast('All looks good', 'Ledger Valid', 10);
 }
 
-function updateExRates() {
+function getGoogleFinanceExRates() {
 
-  new CryptoTracker().updateExRates();
+  new CryptoTracker().getGoogleFinanceExRates();
 }
 
 function getCryptoDataExRates() {

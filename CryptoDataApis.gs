@@ -1,3 +1,31 @@
+CryptoTracker.prototype.getCryptoCompareTable = function () {
+
+  let apiKey = this.settings['CryptoCompare ApiKey'];
+
+  if (!apiKey) {
+    throw Error(`CryptoCompare ApiKey is missing from the settings sheet.`);
+  }
+
+  let cryptos = Array.from(this.settings['Cryptos']).toString();
+  let fiatConvert = this.settings['Fiat Convert'];
+
+  let url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos}&tsyms=${fiatConvert}&api_key=${apiKey}`;
+
+  let timestamp = new Date().toISOString();
+  let httpRequest = UrlFetchApp.fetch(url);
+  let returnText = httpRequest.getContentText();
+  let data = JSON.parse(returnText);
+
+  let cryptoDataTable = [[`Date Time`, `Crypto`, `Fiat Convert`, `Ex Rate`]];
+  for (let coin in data) {
+
+    cryptoDataTable.push([timestamp ,coin, fiatConvert, data[coin][fiatConvert]]);
+
+  }
+
+  return cryptoDataTable;
+}
+
 CryptoTracker.prototype.getCoinMarketCapTable = function () {
 
   let apiKey = this.settings['CoinMarketCap ApiKey'];
@@ -39,32 +67,3 @@ CryptoTracker.prototype.getCoinMarketCapTable = function () {
 
   return cryptoDataTable;
 }
-
-CryptoTracker.prototype.getCryptoCompareTable = function () {
-
-  let apiKey = this.settings['CryptoCompare ApiKey'];
-
-  if (!apiKey) {
-    throw Error(`CryptoCompare ApiKey is missing from the settings sheet.`);
-  }
-
-  let cryptos = Array.from(this.settings['Cryptos']).toString();
-  let fiatConvert = this.settings['Fiat Convert'];
-
-  let url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos}&tsyms=${fiatConvert}&api_key=${apiKey}`;
-
-  let timestamp = new Date().toISOString();
-  let httpRequest = UrlFetchApp.fetch(url);
-  let returnText = httpRequest.getContentText();
-  let data = JSON.parse(returnText);
-
-  let cryptoDataTable = [[`Date Time`, `Crypto`, `Fiat Convert`, `Ex Rate`]];
-  for (let coin in data) {
-
-    cryptoDataTable.push([timestamp ,coin, fiatConvert, data[coin][fiatConvert]]);
-
-  }
-
-  return cryptoDataTable;
-}
-

@@ -7,8 +7,8 @@ function onOpen() {
     .addItem('Fetch Historical Crypto Rates', 'getCryptoDataExRates');
 
   let cryptoDataMenu = ui.createMenu('Update Current Crypto Prices')
-    .addItem('Fetch CoinMarketCap Prices', 'getCoinMarketCapData')
-    .addItem('Fetch CryptoComapare Prices', 'getCryptoCompareData');
+    .addItem('Fetch CryptoComapare Prices', 'getCryptoCompareData')
+    .addItem('Fetch CoinMarketCap Prices', 'getCoinMarketCapData');
 
   ui.createMenu('Crypto Tracker')
     .addItem('Validate Ledger', 'validateLedger')
@@ -25,14 +25,14 @@ function processLedger() {
   new CryptoTracker().processLedger();
 }
 
-function getCoinMarketCapData() {
-
-  new CryptoTracker().getCoinMarketCapData();
-}
-
 function getCryptoCompareData() {
 
   new CryptoTracker().getCryptoCompareData();
+}
+
+function getCoinMarketCapData() {
+
+  new CryptoTracker().getCoinMarketCapData();
 }
 
 function validateLedger() {
@@ -51,5 +51,3 @@ function getCryptoDataExRates() {
 
   new CryptoTracker().getCryptoDataExRates();
 }
-
-

@@ -1,9 +1,3 @@
-// function _isLongTerm(date1, date2 = new Date()) {
-
-//   const timezone = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
-//   return _isLongTermTZ(timezone, date1, date2);
-// }
-
 function _isLongTerm(timezone, date1, date2 = new Date()) {
 
   date1 = convertTZ(date1, timezone);

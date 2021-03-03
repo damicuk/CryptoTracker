@@ -41,10 +41,10 @@ class CryptoAccount {
 
   deposit(lots) {
 
-    for (let lot of lots) {
-
-      this.lots.push(lot);
-    }
+    Array.isArray(lots) ?
+      this.lots = this.lots.concat(lots) :
+      this.lots.push(lots);
+  
   }
 
   withdraw(amount, fee, lotMatching) {

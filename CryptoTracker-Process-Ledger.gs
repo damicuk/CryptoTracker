@@ -63,7 +63,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
         let lot = new Lot(date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
 
         //debit wallet name used as credit wallet name is empty to avoid data redundancy
-        this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
+        this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
       }
       else if (this.isCrypto(debitCurrency) && this.isFiat(creditCurrency)) { //Sell crypto
@@ -87,7 +87,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
         let lot = new Lot(date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
 
         //debit wallet name used as credit wallet name is empty to avoid data redundancy
-        this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
+        this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
       }
     }
@@ -96,7 +96,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
       //the cost base is the value of (credit exchange rate x credit amount)
       let lot = new Lot(date, creditWalletName, creditCurrency, creditExRate, creditAmount, 0, creditCurrency, creditAmount, 0);
 
-      this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit([lot]);
+      this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
     }
     else if (action == 'Gift' || action == 'Fee') { //Gift or Fee

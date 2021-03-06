@@ -16,7 +16,7 @@ CryptoTracker.prototype.getCryptoCompareTable = function () {
   let returnText = httpRequest.getContentText();
   let data = JSON.parse(returnText);
 
-  let exRatesTable = [[`Date Time`, `Crypto`, `Accounting Currency`, `Ex Rate`]];
+  let exRatesTable = [[`Date Time`, `Coin`, `Fiat`, `Ex Rate`]];
   for (let coin in data) {
 
     exRatesTable.push([timestamp ,coin, accountingCurrency, data[coin][accountingCurrency]]);
@@ -58,7 +58,7 @@ CryptoTracker.prototype.getCoinMarketCapTable = function () {
   let returnText = httpRequest.getContentText();
   let data = JSON.parse(returnText).data;
 
-  let exRatesTable = [[`Date Time`, `Crypto`, `Accounting Currency`, `Ex Rate`]];
+  let exRatesTable = [[`Date Time`, `Coin`, `Fiat`, `Ex Rate`]];
   for (let coin in data) {
 
     exRatesTable.push([data[coin].quote[accountingCurrency].last_updated, data[coin].symbol, accountingCurrency, data[coin].quote[accountingCurrency].price]);

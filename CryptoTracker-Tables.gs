@@ -266,21 +266,3 @@ CryptoTracker.prototype.processLedger = function () {
 
 }
 
-CryptoTracker.prototype.getCoinMarketCapData = function () {
-
-  let cryptoDataTable = this.getCoinMarketCapTable();
-  this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
-  if (this.saveCryptoData) {
-    this.appendData(cryptoDataTable, this.histCryptoDataSheetName);
-  }
-}
-
-CryptoTracker.prototype.getCryptoCompareData = function () {
-
-  let cryptoDataTable = this.getCryptoCompareTable();
-  this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
-  if (this.saveCryptoData) {
-    this.appendData(cryptoDataTable, this.histCryptoSheetName);
-  }
-}
-

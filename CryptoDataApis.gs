@@ -67,3 +67,21 @@ CryptoTracker.prototype.getCoinMarketCapTable = function () {
 
   return cryptoDataTable;
 }
+
+CryptoTracker.prototype.getCryptoCompareData = function () {
+
+  let cryptoDataTable = this.getCryptoCompareTable();
+  this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
+  if (this.saveCryptoData) {
+    this.appendData(cryptoDataTable, this.histCryptoSheetName);
+  }
+}
+
+CryptoTracker.prototype.getCoinMarketCapData = function () {
+
+  let cryptoDataTable = this.getCoinMarketCapTable();
+  this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
+  if (this.saveCryptoData) {
+    this.appendData(cryptoDataTable, this.histCryptoDataSheetName);
+  }
+}

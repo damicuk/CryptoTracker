@@ -274,7 +274,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (debitExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
     }
-    else if (!hasDebitAmount) {
+    else if (debitAmount  === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
     }
     else if (debitAmount <= 0) {
@@ -312,7 +312,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (debitExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
     }
-    else if (hasDebitAmount) {
+    else if (debitAmount !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit amount (${debitAmount.toLocaleString()}) blank.`);
     }
     else if (debitFee === '') {

@@ -9,15 +9,15 @@ CryptoTracker.prototype.validateSettings = function () {
     }
   }
 
-  //check fiat convert is fiat and not crypto
-  if (!this.fiatConvert) {
-    throw Error(`Fiat Convert is missing from the settings sheet.`);
+  //check accounting currency is fiat and not crypto
+  if (!this.accountingCurrency) {
+    throw Error(`Accounting Currency is missing from the settings sheet.`);
   }
-  else if (!this.isFiat(this.fiatConvert)) {
-    throw Error(`Fiat Convert (${this.fiatConvert}) is not listed as fiat (${this.fiats}) in the settings sheet.`);
+  else if (!this.isFiat(this.accountingCurrency)) {
+    throw Error(`Accounting Currency (${this.accountingCurrency}) is not listed as fiat (${this.fiats}) in the settings sheet.`);
   }
-  else if (this.isCrypto(this.fiatConvert)) { //never called
-    throw Error(`Fiat Convert (${this.fiatConvert}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
+  else if (this.isCrypto(this.accountingCurrency)) { //never called
+    throw Error(`Accounting Currency (${this.accountingCurrency}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
   }
   else if (!this.ledgerSheetName) {
     throw Error(`Ledger Sheet is missing from the settings sheet.`);
@@ -196,24 +196,24 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (creditFee < 0) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
-    if (debitCurrency == this.fiatConvert && debitExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate (${debitExRate}) blank.`);
+    if (debitCurrency == this.accountingCurrency && debitExRate !== '') {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is the accounting currency (${this.accountingCurrency}). Leave exchange rate (${debitExRate}) blank.`);
     }
-    if (creditCurrency == this.fiatConvert && creditExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is fiat convert (${this.fiatConvert}). Leave exchange rate (${creditExRate}) blank.`);
+    if (creditCurrency == this.accountingCurrency && creditExRate !== '') {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is the accounting currency (${this.accountingCurrency}). Leave exchange rate (${creditExRate}) blank.`);
     }
     else if (checkExRates) {
-      if (this.isCrypto(creditCurrency) && debitCurrency != this.fiatConvert) { //buy or exchange crypto
+      if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '') {
-          throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) fiat convert (${this.fiatConvert}) exchange rate.`);
+          throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
         }
         else if (debitExRate <= 0) {
           throw Error(`[${date.toISOString()}] [${action}] Ledger record debit exchange rate must be greater than 0.`);
         }
       }
-      if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
+      if (this.isCrypto(debitCurrency) && creditCurrency != this.accountingCurrency) { //sell or exchange crypto
         if (creditExRate === '') {
-          throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) fiat convert (${this.fiatConvert}) exchange rate.`);
+          throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
         }
         else if (creditExRate <= 0) {
           throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate must be greater than 0.`);
@@ -257,7 +257,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     }
     else if (checkExRates) {
       if (creditExRate === '') {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) fiat convert (${this.fiatConvert}) exchange rate.`);
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
       }
       else if (creditExRate <= 0) {
         throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate must be greater than 0.`);

@@ -25,7 +25,7 @@ CryptoTracker.prototype.getCryptoDataExRates = function () {
 
     if (action == 'Trade') {
 
-      if (this.isCrypto(creditCurrency) && debitCurrency != this.fiatConvert) { //buy or exchange crypto
+      if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '' || debitExRate <= 0) {
           let exRate = this.lookupExRate(histCryptoRecords, date, debitCurrency);
           if (exRate) {
@@ -34,7 +34,7 @@ CryptoTracker.prototype.getCryptoDataExRates = function () {
           }
         }
       }
-      if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
+      if (this.isCrypto(debitCurrency) && creditCurrency != this.accountingCurrency) { //sell or exchange crypto
         if (creditExRate === '' || creditExRate <= 0) {
           let exRate = this.lookupExRate(histCryptoRecords, date, creditCurrency);
           if (exRate) {
@@ -75,7 +75,7 @@ CryptoTracker.prototype.lookupExRate = function (histCryptoRecords, date, curren
   let marginMs = this.exRateMinutesMargin * 60000
 
   for (let record of histCryptoRecords) {
-    if (record.crypto == currency && record.fiat == this.fiatConvert) {
+    if (record.crypto == currency && record.fiat == this.accountingCurrency) {
       currDiff = Math.abs(record.date - date);
       if (currDiff < bestDiff && currDiff <= marginMs) {
         bestRecord = record;
@@ -148,7 +148,7 @@ CryptoTracker.prototype.getGoogleFinanceExRates = function () {
   let creditExRates = [];
 
   // fill in any missing exchange rates with GOOGLEFINANCE formula
-  const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#currency#", "#fiatConvert#")), "close", A#row#), 2,2)`;
+  const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#currency#", "#accountingCurrency#")), "close", A#row#), 2,2)`;
 
   //do we need to update these columns?
   let updateDebitExRates = false;
@@ -165,22 +165,22 @@ CryptoTracker.prototype.getGoogleFinanceExRates = function () {
 
     if (action == 'Trade') {
 
-      if (this.isCrypto(creditCurrency) && debitCurrency != this.fiatConvert) { //buy or exchange crypto
+      if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '' || debitExRate <= 0) {
-          debitExRate = formula.replace(/#currency#/, debitCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+          debitExRate = formula.replace(/#currency#/, debitCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
           updateDebitExRates = true;
         }
       }
-      if (this.isCrypto(debitCurrency) && creditCurrency != this.fiatConvert) { //sell or exchange crypto
+      if (this.isCrypto(debitCurrency) && creditCurrency != this.accountingCurrency) { //sell or exchange crypto
         if (creditExRate === '' || creditExRate <= 0) {
-          creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+          creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
           updateCreditExRates = true;
         }
       }
     }
     else if (action == 'Reward') {
       if (creditExRate === '' || creditExRate <= 0) {
-        creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#fiatConvert#/, this.fiatConvert).replace(/#row#/, (i + 3).toString());
+        creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
         updateCreditExRates = true;
       }
     }

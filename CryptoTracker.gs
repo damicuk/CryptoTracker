@@ -51,14 +51,24 @@ class CryptoTracker {
     return this.settings['ExRate Minutes Margin'];
   }
 
-  get fiatConvert() {
+  get accountingCurrency() {
 
-    return this.settings['Fiat Convert'];
+    return this.settings['Accounting Currency'];
   }
 
   get defaultLotMatching() {
 
     return this.settings['Default Lot Matching']
+  }
+
+  get cryptoCompareApiKey() {
+
+    return this.settings['CryptoCompare ApiKey'];;
+  }
+
+  get coinMarketCapApiKey() {
+
+    return this.settings['CoinMarketCap ApiKey'];;
   }
 
   get fiats() {

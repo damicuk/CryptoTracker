@@ -16,14 +16,14 @@ CryptoTracker.prototype.getCryptoCompareTable = function () {
   let returnText = httpRequest.getContentText();
   let data = JSON.parse(returnText);
 
-  let cryptoDataTable = [[`Date Time`, `Crypto`, `Accounting Currency`, `Ex Rate`]];
+  let exRatesTable = [[`Date Time`, `Crypto`, `Accounting Currency`, `Ex Rate`]];
   for (let coin in data) {
 
-    cryptoDataTable.push([timestamp ,coin, accountingCurrency, data[coin][accountingCurrency]]);
+    exRatesTable.push([timestamp ,coin, accountingCurrency, data[coin][accountingCurrency]]);
 
   }
 
-  return cryptoDataTable;
+  return exRatesTable;
 }
 
 CryptoTracker.prototype.getCoinMarketCapTable = function () {
@@ -58,30 +58,30 @@ CryptoTracker.prototype.getCoinMarketCapTable = function () {
   let returnText = httpRequest.getContentText();
   let data = JSON.parse(returnText).data;
 
-  let cryptoDataTable = [[`Date Time`, `Crypto`, `Accounting Currency`, `Ex Rate`]];
+  let exRatesTable = [[`Date Time`, `Crypto`, `Accounting Currency`, `Ex Rate`]];
   for (let coin in data) {
 
-    cryptoDataTable.push([data[coin].quote[accountingCurrency].last_updated, data[coin].symbol, accountingCurrency, data[coin].quote[accountingCurrency].price]);
+    exRatesTable.push([data[coin].quote[accountingCurrency].last_updated, data[coin].symbol, accountingCurrency, data[coin].quote[accountingCurrency].price]);
 
   }
 
-  return cryptoDataTable;
+  return exRatesTable;
 }
 
-CryptoTracker.prototype.getCryptoCompareData = function () {
+CryptoTracker.prototype.getCryptoCompareExRates = function () {
 
-  let cryptoDataTable = this.getCryptoCompareTable();
-  this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
-  if (this.saveCryptoData) {
-    this.appendData(cryptoDataTable, this.histCryptoSheetName);
+  let exRatesTable = this.getCryptoCompareTable();
+  this.dumpData(exRatesTable, this.currentExRatesSheetName);
+  if (this.saveExRates) {
+    this.appendData(exRatesTable, this.savedExRatesSheetName);
   }
 }
 
-CryptoTracker.prototype.getCoinMarketCapData = function () {
+CryptoTracker.prototype.getCoinMarketCapExRates = function () {
 
-  let cryptoDataTable = this.getCoinMarketCapTable();
-  this.dumpData(cryptoDataTable, this.cryptoDataSheetName);
-  if (this.saveCryptoData) {
-    this.appendData(cryptoDataTable, this.histCryptoDataSheetName);
+  let exRatesTable = this.getCoinMarketCapTable();
+  this.dumpData(exRatesTable, this.currentExRatesSheetName);
+  if (this.saveExRates) {
+    this.appendData(exRatesTable, this.savedExRatesSheetName);
   }
 }

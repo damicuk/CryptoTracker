@@ -31,24 +31,24 @@ class CryptoTracker {
     return this.settings['Fiat Accounts Sheet'];
   }
 
-  get cryptoDataSheetName() {
+  get currentExRatesSheetName() {
 
-    return this.settings['Crypto Data Sheet'];
+    return this.settings['Current Ex Rates Sheet'];
   }
 
-  get histCryptoSheetName() {
+  get savedExRatesSheetName() {
 
-    return this.settings['Historical Crypto Sheet'];
+    return this.settings['Saved Ex Rates Sheet'];
   }
 
-  get saveCryptoData() {
+  get saveExRates() {
 
-    return this.settings['Save Crypto Data'];
+    return this.settings['Save Ex Rates'];
   }
 
   get exRateMinutesMargin() {
 
-    return this.settings['ExRate Minutes Margin'];
+    return this.settings['Ex Rate Minutes Margin'];
   }
 
   get accountingCurrency() {

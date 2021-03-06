@@ -1,4 +1,4 @@
-class HistCryptoRecord {
+class ExRateRecord {
 
   constructor(
     date,

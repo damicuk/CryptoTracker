@@ -1,9 +1,9 @@
-CryptoTracker.prototype.getCryptoDataExRates = function () {
+CryptoTracker.prototype.getSavedExRates = function () {
 
   let ledgerRecords = this.getLedgerRecords();
   this.validateLedgerRecords(ledgerRecords, false);
 
-  let histCryptoRecords = this.getHistCryptoRecords();
+  let exRateRecords = this.getExRateRecords();
 
   //array of values used to update the sheet
   let debitExRates = [];
@@ -27,7 +27,7 @@ CryptoTracker.prototype.getCryptoDataExRates = function () {
 
       if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '' || debitExRate <= 0) {
-          let exRate = this.lookupExRate(histCryptoRecords, date, debitCurrency);
+          let exRate = this.lookupExRate(exRateRecords, date, debitCurrency);
           if (exRate) {
             debitExRate = exRate;
             updateDebitExRates = true;
@@ -36,7 +36,7 @@ CryptoTracker.prototype.getCryptoDataExRates = function () {
       }
       if (this.isCrypto(debitCurrency) && creditCurrency != this.accountingCurrency) { //sell or exchange crypto
         if (creditExRate === '' || creditExRate <= 0) {
-          let exRate = this.lookupExRate(histCryptoRecords, date, creditCurrency);
+          let exRate = this.lookupExRate(exRateRecords, date, creditCurrency);
           if (exRate) {
             creditExRate = exRate;
             updateCreditExRates = true;
@@ -46,7 +46,7 @@ CryptoTracker.prototype.getCryptoDataExRates = function () {
     }
     else if (action == 'Reward') {
       if (creditExRate === '' || creditExRate <= 0) {
-        let exRate = this.lookupExRate(histCryptoRecords, date, creditCurrency);
+        let exRate = this.lookupExRate(exRateRecords, date, creditCurrency);
         if (exRate) {
           creditExRate = exRate;
           updateCreditExRates = true;
@@ -67,14 +67,14 @@ CryptoTracker.prototype.getCryptoDataExRates = function () {
   }
 }
 
-CryptoTracker.prototype.lookupExRate = function (histCryptoRecords, date, currency) {
+CryptoTracker.prototype.lookupExRate = function (exRateRecords, date, currency) {
 
   let bestRecord;
   let bestDiff = -(new Date(0, 0, 0)).valueOf();
   let currDiff;
   let marginMs = this.exRateMinutesMargin * 60000
 
-  for (let record of histCryptoRecords) {
+  for (let record of exRateRecords) {
     if (record.crypto == currency && record.fiat == this.accountingCurrency) {
       currDiff = Math.abs(record.date - date);
       if (currDiff < bestDiff && currDiff <= marginMs) {
@@ -92,49 +92,49 @@ CryptoTracker.prototype.lookupExRate = function (histCryptoRecords, date, curren
 
 }
 
-CryptoTracker.prototype.getHistCryptoRecords = function () {
+CryptoTracker.prototype.getExRateRecords = function () {
 
-  let histCryptoRange = this.getHistCryptoRange();
-  let histCryptoData = histCryptoRange.getValues();
+  let savedExRatesRange = this.getSavedExRatesRange();
+  let exRatesData = savedExRatesRange.getValues();
 
   //convert raw data to object array
-  let histCryptoRecords = [];
-  for (let row of histCryptoData) {
+  let exRateRecords = [];
+  for (let row of exRatesData) {
 
-    let histCryptoRecord = new HistCryptoRecord(
+    let exRateRecord = new ExRateRecord(
       row[0],
       row[1],
       row[2],
       row[3]
     );
 
-    histCryptoRecords.push(histCryptoRecord);
+    exRateRecords.push(exRateRecord);
 
   }
 
   //sort by date
-  histCryptoRecords.sort(function (a, b) {
+  exRateRecords.sort(function (a, b) {
     return a.date - b.date;
   });
 
-  return histCryptoRecords;
+  return exRateRecords;
 
 }
 
-CryptoTracker.prototype.getHistCryptoRange = function () {
+CryptoTracker.prototype.getSavedExRatesRange = function () {
 
   let ss = SpreadsheetApp.getActive();
-  let histCryptoSheet = ss.getSheetByName(this.histCryptoSheetName);
+  let savedExRatesSheet = ss.getSheetByName(this.savedExRatesSheetName);
 
-  if (!histCryptoSheet) {
-    throw Error(`Historical Crypto Data Sheet (${this.histCryptoDataSheetName}) specified in the settings sheet not found. 
-    Create file by running 'Fetch Current Crypto Prices' with 'Save Crypto Data' in the settings sheet set to 'TRUE'.`);
+  if (!savedExRatesSheet) {
+    throw Error(`Saved Ex Rates Sheet (${this.savedExRatesSheetName}) specified in the settings sheet not found. 
+    Create file by running 'Update Current Ex Rates' with 'Save Ex Rates' in the settings sheet set to 'TRUE'.`);
   }
 
-  let histCryptoRange = histCryptoSheet.getDataRange();
-  histCryptoRange = histCryptoRange.offset(1, 0, histCryptoRange.getHeight() - 1, 4);
+  let savedExRatesRange = savedExRatesSheet.getDataRange();
+  savedExRatesRange = savedExRatesRange.offset(1, 0, savedExRatesRange.getHeight() - 1, 4);
 
-  return histCryptoRange;
+  return savedExRatesRange;
 
 }
 

@@ -2,21 +2,21 @@ function onOpen() {
 
   let ui = SpreadsheetApp.getUi();
 
-  let exRatesMenu = ui.createMenu('Complete Ledger Exchange Rates')
-    .addItem('Fetch Google Finance Rates', 'getGoogleFinanceExRates')
-    .addItem('Fetch Historical Crypto Rates', 'getCryptoDataExRates');
+  let ledgerExRatesMenu = ui.createMenu('Complete Ledger Ex Rates')
+    .addItem('Use Google Finance Rates', 'getGoogleFinanceExRates')
+    .addItem('Use Saved Ex Rates', 'getSavedExRates');
 
-  let cryptoDataMenu = ui.createMenu('Update Current Crypto Prices')
-    .addItem('Fetch CryptoComapare Prices', 'getCryptoCompareData')
-    .addItem('Fetch CoinMarketCap Prices', 'getCoinMarketCapData');
+  let currentExRatesMenu = ui.createMenu('Update Current Ex Rates')
+    .addItem('Fetch CryptoComapare Ex Rates', 'getCryptoCompareExRates')
+    .addItem('Fetch CoinMarketCap Ex Rates', 'getCoinMarketCapExRates');
 
   ui.createMenu('Crypto Tracker')
     .addItem('Validate Ledger', 'validateLedger')
     .addItem('Process Ledger', 'processLedger')
     .addSeparator()
-    .addSubMenu(exRatesMenu)
+    .addSubMenu(ledgerExRatesMenu)
     .addSeparator()
-    .addSubMenu(cryptoDataMenu)
+    .addSubMenu(currentExRatesMenu)
     .addToUi();
 }
 
@@ -25,14 +25,14 @@ function processLedger() {
   new CryptoTracker().processLedger();
 }
 
-function getCryptoCompareData() {
+function getCryptoCompareExRates() {
 
-  new CryptoTracker().getCryptoCompareData();
+  new CryptoTracker().getCryptoCompareExRates();
 }
 
-function getCoinMarketCapData() {
+function getCoinMarketCapExRates() {
 
-  new CryptoTracker().getCoinMarketCapData();
+  new CryptoTracker().getCoinMarketCapExRates();
 }
 
 function validateLedger() {
@@ -47,7 +47,7 @@ function getGoogleFinanceExRates() {
   new CryptoTracker().getGoogleFinanceExRates();
 }
 
-function getCryptoDataExRates() {
+function getSavedExRates() {
 
-  new CryptoTracker().getCryptoDataExRates();
+  new CryptoTracker().getSavedExRates();
 }

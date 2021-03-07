@@ -91,7 +91,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
       }
     }
-    else if (action == 'Reward') { //Reward
+    else if (action == 'Income') { //Income
 
       //the cost base is the value of (credit exchange rate x credit amount)
       let lot = new Lot(date, creditWalletName, creditCurrency, creditExRate, creditAmount, 0, creditCurrency, creditAmount, 0);
@@ -99,7 +99,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
       this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
     }
-    else if (action == 'Gift' || action == 'Fee') { //Gift or Fee
+    else if (action == 'Donation' || action == 'Payment') { //Donation or Payment
 
       this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 

@@ -221,7 +221,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
       }
     }
   }
-  else if (action == 'Reward') { //Reward
+  else if (action == 'Income') { //Income
     if (debitCurrency) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit currency (${debitCurrency}) blank.`);
     }
@@ -264,7 +264,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
       }
     }
   }
-  else if (action == 'Gift') { //Gift
+  else if (action == 'Donation') { //Donation
     if (!debitCurrency) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
     }
@@ -302,7 +302,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank.`);
     }
   }
-  else if (action == 'Fee') { //Fee
+  else if (action == 'Payment') { //Payment
     if (!debitCurrency) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
     }

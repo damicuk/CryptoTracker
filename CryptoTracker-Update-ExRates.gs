@@ -44,7 +44,7 @@ CryptoTracker.prototype.getSavedExRates = function () {
         }
       }
     }
-    else if (action == 'Reward') {
+    else if (action == 'Income') {
       if (creditExRate === '' || creditExRate <= 0) {
         let exRate = this.lookupExRate(exRateRecords, date, creditCurrency);
         if (exRate) {

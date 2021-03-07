@@ -31,6 +31,9 @@ CryptoTracker.prototype.validateSettings = function () {
   else if (!this.incomeSheetName) {
     throw Error(`Income Sheet is missing from the settings sheet.`);
   }
+  else if (!this.donationsSheetName) {
+    throw Error(`Donations Sheet is missing from the settings sheet.`);
+  }
   else if (!this.fiatAccountsSheetName) {
     throw Error(`Fiat Accounts Sheet is missing from the settings sheet.`);
   }
@@ -199,10 +202,10 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (creditFee < 0) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
-    if (debitCurrency == this.accountingCurrency && debitExRate !== '') {
+    else if (debitCurrency == this.accountingCurrency && debitExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is the accounting currency (${this.accountingCurrency}). Leave exchange rate (${debitExRate}) blank.`);
     }
-    if (creditCurrency == this.accountingCurrency && creditExRate !== '') {
+    else if (creditCurrency == this.accountingCurrency && creditExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is the accounting currency (${this.accountingCurrency}). Leave exchange rate (${creditExRate}) blank.`);
     }
     else if (checkExRates) {
@@ -274,9 +277,6 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (!this.isCrypto(debitCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) must be crypto (${this.cryptos}).`)
     }
-    else if (debitExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
-    }
     else if (debitAmount  === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
     }
@@ -303,6 +303,14 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     }
     else if (creditWalletName) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank.`);
+    }
+    else if (checkExRates) {
+      if (debitExRate === '') {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
+      }
+      else if (debitExRate <= 0) {
+        throw Error(`[${date.toISOString()}] [${action}] Ledger record debit exchange rate must be greater than 0.`);
+      }
     }
   }
   else if (action == 'Payment') { //Payment

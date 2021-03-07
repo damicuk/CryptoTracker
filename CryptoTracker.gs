@@ -5,10 +5,11 @@ class CryptoTracker {
     this.settings = new Settings();
     this.validateSettings();
     this._wallets = new Map();
-    this.closedLots = new Array();
+    this.incomeLots = [];
+    this.closedLots = [];
+    this.donatedClosedLots = [];
     this.lotMatching = this.defaultLotMatching;
     this.lotMatchingArray = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
-    this.incomeLots = new Array();
 
   }
 
@@ -30,6 +31,11 @@ class CryptoTracker {
   get incomeSheetName() {
 
     return this.settings['Income Sheet'];
+  }
+
+  get donationsSheetName() {
+
+    return this.settings['Donations Sheet'];
   }
 
   get fiatAccountsSheetName() {
@@ -162,6 +168,21 @@ class CryptoTracker {
 
   closeLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee) {
 
+    let closedLots = this.getClosedLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
+    this.closedLots = this.closedLots.concat(closedLots);
+
+  }
+
+  donateLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee) {
+
+    let closedLots = this.getClosedLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
+    this.donatedClosedLots = this.donatedClosedLots.concat(closedLots);
+
+  }
+
+  getClosedLots(lots, date, creditWalletName, creditCurrency, creditExRate, creditAmount, creditFee) {
+
+    let closedLots = [];
     let creditAmountSatoshi = Math.round(creditAmount * 1e8);
     let creditFeeSatoshi = Math.round(creditFee * 1e8);
 
@@ -185,7 +206,7 @@ class CryptoTracker {
       let apportionedFeeSatoshi = Math.round((lot.satoshi / lotsSatoshi) * creditFeeSatoshi);
 
       let closedLot = new ClosedLot(lot, date, creditWalletName, creditCurrency, creditExRate, (apportionedAmountSatoshi / 1e8), (apportionedFeeSatoshi / 1e8));
-      this.closedLots.push(closedLot);
+      closedLots.push(closedLot);
 
       remainingAmountSatoshi -= apportionedAmountSatoshi;
       remainingFeeSatoshi -= apportionedFeeSatoshi;
@@ -193,7 +214,9 @@ class CryptoTracker {
     }
     //just add the remaining amount fee to the last closed lot to correct for any accumulated rounding errors
     let closedLot = new ClosedLot(lots[lots.length - 1], date, creditWalletName, creditCurrency, creditExRate, (remainingAmountSatoshi / 1e8), (remainingFeeSatoshi / 1e8));
-    this.closedLots.push(closedLot);
+    closedLots.push(closedLot);
+
+    return closedLots;
 
   }
 

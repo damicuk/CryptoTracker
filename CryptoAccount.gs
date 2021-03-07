@@ -59,8 +59,8 @@ class CryptoAccount {
 
     this.lots.sort(this.lotComparator(lotMatching));
 
-    let keepLots = new Array();
-    let withdrawLots = new Array();
+    let keepLots = [];
+    let withdrawLots = [];
     for (let lot of this.lots) {
 
       if (neededSatoshi > 0) {  //need more

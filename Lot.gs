@@ -33,7 +33,7 @@ class Lot {
 
   split(satoshi) {
 
-    let splitLots = new Array();
+    let splitLots = [];
 
     let debitAmountSatoshi = Math.round((satoshi / this.satoshi) * this.debitAmountSatoshi);
     let debitFeeSatoshi = Math.round((satoshi / this.satoshi) * this.debitFeeSatoshi);

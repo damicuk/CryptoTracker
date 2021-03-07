@@ -102,9 +102,12 @@ CryptoTracker.prototype.processLedgerRecords = function () {
       this.incomeLots.push(lot.duplicate());
 
     }
-    else if (action == 'Donation' || action == 'Payment') { //Donation or Payment
+    else if (action == 'Donation') { //Donation
 
-      this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
+      let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
+
+      //debit wallet currency amount fee used as credit values are empty to avoid data redundancy
+      this.donateLots(lots, date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee);
 
     }
   }

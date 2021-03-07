@@ -55,13 +55,7 @@ CryptoTracker.prototype.getOpenPositionsTable = function () {
     }
   }
 
-  //sort by date
-  const dateIndex = 0;
-  table.sort(function (a, b) {
-    return a[dateIndex] - b[dateIndex];
-  });
-
-  return table;
+  return this.sortTable(table, 0);
 }
 
 CryptoTracker.prototype.getClosedPositionsTable = function () {
@@ -133,13 +127,7 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     ]);
   }
 
-  //sort by sell date
-  const dateSellIndex = 9;
-  table.sort(function (a, b) {
-    return a[dateSellIndex] - b[dateSellIndex];
-  });
-
-  return table;
+  return this.sortTable(table, 9);
 }
 
 CryptoTracker.prototype.getIncomeTable = function () {
@@ -174,13 +162,76 @@ CryptoTracker.prototype.getIncomeTable = function () {
     ]);
   }
 
-  //sort by date
-  const dateIndex = 0;
-  table.sort(function (a, b) {
-    return a[dateIndex] - b[dateIndex];
-  });
+  return this.sortTable(table, 0);
+}
 
-  return table;
+CryptoTracker.prototype.getDonationsTable = function () {
+
+  let table = [];
+
+  table.push([
+
+    'Date Buy',
+    'Debit Currency Buy',
+    'Debit ExRate Buy',
+    'Debit Amount Buy',
+    'Debit Fee Buy',
+    'Wallet Buy',
+
+    'Credit Currency Buy',
+    'Credit Amount Buy',
+    'Credit Fee Buy',
+
+    'Date Donation',
+    'ExRate Donation',
+    'Amount Donation',
+    'Fee Donation',
+    'Wallet Donation'
+  ]);
+
+  for (let closedLot of this.donatedClosedLots) {
+
+    let lot = closedLot.lot;
+
+    let dateBuy = lot.date;
+    let debitCurrencyBuy = lot.debitCurrency;
+    let debitExRateBuy = lot.debitExRate;
+    let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
+    let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
+    let walletBuy = lot.walletName;
+
+    let creditCurrencyBuy = lot.creditCurrency;
+    let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
+    let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
+
+    let dateDonation = closedLot.date;
+    let exRateDonation = closedLot.creditExRate;
+    let amountDonation = closedLot.creditAmountSatoshi / 1e8;
+    let feeDonation = closedLot.creditFeeSatoshi / 1e8;
+    let walletDonation = closedLot.walletName;
+
+    table.push([
+
+      dateBuy,
+      debitCurrencyBuy,
+      debitExRateBuy,
+      debitAmountBuy,
+      debitFeeBuy,
+      walletBuy,
+
+      creditCurrencyBuy,
+      creditAmountBuy,
+      creditFeeBuy,
+
+      dateDonation,
+      exRateDonation,
+      amountDonation,
+      feeDonation,
+      walletDonation
+    ]);
+  }
+
+  return this.sortTable(table, 9);
 }
 
 CryptoTracker.prototype.getFiatTable = function () {
@@ -194,6 +245,15 @@ CryptoTracker.prototype.getFiatTable = function () {
       table.push([wallet.name, fiatAccount.currency, fiatAccount.balance])
     }
   }
+
+  return this.sortTable(table, 0);
+}
+
+CryptoTracker.prototype.sortTable = function(table, index) {
+
+  table.sort(function (a, b) {
+    return a[index] - b[index];
+  });
 
   return table;
 }
@@ -305,6 +365,9 @@ CryptoTracker.prototype.processLedger = function () {
 
   let incomeTable = this.getIncomeTable();
   this.dumpData(incomeTable, this.incomeSheetName);
+
+  let donationsTable = this.getDonationsTable();
+  this.dumpData(donationsTable, this.donationsSheetName);
 
   let fiatTable = this.getFiatTable();
   this.dumpData(fiatTable, this.fiatAccountsSheetName);

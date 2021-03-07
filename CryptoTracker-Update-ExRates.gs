@@ -53,6 +53,15 @@ CryptoTracker.prototype.getSavedExRates = function () {
         }
       }
     }
+    else if (action == 'Donation') {
+      if (debitExRate === '' || debitExRate <= 0) {
+        let exRate = this.lookupExRate(exRateRecords, date, debitCurrency);
+        if (exRate) {
+          debitExRate = exRate;
+          updateDebitExRates = true;
+        }
+      }
+    }
 
     debitExRates.push([debitExRate]);
     creditExRates.push([creditExRate]);

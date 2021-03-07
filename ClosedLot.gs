@@ -1,8 +1,9 @@
 class ClosedLot {
 
-  constructor(lot, date, walletName, creditCurrency, creditExRate, creditAmount, creditFee) {
+  constructor(lot, debitFee, date, walletName, creditCurrency, creditExRate, creditAmount, creditFee) {
 
     this.lot = lot;
+    this.debitFeeSatoshi = Math.round(debitFee * 1e8);
     this.date = date;
     this.walletName = walletName;
     this.creditCurrency = creditCurrency;

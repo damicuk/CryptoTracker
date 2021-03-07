@@ -74,7 +74,8 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     'Credit Currency Buy',
     'Credit Amount Buy',
     'Credit Fee Buy',
-
+    'Debit Fee Sell',
+    
     'Date Sell',
     'Credit Currency Sell',
     'Credit ExRate Sell',
@@ -97,6 +98,7 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     let creditCurrencyBuy = lot.creditCurrency;
     let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
     let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
+    let debitFeeSell = closedLot.debitFeeSatoshi / 1e8;
 
     let dateSell = closedLot.date;
     let creditCurrencySell = closedLot.creditCurrency;
@@ -117,6 +119,7 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
       creditCurrencyBuy,
       creditAmountBuy,
       creditFeeBuy,
+      debitFeeSell,
 
       dateSell,
       creditCurrencySell,
@@ -181,11 +184,11 @@ CryptoTracker.prototype.getDonationsTable = function () {
     'Credit Currency Buy',
     'Credit Amount Buy',
     'Credit Fee Buy',
+    'Debit Fee Donation',
 
     'Date Donation',
     'ExRate Donation',
     'Amount Donation',
-    'Fee Donation',
     'Wallet Donation'
   ]);
 
@@ -203,11 +206,11 @@ CryptoTracker.prototype.getDonationsTable = function () {
     let creditCurrencyBuy = lot.creditCurrency;
     let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
     let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
+    let debitFeeDonation = closedLot.debitFeeSatoshi / 1e8;
 
     let dateDonation = closedLot.date;
     let exRateDonation = closedLot.creditExRate;
     let amountDonation = closedLot.creditAmountSatoshi / 1e8;
-    let feeDonation = closedLot.creditFeeSatoshi / 1e8;
     let walletDonation = closedLot.walletName;
 
     table.push([
@@ -222,11 +225,11 @@ CryptoTracker.prototype.getDonationsTable = function () {
       creditCurrencyBuy,
       creditAmountBuy,
       creditFeeBuy,
+      debitFeeDonation,
 
       dateDonation,
       exRateDonation,
       amountDonation,
-      feeDonation,
       walletDonation
     ]);
   }

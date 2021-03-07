@@ -71,7 +71,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
         let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
         //debit wallet name used as credit wallet name is empty to avoid data redundancy
-        this.closeLots(lots, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
+        this.closeLots(lots, debitFee, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
 
         //debit wallet name used as credit wallet name is empty to avoid data redundancy
         this.getWallet(debitWalletName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
@@ -82,7 +82,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
         let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
         //debit wallet name used as credit wallet name is empty to avoid data redundancy
-        this.closeLots(lots, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
+        this.closeLots(lots, debitFee, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
 
         let lot = new Lot(date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
 
@@ -106,8 +106,8 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-      //debit wallet currency amount fee used as credit values are empty to avoid data redundancy
-      this.donateLots(lots, date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee);
+      //debit wallet currency exrate amount used as credit values are empty to avoid data redundancy
+      this.donateLots(lots, debitFee, date, debitWalletName, debitCurrency, debitExRate, debitAmount);
 
     }
   }

@@ -28,6 +28,9 @@ CryptoTracker.prototype.validateSettings = function () {
   else if (!this.closedPositionsSheetName) {
     throw Error(`Closed Positions Sheet is missing from the settings sheet.`);
   }
+  else if (!this.incomeSheetName) {
+    throw Error(`Income Sheet is missing from the settings sheet.`);
+  }
   else if (!this.fiatAccountsSheetName) {
     throw Error(`Fiat Accounts Sheet is missing from the settings sheet.`);
   }

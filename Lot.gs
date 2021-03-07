@@ -40,7 +40,8 @@ class Lot {
     let creditFeeSatoshi = Math.round((satoshi / this.satoshi) * this.creditFeeSatoshi);
     let creditAmountSatoshi = satoshi + creditFeeSatoshi;
 
-    let lot1 = new Lot(this.date,
+    let lot1 = new Lot(
+      this.date,
       this.walletName,
       this.debitCurrency,
       this.debitExRate,
@@ -52,7 +53,8 @@ class Lot {
 
     splitLots.push(lot1);
 
-    let lot2 = new Lot(this.date,
+    let lot2 = new Lot(
+      this.date,
       this.walletName,
       this.debitCurrency,
       this.debitExRate,
@@ -66,5 +68,19 @@ class Lot {
 
     return splitLots;
 
+  }
+
+  duplicate() {
+
+    return new Lot(
+      this.date,
+      this.walletName,
+      this.debitCurrency,
+      this.debitExRate,
+      this.debitAmountSatoshi / 1e8,
+      this.debitFeeSatoshi / 1e8,
+      this.creditCurrency,
+      this.creditAmountSatoshi / 1e8,
+      this.creditFeeSatoshi / 1e8);
   }
 }

@@ -1,18 +1,3 @@
-CryptoTracker.prototype.getFiatTable = function () {
-
-  //column headers
-  let table = [['Wallet', 'Currency', 'Balance']];
-
-  for (let wallet of this.wallets) {
-    let fiatAccounts = wallet.fiatAccounts;
-    for (let fiatAccount of fiatAccounts) {
-      table.push([wallet.name, fiatAccount.currency, fiatAccount.balance])
-    }
-  }
-
-  return table;
-}
-
 CryptoTracker.prototype.getOpenPositionsTable = function () {
 
   let table = [];
@@ -38,16 +23,17 @@ CryptoTracker.prototype.getOpenPositionsTable = function () {
 
       for (let lot of cryptoAccount.lots) {
 
+        let date = lot.date;
+        let debitCurrency = lot.debitCurrency;
+        let debitExRate = lot.debitExRate;
+        let debitAmount = lot.debitAmountSatoshi / 1e8;
+        let debitFee = lot.debitFeeSatoshi / 1e8;
+        let buyWallet = lot.walletName;
+
         let creditCurrency = lot.creditCurrency;
         let creditAmount = lot.creditAmountSatoshi / 1e8;
         let creditFee = lot.creditFeeSatoshi / 1e8;
 
-        let date = lot.date;
-        let debitCurrency = lot.debitCurrency;
-        let debitAmount = lot.debitAmountSatoshi / 1e8;
-        let debitFee = lot.debitFeeSatoshi / 1e8;
-        let debitExRate = lot.debitExRate;
-        let buyWallet = lot.walletName;
         let currentWallet = wallet.name;
 
         table.push([
@@ -109,9 +95,9 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
 
     let dateBuy = lot.date;
     let debitCurrencyBuy = lot.debitCurrency;
+    let debitExRateBuy = lot.debitExRate;
     let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
     let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
-    let debitExRateBuy = lot.debitExRate;
     let walletBuy = lot.walletName;
 
     let creditCurrencyBuy = lot.creditCurrency;
@@ -120,9 +106,9 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
 
     let dateSell = closedLot.date;
     let creditCurrencySell = closedLot.creditCurrency;
+    let creditExRateSell = closedLot.creditExRate;
     let creditAmountSell = closedLot.creditAmountSatoshi / 1e8;
     let creditFeeSell = closedLot.creditFeeSatoshi / 1e8;
-    let creditExRateSell = closedLot.creditExRate;
     let walletSell = closedLot.walletName;
 
     table.push([
@@ -152,6 +138,62 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
   table.sort(function (a, b) {
     return a[dateSellIndex] - b[dateSellIndex];
   });
+
+  return table;
+}
+
+CryptoTracker.prototype.getIncomeTable = function () {
+
+  let table = [];
+
+  table.push([
+
+    'Date',
+    'Currency',
+    'ExRate',
+    'Amount',
+    'Wallet'
+
+  ]);
+
+  for (let lot of this.incomeLots) {
+
+    let date = lot.date;
+    let currency = lot.debitCurrency;
+    let exRate = lot.debitExRate;
+    let amount = lot.debitAmountSatoshi / 1e8;
+    let wallet = lot.walletName;
+
+    table.push([
+
+      date,
+      currency,
+      exRate,
+      amount,
+      wallet
+    ]);
+  }
+
+  //sort by date
+  const dateIndex = 0;
+  table.sort(function (a, b) {
+    return a[dateIndex] - b[dateIndex];
+  });
+
+  return table;
+}
+
+CryptoTracker.prototype.getFiatTable = function () {
+
+  //column headers
+  let table = [['Wallet', 'Currency', 'Balance']];
+
+  for (let wallet of this.wallets) {
+    let fiatAccounts = wallet.fiatAccounts;
+    for (let fiatAccount of fiatAccounts) {
+      table.push([wallet.name, fiatAccount.currency, fiatAccount.balance])
+    }
+  }
 
   return table;
 }
@@ -261,8 +303,10 @@ CryptoTracker.prototype.processLedger = function () {
   let closedPositionsTable = this.getClosedPositionsTable();
   this.dumpData(closedPositionsTable, this.closedPositionsSheetName);
 
+  let incomeTable = this.getIncomeTable();
+  this.dumpData(incomeTable, this.incomeSheetName);
+
   let fiatTable = this.getFiatTable();
   this.dumpData(fiatTable, this.fiatAccountsSheetName);
 
 }
-

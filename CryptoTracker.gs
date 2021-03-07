@@ -8,6 +8,7 @@ class CryptoTracker {
     this.closedLots = new Array();
     this.lotMatching = this.defaultLotMatching;
     this.lotMatchingArray = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
+    this.incomeLots = new Array();
 
   }
 
@@ -24,6 +25,11 @@ class CryptoTracker {
   get closedPositionsSheetName() {
 
     return this.settings['Closed Positions Sheet'];
+  }
+
+  get incomeSheetName() {
+
+    return this.settings['Income Sheet'];
   }
 
   get fiatAccountsSheetName() {

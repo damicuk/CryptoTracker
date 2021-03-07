@@ -98,6 +98,9 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
       this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
+      //keep track of income separately
+      this.incomeLots.push(lot.duplicate());
+
     }
     else if (action == 'Donation' || action == 'Payment') { //Donation or Payment
 

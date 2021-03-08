@@ -39,7 +39,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
         }
         else if (creditWalletName) { //Fiat deposit
-        
+
           this.getWallet(creditWalletName).getFiatAccount(debitCurrency).transfer(debitAmount).transfer(-debitFee);
 
         }
@@ -100,6 +100,13 @@ CryptoTracker.prototype.processLedgerRecords = function () {
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
       this.donateLots(lots, date, debitExRate, debitWalletName);
+
+    }
+    else if (action == 'Payment') { //Payment
+
+      let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
+
+      this.payLots(lots, date, debitExRate, debitAmount, debitFee, debitWalletName);
 
     }
   }

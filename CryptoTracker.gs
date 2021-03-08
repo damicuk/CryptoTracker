@@ -166,6 +166,16 @@ class CryptoTracker {
     }
   }
 
+  payLots(lots, date, exRate, amount, fee, walletName) {
+
+    //convert amount and fee to accounting currency
+    let creditAmountCents = Math.round(exRate * amount * 100);
+    let creditFeeCents = Math.round(exRate * fee * 100);
+
+    this.closeLots(lots, date, this.accountingCurrency, 0, (creditAmountCents / 100), (creditFeeCents / 100), walletName);
+
+  }
+
   getLedgerRecords() {
 
     let ledgerRange = this.getLedgerRange();

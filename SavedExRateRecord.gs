@@ -1,10 +1,6 @@
 class ExRateRecord {
 
-  constructor(
-    date,
-    crypto,
-    fiat,
-    exRate) {
+  constructor(date, crypto, fiat, exRate) {
 
     this.date = new Date(date);
     this.crypto = crypto;

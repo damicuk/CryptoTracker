@@ -52,6 +52,22 @@ class CryptoAccount {
       }
     }
 
+    //apportion the fee to withdrawal lots
+    let totalSatoshi = amountSatoshi + feeSatoshi;
+    let remainingFeeSatoshi = feeSatoshi;
+
+    // loop through all except the last lot
+    for (let i = 0; i < withdrawLots.length - 1; i++) {
+
+      let lot = withdrawLots[i];
+      let apportionedFeeSatoshi = Math.round((lot.satoshi / totalSatoshi) * feeSatoshi);
+      lot.creditFeeSatoshi += apportionedFeeSatoshi;
+      remainingFeeSatoshi -= apportionedFeeSatoshi;
+
+    }
+    //just add the remaining fee to the last lot to correct for any accumulated rounding errors
+    withdrawLots[withdrawLots.length - 1].creditFeeSatoshi += remainingFeeSatoshi;
+
     this.lots = keepLots;
     return withdrawLots;
   }

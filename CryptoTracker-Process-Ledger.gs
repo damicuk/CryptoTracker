@@ -67,7 +67,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
         let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-        this.closeLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, creditFee, debitWalletName);
+        this.closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, debitWalletName);
 
         this.getWallet(debitWalletName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
 
@@ -76,7 +76,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
         let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-        this.closeLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, creditFee, debitWalletName);
+        this.closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, debitWalletName);
 
         let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee, debitWalletName);
 
@@ -99,7 +99,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-      this.donateLots(lots, date, debitFee, debitCurrency, debitExRate, debitAmount, debitWalletName);
+      this.donateLots(lots, date, exRate, walletName);
 
     }
   }

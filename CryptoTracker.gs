@@ -5,9 +5,9 @@ class CryptoTracker {
     this.settings = new Settings();
     this.validateSettings();
     this._wallets = new Map();
-    this.incomeLots = [];
-    this.closedLots = [];
-    this.donatedClosedLots = [];
+    this.incomeLots = new Array();
+    this.closedLots = new Array();
+    this.donatedLots = new Array();
     this.lotMatching = this.defaultLotMatching;
     this.lotMatchingArray = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
 
@@ -118,24 +118,8 @@ class CryptoTracker {
     return this.settings['Cryptos'].has(currency);
   }
 
-  closeLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
+  closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
 
-    let closedLots = this.getClosedLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName);
-    this.closedLots = this.closedLots.concat(closedLots);
-
-  }
-
-  donateLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, creditWalletName) {
-
-    let closedLots = this.getClosedLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, 0, creditWalletName);
-    this.donatedClosedLots = this.donatedClosedLots.concat(closedLots);
-
-  }
-
-  getClosedLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
-
-    let closedLots = [];
-    let debitFeeSatoshi = Math.round(debitFee * 1e8);
     let creditAmountSatoshi = Math.round(creditAmount * 1e8);
     let creditFeeSatoshi = Math.round(creditFee * 1e8);
 
@@ -147,8 +131,7 @@ class CryptoTracker {
 
     }
 
-    //apportion debitFee creditAmount creditFee to lots
-    let remainingDebitFeeSatoshi = debitFeeSatoshi;
+    //apportion creditAmount creditFee to lots
     let remainingCreditAmountSatoshi = creditAmountSatoshi;
     let remainingCreditFeeSatoshi = creditFeeSatoshi;
 
@@ -156,24 +139,31 @@ class CryptoTracker {
     for (let i = 0; i < lots.length - 1; i++) {
 
       let lot = lots[i];
-      let apportionedDebitFeeSatoshi = Math.round((lot.satoshi / lotsSatoshi) * remainingDebitFeeSatoshi);
       let apportionedCreditAmountSatoshi = Math.round((lot.satoshi / lotsSatoshi) * creditAmountSatoshi);
       let apportionedCreditFeeSatoshi = Math.round((lot.satoshi / lotsSatoshi) * creditFeeSatoshi);
 
-      let closedLot = new ClosedLot(lot, date, (apportionedDebitFeeSatoshi / 1e8), creditCurrency, creditExRate, (apportionedCreditAmountSatoshi / 1e8), (apportionedCreditFeeSatoshi / 1e8), creditWalletName);
-      closedLots.push(closedLot);
+      let closedLot = new ClosedLot(lot, date, creditCurrency, creditExRate, (apportionedCreditAmountSatoshi / 1e8), (apportionedCreditFeeSatoshi / 1e8), creditWalletName);
+      this.closedLots.push(closedLot);
 
-      remainingDebitFeeSatoshi -= apportionedDebitFeeSatoshi;
       remainingCreditAmountSatoshi -= apportionedCreditAmountSatoshi;
       remainingCreditFeeSatoshi -= apportionedCreditFeeSatoshi;
 
     }
     //just add the remaining amount fee to the last closed lot to correct for any accumulated rounding errors
-    let closedLot = new ClosedLot(lots[lots.length - 1], date, (remainingDebitFeeSatoshi / 1e8), creditCurrency, creditExRate, (remainingCreditAmountSatoshi / 1e8), (remainingCreditFeeSatoshi / 1e8), creditWalletName);
-    closedLots.push(closedLot);
+    let closedLot = new ClosedLot(lots[lots.length - 1], date, creditCurrency, creditExRate, (remainingCreditAmountSatoshi / 1e8), (remainingCreditFeeSatoshi / 1e8), creditWalletName);
+    this.closedLots.push(closedLot);
 
-    return closedLots;
+  }
 
+
+  donateLots(lots, date, exRate, walletName) {
+
+    for (let lot of lots) {
+
+      let donatedLot = new DonatedLot(lot, date, exRate, walletName);
+      this.donatedLots.push(donatedLot);
+
+    }
   }
 
   getLedgerRecords() {

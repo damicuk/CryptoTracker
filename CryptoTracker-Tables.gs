@@ -76,7 +76,6 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     'Credit Fee Buy',
 
     'Date Sell',
-    'Debit Fee Sell',
     'Credit Currency Sell',
     'Credit ExRate Sell',
     'Credit Amount Sell',
@@ -100,7 +99,6 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
 
     let dateSell = closedLot.date;
-    let debitFeeSell = closedLot.debitFeeSatoshi / 1e8;
     let creditCurrencySell = closedLot.creditCurrency;
     let creditExRateSell = closedLot.creditExRate;
     let creditAmountSell = closedLot.creditAmountSatoshi / 1e8;
@@ -121,7 +119,6 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
       creditFeeBuy,
 
       dateSell,
-      debitFeeSell,
       creditCurrencySell,
       creditExRateSell,
       creditAmountSell,
@@ -186,14 +183,13 @@ CryptoTracker.prototype.getDonationsTable = function () {
     'Credit Fee Buy',
 
     'Date Donation',
-    'Debit Fee Donation',
     'ExRate Donation',
     'Wallet Donation'
   ]);
 
-  for (let closedLot of this.donatedClosedLots) {
+  for (let donatedLot of this.donatedLots) {
 
-    let lot = closedLot.lot;
+    let lot = donatedLot.lot;
 
     let dateBuy = lot.date;
     let debitCurrencyBuy = lot.debitCurrency;
@@ -206,10 +202,9 @@ CryptoTracker.prototype.getDonationsTable = function () {
     let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
     let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
 
-    let dateDonation = closedLot.date;
-    let debitFeeDonation = closedLot.debitFeeSatoshi / 1e8;
-    let exRateDonation = closedLot.creditExRate;
-    let walletDonation = closedLot.walletName;
+    let dateDonation = donatedLot.date;
+    let exRateDonation = donatedLot.exRate;
+    let walletDonation = donatedLot.walletName;
 
     table.push([
 
@@ -225,7 +220,6 @@ CryptoTracker.prototype.getDonationsTable = function () {
       creditFeeBuy,
 
       dateDonation,
-      debitFeeDonation,
       exRateDonation,
       walletDonation
     ]);

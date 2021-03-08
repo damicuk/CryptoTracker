@@ -99,7 +99,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-      this.donateLots(lots, date, exRate, walletName);
+      this.donateLots(lots, date, debitExRate, debitWalletName);
 
     }
   }

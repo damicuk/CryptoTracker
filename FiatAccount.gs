@@ -14,10 +14,4 @@ class FiatAccount {
     return this;
 
   }
-
-  get balance() {
-
-    return this.cents / 100;
-
-  }
 }

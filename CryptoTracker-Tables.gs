@@ -74,9 +74,9 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     'Credit Currency Buy',
     'Credit Amount Buy',
     'Credit Fee Buy',
-    'Debit Fee Sell',
-    
+
     'Date Sell',
+    'Debit Fee Sell',
     'Credit Currency Sell',
     'Credit ExRate Sell',
     'Credit Amount Sell',
@@ -98,9 +98,9 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     let creditCurrencyBuy = lot.creditCurrency;
     let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
     let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
-    let debitFeeSell = closedLot.debitFeeSatoshi / 1e8;
 
     let dateSell = closedLot.date;
+    let debitFeeSell = closedLot.debitFeeSatoshi / 1e8;
     let creditCurrencySell = closedLot.creditCurrency;
     let creditExRateSell = closedLot.creditExRate;
     let creditAmountSell = closedLot.creditAmountSatoshi / 1e8;
@@ -119,9 +119,9 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
       creditCurrencyBuy,
       creditAmountBuy,
       creditFeeBuy,
-      debitFeeSell,
 
       dateSell,
+      debitFeeSell,
       creditCurrencySell,
       creditExRateSell,
       creditAmountSell,
@@ -184,11 +184,10 @@ CryptoTracker.prototype.getDonationsTable = function () {
     'Credit Currency Buy',
     'Credit Amount Buy',
     'Credit Fee Buy',
-    'Debit Fee Donation',
 
     'Date Donation',
+    'Debit Fee Donation',
     'ExRate Donation',
-    'Amount Donation',
     'Wallet Donation'
   ]);
 
@@ -206,11 +205,10 @@ CryptoTracker.prototype.getDonationsTable = function () {
     let creditCurrencyBuy = lot.creditCurrency;
     let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
     let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
-    let debitFeeDonation = closedLot.debitFeeSatoshi / 1e8;
 
     let dateDonation = closedLot.date;
+    let debitFeeDonation = closedLot.debitFeeSatoshi / 1e8;
     let exRateDonation = closedLot.creditExRate;
-    let amountDonation = closedLot.creditAmountSatoshi / 1e8;
     let walletDonation = closedLot.walletName;
 
     table.push([
@@ -225,11 +223,10 @@ CryptoTracker.prototype.getDonationsTable = function () {
       creditCurrencyBuy,
       creditAmountBuy,
       creditFeeBuy,
-      debitFeeDonation,
 
       dateDonation,
+      debitFeeDonation,
       exRateDonation,
-      amountDonation,
       walletDonation
     ]);
   }
@@ -252,7 +249,7 @@ CryptoTracker.prototype.getFiatTable = function () {
   return this.sortTable(table, 0);
 }
 
-CryptoTracker.prototype.sortTable = function(table, index) {
+CryptoTracker.prototype.sortTable = function (table, index) {
 
   table.sort(function (a, b) {
     return a[index] - b[index];

@@ -1,9 +1,8 @@
 class Lot {
 
-  constructor(date, walletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee) {
+  constructor(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee, walletName) {
 
     this.date = date;
-    this.walletName = walletName;
     this.debitCurrency = debitCurrency;
     this.debitExRate = debitExRate;
     this.debitAmountSatoshi = Math.round(debitAmount * 1e8);
@@ -11,6 +10,7 @@ class Lot {
     this.creditCurrency = creditCurrency;
     this.creditAmountSatoshi = Math.round(creditAmount * 1e8);
     this.creditFeeSatoshi = Math.round(creditFee * 1e8);
+    this.walletName = walletName;
 
   }
 
@@ -42,27 +42,27 @@ class Lot {
 
     let lot1 = new Lot(
       this.date,
-      this.walletName,
       this.debitCurrency,
       this.debitExRate,
       debitAmountSatoshi / 1e8,
       debitFeeSatoshi / 1e8,
       this.creditCurrency,
       creditAmountSatoshi / 1e8,
-      creditFeeSatoshi / 1e8);
+      creditFeeSatoshi / 1e8,
+      this.walletName);
 
     splitLots.push(lot1);
 
     let lot2 = new Lot(
       this.date,
-      this.walletName,
       this.debitCurrency,
       this.debitExRate,
       (this.debitAmountSatoshi - lot1.debitAmountSatoshi) / 1e8,
       (this.debitFeeSatoshi - lot1.debitFeeSatoshi) / 1e8,
       this.creditCurrency,
       (this.creditAmountSatoshi - lot1.creditAmountSatoshi) / 1e8,
-      (this.creditFeeSatoshi - lot1.creditFeeSatoshi) / 1e8);
+      (this.creditFeeSatoshi - lot1.creditFeeSatoshi) / 1e8,
+      this.walletName);
 
     splitLots.push(lot2);
 
@@ -74,13 +74,13 @@ class Lot {
 
     return new Lot(
       this.date,
-      this.walletName,
       this.debitCurrency,
       this.debitExRate,
       this.debitAmountSatoshi / 1e8,
       this.debitFeeSatoshi / 1e8,
       this.creditCurrency,
       this.creditAmountSatoshi / 1e8,
-      this.creditFeeSatoshi / 1e8);
+      this.creditFeeSatoshi / 1e8,
+      this.walletName);
   }
 }

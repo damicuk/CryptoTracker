@@ -7,44 +7,12 @@ class CryptoAccount {
 
   }
 
-  get satoshi() {
-
-    let satoshi = 0
-    for (let lot of this.lots) {
-
-      satoshi += lot.satoshi; //adding two integers - no need to round
-
-    }
-    return satoshi;
-  }
-
-  get balance() {
-
-    return this.satoshi / 1e8;
-  }
-
-  get costBasisCents() {
-
-    let costBasisCents = 0;
-    for (let lot of this.lots) {
-
-      costBasisCents += lot.costBasisCents; //adding two integers - no need to round
-
-    }
-    return costBasisCents;
-  }
-
-  get costBasis() {
-
-    return this.costBasisCents / 100
-  }
-
   deposit(lots) {
 
     Array.isArray(lots) ?
       this.lots = this.lots.concat(lots) :
       this.lots.push(lots);
-  
+
   }
 
   withdraw(amount, fee, lotMatching) {

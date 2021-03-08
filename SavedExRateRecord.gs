@@ -12,5 +12,4 @@ class ExRateRecord {
     this.exRate = exRate;
 
   }
-
 }

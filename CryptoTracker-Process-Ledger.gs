@@ -39,8 +39,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
         }
         else if (creditWalletName) { //Fiat deposit
-
-          //debit currency amount fee used as credit values are empty to avoid data redundancy
+        
           this.getWallet(creditWalletName).getFiatAccount(debitCurrency).transfer(debitAmount).transfer(-debitFee);
 
         }
@@ -49,7 +48,6 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
         let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-        //debit currency used as credit currency is empty to avoid data redundancy
         this.getWallet(creditWalletName).getCryptoAccount(debitCurrency).deposit(lots);
 
       }
@@ -60,9 +58,8 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
         this.getWallet(debitWalletName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
 
-        let lot = new Lot(date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
+        let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee, debitWalletName);
 
-        //debit wallet name used as credit wallet name is empty to avoid data redundancy
         this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
       }
@@ -70,10 +67,8 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
         let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-        //debit wallet name used as credit wallet name is empty to avoid data redundancy
-        this.closeLots(lots, debitFee, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
+        this.closeLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, creditFee, debitWalletName);
 
-        //debit wallet name used as credit wallet name is empty to avoid data redundancy
         this.getWallet(debitWalletName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
 
       }
@@ -81,12 +76,10 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
         let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-        //debit wallet name used as credit wallet name is empty to avoid data redundancy
-        this.closeLots(lots, debitFee, date, debitWalletName, creditCurrency, creditExRate, creditAmount, creditFee);
+        this.closeLots(lots, date, debitFee, creditCurrency, creditExRate, creditAmount, creditFee, debitWalletName);
 
-        let lot = new Lot(date, debitWalletName, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee);
+        let lot = new Lot(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee, debitWalletName);
 
-        //debit wallet name used as credit wallet name is empty to avoid data redundancy
         this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
       }
@@ -94,7 +87,7 @@ CryptoTracker.prototype.processLedgerRecords = function () {
     else if (action == 'Income') { //Income
 
       //the cost base is the value of (credit exchange rate x credit amount)
-      let lot = new Lot(date, creditWalletName, creditCurrency, creditExRate, creditAmount, 0, creditCurrency, creditAmount, 0);
+      let lot = new Lot(date, creditCurrency, creditExRate, creditAmount, 0, creditCurrency, creditAmount, 0, creditWalletName);
 
       this.getWallet(creditWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
@@ -106,10 +99,8 @@ CryptoTracker.prototype.processLedgerRecords = function () {
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
 
-      //debit wallet currency exrate amount used as credit values are empty to avoid data redundancy
-      this.donateLots(lots, debitFee, date, debitWalletName, debitCurrency, debitExRate, debitAmount);
+      this.donateLots(lots, date, debitFee, debitCurrency, debitExRate, debitAmount, debitWalletName);
 
     }
   }
 }
-

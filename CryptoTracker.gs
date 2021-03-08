@@ -156,16 +156,6 @@ class CryptoTracker {
   }
 
 
-  donateLots(lots, date, exRate, walletName) {
-
-    for (let lot of lots) {
-
-      let donatedLot = new DonatedLot(lot, date, exRate, walletName);
-      this.donatedLots.push(donatedLot);
-
-    }
-  }
-
   payLots(lots, date, exRate, amount, fee, walletName) {
 
     //convert amount and fee to accounting currency
@@ -174,6 +164,16 @@ class CryptoTracker {
 
     this.closeLots(lots, date, this.accountingCurrency, 0, (creditAmountCents / 100), (creditFeeCents / 100), walletName);
 
+  }
+
+  donateLots(lots, date, exRate, walletName) {
+
+    for (let lot of lots) {
+
+      let donatedLot = new DonatedLot(lot, date, exRate, walletName);
+      this.donatedLots.push(donatedLot);
+
+    }
   }
 
   getLedgerRecords() {

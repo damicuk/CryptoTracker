@@ -155,10 +155,7 @@ CryptoTracker.prototype.getGoogleFinanceExRates = function () {
   //array of values used to update the sheet
   let debitExRates = [];
   let creditExRates = [];
-
-  // fill in any missing exchange rates with GOOGLEFINANCE formula
-  const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#currency#", "#accountingCurrency#")), "close", A#row#), 2,2)`;
-
+  
   //do we need to update these columns?
   let updateDebitExRates = false;
   let updateCreditExRates = false;
@@ -176,26 +173,26 @@ CryptoTracker.prototype.getGoogleFinanceExRates = function () {
 
       if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '' || debitExRate <= 0) {
-          debitExRate = formula.replace(/#currency#/, debitCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
+          debitExRate = this.getGoogleFinanceFormula(debitCurrency, i);
           updateDebitExRates = true;
         }
       }
       if (this.isCrypto(debitCurrency) && creditCurrency != this.accountingCurrency) { //sell or exchange crypto
         if (creditExRate === '' || creditExRate <= 0) {
-          creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
+          creditExRate = this.getGoogleFinanceFormula(creditCurrency, i);
           updateCreditExRates = true;
         }
       }
     }
     else if (action == 'Income') {
       if (creditExRate === '' || creditExRate <= 0) {
-        creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
+        creditExRate = this.getGoogleFinanceFormula(creditCurrency, i);
         updateCreditExRates = true;
       }
     }
     else if (action == 'Donation' || action == 'Payment') {
       if (debitExRate === '' || debitExRate <= 0) {
-        debitExRate = formula.replace(/#currency#/, debitCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
+        debitExRate = this.getGoogleFinanceFormula(debitCurrency, i);
         updateDebitExRates = true;
       }
     }
@@ -211,6 +208,13 @@ CryptoTracker.prototype.getGoogleFinanceExRates = function () {
   if (updateCreditExRates) {
     this.setExRates(8, creditExRates, true);
   }
+}
+
+CryptoTracker.prototype.getGoogleFinanceFormula = function(currency, ledgerRecordIndex) {
+
+  const formula = `=Index(GoogleFinance(CONCAT("CURRENCY:", CONCAT("#currency#", "#accountingCurrency#")), "close", A#row#), 2,2)`;
+  return formula.replace(/#currency#/, currency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (ledgerRecordIndex + 3).toString());
+
 }
 
 CryptoTracker.prototype.setExRates = function (colIndex, exRates, overwrite = false) {

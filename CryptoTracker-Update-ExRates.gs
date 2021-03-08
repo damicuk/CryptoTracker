@@ -53,7 +53,7 @@ CryptoTracker.prototype.getSavedExRates = function () {
         }
       }
     }
-    else if (action == 'Donation') {
+    else if (action == 'Donation' || action == 'Payment') {
       if (debitExRate === '' || debitExRate <= 0) {
         let exRate = this.lookupExRate(exRateRecords, date, debitCurrency);
         if (exRate) {
@@ -187,10 +187,16 @@ CryptoTracker.prototype.getGoogleFinanceExRates = function () {
         }
       }
     }
-    else if (action == 'Reward') {
+    else if (action == 'Income') {
       if (creditExRate === '' || creditExRate <= 0) {
         creditExRate = formula.replace(/#currency#/, creditCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
         updateCreditExRates = true;
+      }
+    }
+    else if (action == 'Donation' || action == 'Payment') {
+      if (debitExRate === '' || debitExRate <= 0) {
+        debitExRate = formula.replace(/#currency#/, debitCurrency).replace(/#accountingCurrency#/, this.accountingCurrency).replace(/#row#/, (i + 3).toString());
+        updateDebitExRates = true;
       }
     }
 

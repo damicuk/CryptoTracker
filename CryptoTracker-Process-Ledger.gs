@@ -102,6 +102,11 @@ CryptoTracker.prototype.processLedgerRecords = function () {
       this.donateLots(lots, date, debitExRate, debitWalletName);
 
     }
+    else if (action == 'Gift') { //Gift
+
+      this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);
+
+    }
     else if (action == 'Payment') { //Payment
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching);

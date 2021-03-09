@@ -7,6 +7,12 @@ class FiatAccount {
 
   }
 
+   get balance() {
+
+    return this.cents / 100;
+
+  }
+
   transfer(amount) {
 
     this.cents += Math.round(amount * 100); //round because multiplying

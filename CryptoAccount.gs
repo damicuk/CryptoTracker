@@ -7,6 +7,22 @@ class CryptoAccount {
 
   }
 
+  get satoshi() {
+
+    let satoshi = 0
+    for (let lot of this.lots) {
+
+      satoshi += lot.satoshi; //adding two integers - no need to round
+
+    }
+    return satoshi;
+  }
+
+  get balance() {
+
+    return this.satoshi / 1e8;
+  }
+
   deposit(lots) {
 
     Array.isArray(lots) ?
@@ -22,7 +38,7 @@ class CryptoAccount {
     let neededSatoshi = amountSatoshi + feeSatoshi;
 
     if (neededSatoshi > this.satoshi) {
-      throw Error(`Crypto account withdraw ${this.currency} ${amount} + fee ${fee}, insufficient funds ${this.currency}  ${this.balance}`);
+      throw Error(`Crypto account withdraw ${this.currency} ${amount} + fee ${fee}, insufficient funds ${this.currency} ${this.balance}`);
     }
 
     this.lots.sort(this.lotComparator(lotMatching));

@@ -346,24 +346,3 @@ CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) 
     sheet.insertColumnsAfter(totalColumns, -extraColumns);
   }
 }
-
-CryptoTracker.prototype.processLedger = function () {
-
-  this.processLedgerRecords();
-
-  let openPositionsTable = this.getOpenPositionsTable();
-  this.dumpData(openPositionsTable, this.openPositionsSheetName);
-
-  let closedPositionsTable = this.getClosedPositionsTable();
-  this.dumpData(closedPositionsTable, this.closedPositionsSheetName);
-
-  let incomeTable = this.getIncomeTable();
-  this.dumpData(incomeTable, this.incomeSheetName);
-
-  let donationsTable = this.getDonationsTable();
-  this.dumpData(donationsTable, this.donationsSheetName);
-
-  let fiatTable = this.getFiatTable();
-  this.dumpData(fiatTable, this.fiatAccountsSheetName);
-
-}

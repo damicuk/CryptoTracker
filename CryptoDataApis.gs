@@ -1,3 +1,33 @@
+CryptoTracker.prototype.updateExRates = function () {
+
+  if (this.cryptoCompareApiKey) {
+
+    this.getCryptoCompareExRates();
+
+  }
+  else if (this.coinMarketCapApiKey) {
+
+    this.getCoinMarketCapExRates();
+
+  }
+  else {
+
+    throw Error(`Update Exchange Rates requires either CryptoCompare or CoinMarketCap ApiKey in the settings sheet.`);
+  }
+}
+
+CryptoTracker.prototype.getCryptoCompareExRates = function () {
+
+  let exRatesTable = this.getCryptoCompareTable();
+  this.dumpData(exRatesTable, this.currentExRatesSheetName);
+}
+
+CryptoTracker.prototype.getCoinMarketCapExRates = function () {
+
+  let exRatesTable = this.getCoinMarketCapTable();
+  this.dumpData(exRatesTable, this.currentExRatesSheetName);
+}
+
 CryptoTracker.prototype.getCryptoCompareTable = function () {
 
   let apiKey = this.cryptoCompareApiKey;
@@ -19,7 +49,7 @@ CryptoTracker.prototype.getCryptoCompareTable = function () {
   let exRatesTable = [[`Date Time`, `Coin`, `Fiat`, `Ex Rate`]];
   for (let coin in data) {
 
-    exRatesTable.push([timestamp ,coin, accountingCurrency, data[coin][accountingCurrency]]);
+    exRatesTable.push([timestamp, coin, accountingCurrency, data[coin][accountingCurrency]]);
 
   }
 
@@ -66,16 +96,4 @@ CryptoTracker.prototype.getCoinMarketCapTable = function () {
   }
 
   return exRatesTable;
-}
-
-CryptoTracker.prototype.getCryptoCompareExRates = function () {
-
-  let exRatesTable = this.getCryptoCompareTable();
-  this.dumpData(exRatesTable, this.currentExRatesSheetName);
-}
-
-CryptoTracker.prototype.getCoinMarketCapExRates = function () {
-
-  let exRatesTable = this.getCoinMarketCapTable();
-  this.dumpData(exRatesTable, this.currentExRatesSheetName);
 }

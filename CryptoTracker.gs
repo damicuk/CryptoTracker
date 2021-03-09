@@ -48,16 +48,6 @@ class CryptoTracker {
     return this.settings['Current Ex Rates Sheet'];
   }
 
-  get savedExRatesSheetName() {
-
-    return this.settings['Saved Ex Rates Sheet'];
-  }
-
-  get saveExRates() {
-
-    return this.settings['Save Ex Rates'];
-  }
-
   get exRateMinutesMargin() {
 
     return this.settings['Ex Rate Minutes Margin'];

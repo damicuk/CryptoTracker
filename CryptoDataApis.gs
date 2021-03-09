@@ -72,16 +72,10 @@ CryptoTracker.prototype.getCryptoCompareExRates = function () {
 
   let exRatesTable = this.getCryptoCompareTable();
   this.dumpData(exRatesTable, this.currentExRatesSheetName);
-  if (this.saveExRates) {
-    this.appendData(exRatesTable, this.savedExRatesSheetName);
-  }
 }
 
 CryptoTracker.prototype.getCoinMarketCapExRates = function () {
 
   let exRatesTable = this.getCoinMarketCapTable();
   this.dumpData(exRatesTable, this.currentExRatesSheetName);
-  if (this.saveExRates) {
-    this.appendData(exRatesTable, this.savedExRatesSheetName);
-  }
 }

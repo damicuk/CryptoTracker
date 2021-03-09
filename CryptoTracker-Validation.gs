@@ -40,20 +40,8 @@ CryptoTracker.prototype.validateSettings = function () {
   else if (!this.currentExRatesSheetName) {
     throw Error(`Current Ex Rates Sheet is missing from the settings sheet.`);
   }
-  else if (this.saveExRates && !this.savedExRatesSheetName) {
-    throw Error(`Saved Ex Rates Sheet is missing from the settings sheet.`);
-  }
   else if (!this.defaultLotMatching) {
     throw Error(`Default Lot Matching is missing from the settings sheet.`);
-  }
-  else if (this.exRateMinutesMargin == null) {
-    throw Error(`Ex Rate Minutes Margin is missing from the settings sheet.`);
-  }
-  else if (isNaN(this.exRateMinutesMargin)) {
-    throw Error(`Ex Rate Minutes Margin (${this.exRateMinutesMargin}) is not valid (number).`);
-  }
-  else if (this.exRateMinutesMargin < 0) {
-    throw Error(`Ex Rate Minutes Margin (${this.exRateMinutesMargin}) is must be greater or equal to 0.`);
   }
 }
 

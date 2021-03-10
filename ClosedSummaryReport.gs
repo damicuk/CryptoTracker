@@ -1,8 +1,7 @@
-function openSummaryReport() {
+function closedSummaryReport() {
 
-  const sheetName = 'Open Summary Report 2';
-  const referenceSheetName = 'Open Positions Report 2';
-  const exRatesSheetName = 'Current Ex rates';
+  const sheetName = 'Closed Summary Report 2';
+  const referenceSheetName = 'Closed Positions Report 2';
 
   let sheet = ReportHelper.getSheet(sheetName);
 
@@ -11,9 +10,9 @@ function openSummaryReport() {
       'Coin',
       'Balance',
       'Av. Buy Price',
-      'Current Price',
+      'Av. Sell Price',
       'Cost Basis',
-      'Value',
+      'Proceeds',
       'Unrealized P/L',
       'Unrealized P/L %'
     ]
@@ -32,11 +31,11 @@ function openSummaryReport() {
 
   const formulas = [[
     `=SORT(UNIQUE('${referenceSheetName}'!G3:G))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!K3:K))`,
+    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!P3:P))`,
     `=IFERROR(ArrayFormula(FILTER(E2:E/B2:B, LEN(A2:A))),)`,
-    `=IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, '${exRatesSheetName}'!B2:D, 3), LEN(A2:A))),)`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!N3:N))`,
-    `=IFERROR(ArrayFormula(FILTER(B2:B*D2:D, LEN(A2:A))),)`,
+    `=IFERROR(ArrayFormula(FILTER(F2:F/B2:B, LEN(A2:A))),)`,
+    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!S3:S))`,
+    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!T3:T))`,
     `=IFERROR(ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))),)`,
     `=IFERROR(ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))),)`
   ]];
@@ -45,13 +44,14 @@ function openSummaryReport() {
 
   const neededColumns = 15;
   ReportHelper.trimColumns(sheet, neededColumns);
+  sheet.autoResizeColumns(7, 2);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder
     .addRange(sheet.getRange('A1:A1000'))
     .addRange(sheet.getRange('F1:F1000'))
     .setNumHeaders(1)
-    .setTitle('Value')
+    .setTitle('Proceeds')
     .setPosition(1, 9, 30, 30)
     .build();
 

@@ -37,18 +37,19 @@ class ReportHelper {
 
   }
 
-  static tidySheet(sheet, dataColumns) {
+  static trimColumns(sheet, neededColumns) {
 
     const totalColumns = sheet.getMaxColumns();
-    const extraColumns = totalColumns - dataColumns;
+    const extraColumns = totalColumns - neededColumns;
 
     if (extraColumns > 0) {
-      sheet.deleteColumns(dataColumns + 1, extraColumns);
+      sheet.deleteColumns(neededColumns + 1, extraColumns);
+    }
+    else if (extraColumns < 0) {
+      sheet.insertColumnsAfter(totalColumns, -extraColumns);
     }
 
     SpreadsheetApp.flush();
-
-    sheet.autoResizeColumns(1, dataColumns);
 
   }
 }

@@ -1,15 +1,16 @@
 function openPositionsReport() {
 
-  const openPositionsSheetName = 'Open Positions Data';
+  const sheetName = 'Open Positions Report 2';
+  const referenceSheetName = 'Open Positions Data';
 
-  let sheet = ReportHelper.getSheet('Open Positions Report 2');
-  
+  let sheet = ReportHelper.getSheet(sheetName);
+
   let headers = [
     [
-      'Buy Debit',,,,,,
-      'Buy Credit',,,
+      'Buy Debit', , , , , ,
+      'Buy Credit', , ,
       'Current',
-      'Calculations',,,,,,,,
+      'Calculations', , , , , , , ,
     ],
     [
       'Date Time',
@@ -63,7 +64,7 @@ function openPositionsReport() {
   ReportHelper.addLongShortCondition(sheet, 'R3:R');
 
   const formulas = [[
-    `=ArrayFormula('${openPositionsSheetName}'!A2:J)`, , , , , , , , , ,
+    `=ArrayFormula('${referenceSheetName}'!A2:J)`, , , , , , , , , ,
     `=IFERROR(ArrayFormula(FILTER($H3:$H-$I3:$I, LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER($N3:$N/$K3:$K, LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER(VLOOKUP(G3:G,'Current Ex Rates'!$B2:$D, 3), LEN(A3:A))),)`,
@@ -76,6 +77,8 @@ function openPositionsReport() {
 
   sheet.getRange('A3:R3').setFormulas(formulas);
 
-  ReportHelper.tidySheet(sheet, 18);
+  const neededColumns = 18;
+  ReportHelper.trimColumns(sheet, neededColumns);
+  sheet.autoResizeColumns(1, neededColumns);
 
 }

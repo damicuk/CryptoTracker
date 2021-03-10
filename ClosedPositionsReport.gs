@@ -1,5 +1,7 @@
 function closedPositionsReport() {
 
+  const closedPositionsSheetName = 'Closed Positions Data';
+
   let sheet = ReportHelper.getSheet('Closed Positions Report 2');
 
   let headers = [
@@ -72,7 +74,7 @@ function closedPositionsReport() {
   ReportHelper.addLongShortCondition(sheet, 'W3:W');
 
   const formulas = [[
-    `=ArrayFormula('Closed Positions Data'!A2:O)`, , , , , , , , , , , , , , ,
+    `=ArrayFormula('${closedPositionsSheetName}'!A2:O)`, , , , , , , , , , , , , , ,
     `=IFERROR(ArrayFormula(FILTER($H3:$H-$I3:$I, LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER(S3:S/$P3:$P, LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER(T3:T/$P3:$P, LEN(A3:A))),)`,

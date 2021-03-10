@@ -1,5 +1,7 @@
 function openPositionsReport() {
 
+  const openPositionsSheetName = 'Open Positions Data';
+
   let sheet = ReportHelper.getSheet('Open Positions Report 2');
   
   let headers = [
@@ -61,7 +63,7 @@ function openPositionsReport() {
   ReportHelper.addLongShortCondition(sheet, 'R3:R');
 
   const formulas = [[
-    `=ArrayFormula('Open Positions Data'!A2:J)`, , , , , , , , , ,
+    `=ArrayFormula('${openPositionsSheetName}'!A2:J)`, , , , , , , , , ,
     `=IFERROR(ArrayFormula(FILTER($H3:$H-$I3:$I, LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER($N3:$N/$K3:$K, LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER(VLOOKUP(G3:G,'Current Ex Rates'!$B2:$D, 3), LEN(A3:A))),)`,

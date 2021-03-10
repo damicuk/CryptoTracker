@@ -1,6 +1,6 @@
 function closedPositionsReport() {
 
-  let sheet = getSheet('Closed Positions Report 2');
+  let sheet = ReportHelper.getSheet('Closed Positions Report 2');
 
   let headers = [
     [
@@ -69,7 +69,7 @@ function closedPositionsReport() {
   sheet.getRange('V3:V').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
   sheet.getRange('W3:W').setNumberFormat('@');
 
-  addLongShortCondition(sheet, 'W3:W');
+  ReportHelper.addLongShortCondition(sheet, 'W3:W');
 
   const formulas = [[
     `=ArrayFormula('Closed Positions Data'!A2:O)`, , , , , , , , , , , , , , ,
@@ -85,7 +85,7 @@ function closedPositionsReport() {
 
   sheet.getRange('A3:W3').setFormulas(formulas);
 
-  tidySheet(sheet, 23);
+  ReportHelper.tidySheet(sheet, 23);
 
 }
 

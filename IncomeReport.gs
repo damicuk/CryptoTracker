@@ -1,4 +1,4 @@
-function openPositionsReport() {
+function incomeReport() {
 
   const sheetName = 'Income Report 2';
   const referenceSheetName = 'Income Data';

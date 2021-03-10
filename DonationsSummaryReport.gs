@@ -9,7 +9,7 @@ function donationsSummaryReport() {
     [
       'Year',
       'Coin',
-      'Amaount',
+      'Amount',
       'Cost Basis',
       'Donation Value'
     ]

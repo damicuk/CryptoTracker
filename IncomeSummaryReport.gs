@@ -9,7 +9,7 @@ function incomeSummaryReport() {
     [
       'Year',
       'Coin',
-      'Amaount',
+      'Amount',
       'Income Value'
     ]
   ];

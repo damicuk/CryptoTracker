@@ -1,9 +1,9 @@
-function donationsReport() {
+CryptoTracker.prototype.donationsReport = function () {
 
-  const sheetName = 'Donations Report 2';
-  const referenceSheetName = 'Donations Data';
+  const sheetName = this.settings['Donations Report'];
+  const referenceSheetName = this.settings['Donations Sheet'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -66,7 +66,8 @@ function donationsReport() {
   sheet.getRange('S3:S').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
   sheet.getRange('T3:T').setNumberFormat('@');
 
-  ReportHelper.addLongShortCondition(sheet, 'T3:T');
+  sheet.clearConditionalFormatRules();
+  this.addLongShortCondition(sheet, 'T3:T');
 
   const formulas = [[
     `=ArrayFormula('${referenceSheetName}'!A2:L)`, , , , , , , , , , , ,
@@ -82,9 +83,11 @@ function donationsReport() {
 
   sheet.getRange('A3:T3').setFormulas(formulas);
 
-  const neededColumns = 20;
-  ReportHelper.trimColumns(sheet, neededColumns);
-  sheet.autoResizeColumns(1, neededColumns);
+  SpreadsheetApp.flush();
+
+  this.trimColumns(sheet, 20);
+
+  sheet.autoResizeColumns(1, 20);
 
 }
 

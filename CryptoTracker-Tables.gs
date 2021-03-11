@@ -1,9 +1,6 @@
 CryptoTracker.prototype.getOpenPositionsTable = function () {
 
-  let table = [];
-
-  table.push([
-
+  let table = [[
     'Date Buy',
     'Debit Currency',
     'Debit ExRate',
@@ -16,7 +13,7 @@ CryptoTracker.prototype.getOpenPositionsTable = function () {
     'Credit Fee',
 
     'Wallet Current'
-  ]);
+  ]];
 
   for (let wallet of this.wallets) {
     for (let cryptoAccount of wallet.cryptoAccounts) {
@@ -60,10 +57,7 @@ CryptoTracker.prototype.getOpenPositionsTable = function () {
 
 CryptoTracker.prototype.getClosedPositionsTable = function () {
 
-  let table = [];
-
-  table.push([
-
+  let table = [[
     'Date Buy',
     'Debit Currency Buy',
     'Debit ExRate Buy',
@@ -81,7 +75,7 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     'Credit Amount Sell',
     'Credit Fee Sell',
     'Wallet Sell'
-  ]);
+  ]];
 
   for (let closedLot of this.closedLots) {
 
@@ -132,17 +126,13 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
 
 CryptoTracker.prototype.getIncomeTable = function () {
 
-  let table = [];
-
-  table.push([
-
+  let table = [[
     'Date',
     'Currency',
     'ExRate',
     'Amount',
     'Wallet'
-
-  ]);
+  ]];
 
   for (let lot of this.incomeLots) {
 
@@ -167,10 +157,7 @@ CryptoTracker.prototype.getIncomeTable = function () {
 
 CryptoTracker.prototype.getDonationsTable = function () {
 
-  let table = [];
-
-  table.push([
-
+  let table = [[
     'Date Buy',
     'Debit Currency Buy',
     'Debit ExRate Buy',
@@ -185,7 +172,7 @@ CryptoTracker.prototype.getDonationsTable = function () {
     'Date Donation',
     'ExRate Donation',
     'Wallet Donation'
-  ]);
+  ]];
 
   for (let donatedLot of this.donatedLots) {
 
@@ -230,7 +217,6 @@ CryptoTracker.prototype.getDonationsTable = function () {
 
 CryptoTracker.prototype.getFiatTable = function () {
 
-  //column headers
   let table = [['Wallet', 'Currency', 'Balance']];
 
   for (let wallet of this.wallets) {
@@ -260,14 +246,13 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 
     return;
   }
 
-  ss = SpreadsheetApp.getActive();
-  let sheet = ss.getSheetByName(sheetName);
-
-  if (!sheet) {
-    sheet = ss.insertSheet(sheetName);
-  }
+  let sheet = this.getSheet(sheetName);
 
   sheet.clear();
+  sheet.hideSheet();
+
+  let protection = sheet.protect().setDescription('Essential Data Sheet');
+  protection.setWarningOnly(true);
 
   const dataColumns = dataTable[0].length;
 
@@ -281,68 +266,8 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 
   let dataRange = sheet.getRange(1, 1, dataRows, dataColumns);
   dataRange.setValues(dataTable);
 
+  SpreadsheetApp.flush();
+  
   sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
 
-}
-
-CryptoTracker.prototype.appendData = function (dataTable, sheetName, headerRows = 1) {
-
-  if (dataTable.length == 0) {
-    return;
-  }
-
-  ss = SpreadsheetApp.getActive();
-  let sheet = ss.getSheetByName(sheetName);
-
-  if (!sheet) {
-    sheet = ss.insertSheet(sheetName);
-  }
-
-  const exisitingDataRows = sheet.getLastRow();
-
-  //remove header from table if exists in sheet
-  const shiftTable = Math.min(Math.min(headerRows, exisitingDataRows), dataTable.length);
-  for (i = 0; i < shiftTable; i++) {
-    dataTable.shift();
-  }
-
-  if (dataTable.length == 0) {
-    return;
-  }
-
-  const dataRows = dataTable.length;
-  const dataColumns = dataTable[0].length;
-
-  //Trim the sheet to fit the data
-  this.trimSheet(sheet, exisitingDataRows + dataRows, dataColumns);
-
-  //write the fresh data
-  let dataRange = sheet.getRange(exisitingDataRows + 1, 1, dataRows, dataColumns);
-  dataRange.setValues(dataTable);
-
-  sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
-
-}
-
-CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) {
-
-  const totalRows = sheet.getMaxRows();
-  const totalColumns = sheet.getMaxColumns();
-
-  const extraRows = totalRows - neededRows;
-  const extraColumns = totalColumns - neededColumns;
-
-  if (extraRows > 0) {
-    sheet.deleteRows(neededRows + 1, extraRows);
-  }
-  else if (extraRows < 0) {
-    sheet.insertRowsAfter(totalRows, -extraRows);
-  }
-
-  if (extraColumns > 0) {
-    sheet.deleteColumns(neededColumns + 1, extraColumns);
-  }
-  else if (extraColumns < 0) {
-    sheet.insertColumnsAfter(totalColumns, -extraColumns);
-  }
 }

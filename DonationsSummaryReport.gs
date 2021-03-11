@@ -1,9 +1,9 @@
-function donationsSummaryReport() {
+CryptoTracker.prototype.donationsSummaryReport = function() {
 
-  const sheetName = 'Donations Summary Report 2';
-  const referenceSheetName = 'Donations Report 2';
+  const sheetName = this.settings['Donations Summary Report'];
+  const referenceSheetName = this.settings['Donations Report'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -32,7 +32,8 @@ function donationsSummaryReport() {
 
   sheet.getRange('A2:E2').setFormulas(formulas);
 
-  const neededColumns = 5;
-  ReportHelper.trimColumns(sheet, neededColumns);
+  SpreadsheetApp.flush();
+
+  this.trimColumns(sheet, 5);
 
 }

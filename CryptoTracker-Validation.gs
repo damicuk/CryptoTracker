@@ -37,8 +37,8 @@ CryptoTracker.prototype.validateSettings = function () {
   else if (!this.fiatAccountsSheetName) {
     throw Error(`Fiat Accounts Sheet is missing from the settings sheet.`);
   }
-  else if (!this.currentExRatesSheetName) {
-    throw Error(`Current Ex Rates Sheet is missing from the settings sheet.`);
+  else if (!this.exRatesSheetName) {
+    throw Error(`Ex Rates Sheet is missing from the settings sheet.`);
   }
   else if (!this.defaultLotMatching) {
     throw Error(`Default Lot Matching is missing from the settings sheet.`);

@@ -1,9 +1,9 @@
-function openPLReport() {
+CryptoTracker.prototype.openPLReport = function() {
 
-  const sheetName = 'Open P/L Report 2';
-  const referenceSheetName = 'Open Positions Report 2';
+  const sheetName = this.settings['Open P/L Report'];
+  const referenceSheetName = this.settings['Open Positions Report'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -65,7 +65,10 @@ function openPLReport() {
 
   sheet.getRange('A3:K3').setFormulas(formulas);
 
-  const neededColumns = 11;
-  ReportHelper.trimColumns(sheet, neededColumns);
+  SpreadsheetApp.flush();
+
+  sheet.autoResizeColumns(4, 2);
+  sheet.autoResizeColumns(7, 2);
+  sheet.autoResizeColumns(10, 2);
 
 }

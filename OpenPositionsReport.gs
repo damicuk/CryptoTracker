@@ -1,9 +1,10 @@
-function openPositionsReport() {
+CryptoTracker.prototype.openPositionsReport = function () {
 
-  const sheetName = 'Open Positions Report 2';
-  const referenceSheetName = 'Open Positions Data';
+  const sheetName = this.settings['Open Positions Report'];
+  const referenceSheetName = this.settings['Open Positions Sheet'];
+  const exRatesSheetName = this.settings['Ex Rates Sheet'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -61,13 +62,14 @@ function openPositionsReport() {
   sheet.getRange('Q3:Q').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
   sheet.getRange('R3:R').setNumberFormat('@');
 
-  ReportHelper.addLongShortCondition(sheet, 'R3:R');
+  sheet.clearConditionalFormatRules();
+  this.addLongShortCondition(sheet, 'R3:R');
 
   const formulas = [[
     `=ArrayFormula('${referenceSheetName}'!A2:J)`, , , , , , , , , ,
     `=IFERROR(ArrayFormula(FILTER($H3:$H-$I3:$I, LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER($N3:$N/$K3:$K, LEN(A3:A))),)`,
-    `=IFERROR(ArrayFormula(FILTER(VLOOKUP(G3:G,'Current Ex Rates'!$B2:$D, 3), LEN(A3:A))),)`,
+    `=IFERROR(ArrayFormula(FILTER(VLOOKUP(G3:G,'${exRatesSheetName}'!$B2:$D, 3), LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER(IF($C3:$C, ($D3:$D+$E3:$E)*$C3:$C, $D3:$D+$E3:$E), LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER($K3:$K*$M3:$M, LEN(A3:A))),)`,
     `=IFERROR(ArrayFormula(FILTER($O3:$O-$N3:$N, LEN(A3:A))),)`,
@@ -77,8 +79,10 @@ function openPositionsReport() {
 
   sheet.getRange('A3:R3').setFormulas(formulas);
 
-  const neededColumns = 18;
-  ReportHelper.trimColumns(sheet, neededColumns);
-  sheet.autoResizeColumns(1, neededColumns);
+  SpreadsheetApp.flush();
+
+  this.trimColumns(sheet, 18);
+
+  sheet.autoResizeColumns(1, 18);
 
 }

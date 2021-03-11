@@ -1,9 +1,9 @@
-function closedSummaryReport() {
+CryptoTracker.prototype.closedSummaryReport = function() {
 
-  const sheetName = 'Closed Summary Report 2';
-  const referenceSheetName = 'Closed Positions Report 2';
+  const sheetName = this.settings['Closed Summary Report'];
+  const referenceSheetName = this.settings['Closed Positions Report'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -42,8 +42,10 @@ function closedSummaryReport() {
 
   sheet.getRange('A2:H2').setFormulas(formulas);
 
-  const neededColumns = 15;
-  ReportHelper.trimColumns(sheet, neededColumns);
+  SpreadsheetApp.flush();
+
+  this.trimColumns(sheet, 15);
+
   sheet.autoResizeColumns(7, 2);
 
   let pieChartBuilder = sheet.newChart().asPieChart();

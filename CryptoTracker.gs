@@ -43,9 +43,9 @@ class CryptoTracker {
     return this.settings['Fiat Accounts Sheet'];
   }
 
-  get currentExRatesSheetName() {
+  get exRatesSheetName() {
 
-    return this.settings['Current Ex Rates Sheet'];
+    return this.settings['Ex Rates Sheet'];
   }
 
   get exRateMinutesMargin() {
@@ -60,17 +60,17 @@ class CryptoTracker {
 
   get defaultLotMatching() {
 
-    return this.settings['Default Lot Matching']
+    return this.settings['Default Lot Matching'];
   }
 
   get cryptoCompareApiKey() {
 
-    return this.settings['CryptoCompare ApiKey'];;
+    return this.settings['CryptoCompare ApiKey'];
   }
 
   get coinMarketCapApiKey() {
 
-    return this.settings['CoinMarketCap ApiKey'];;
+    return this.settings['CoinMarketCap ApiKey'];
   }
 
   get fiats() {

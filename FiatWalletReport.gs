@@ -1,9 +1,9 @@
-function fiatWalletsReport() {
+CryptoTracker.prototype.fiatWalletsReport = function() {
 
-  const sheetName = 'Fiat Wallets Report 2';
-  const referenceSheetName = 'Fiat Accounts Data';
+  const sheetName = this.settings['Fiat Wallets Report'];
+  const referenceSheetName = this.settings['Fiat Accounts Sheet'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   sheet.getRange('A1').setValue('Wallet');
   sheet.getRange('B1').setFormula(`=TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!B2:B)))`);

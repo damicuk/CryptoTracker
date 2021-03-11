@@ -1,9 +1,9 @@
-function closedPositionsReport() {
+CryptoTracker.prototype.closedPositionsReport = function () {
 
-  const sheetName = 'Closed Positions Report 2';
-  const referenceSheetName = 'Closed Positions Data';
+  const sheetName = this.settings['Closed Positions Report'];
+  const referenceSheetName = this.settings['Closed Positions Sheet'];
 
-  let sheet = ReportHelper.getSheet('Closed Positions Report 2');
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -30,9 +30,9 @@ function closedPositionsReport() {
       'Wallet',
       'Balance',
       'Cost Price',
-      'Current Price',
+      'Sell Price',
       'Cost Basis',
-      'Current Value',
+      'Sell Value',
       'Unrealized P/L',
       'Unrealized P/L %',
       'Long / Short Term'
@@ -72,7 +72,8 @@ function closedPositionsReport() {
   sheet.getRange('V3:V').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
   sheet.getRange('W3:W').setNumberFormat('@');
 
-  ReportHelper.addLongShortCondition(sheet, 'W3:W');
+  sheet.clearConditionalFormatRules();
+  this.addLongShortCondition(sheet, 'W3:W');
 
   const formulas = [[
     `=ArrayFormula('${referenceSheetName}'!A2:O)`, , , , , , , , , , , , , , ,
@@ -88,9 +89,11 @@ function closedPositionsReport() {
 
   sheet.getRange('A3:W3').setFormulas(formulas);
 
-  const neededColumns = 23;
-  ReportHelper.trimColumns(sheet, neededColumns);
-  sheet.autoResizeColumns(1, neededColumns);
+  SpreadsheetApp.flush();
+
+  this.trimColumns(sheet, 23);
+
+  sheet.autoResizeColumns(1, 23);
 
 }
 

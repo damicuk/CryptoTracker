@@ -1,9 +1,9 @@
-function cryptoWalletsReport() {
+CryptoTracker.prototype.cryptoWalletsReport = function() {
 
-  const sheetName = 'Crypto Wallets Report 2';
-  const referenceSheetName = 'Open Positions Report 2';
+  const sheetName = this.settings['Crypto Wallets Report'];
+  const referenceSheetName = this.settings['Open Positions Report'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   sheet.getRange('A1').setValue('Wallet');
   sheet.getRange('B1').setFormula(`=TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!G3:G)))`);

@@ -1,10 +1,10 @@
-function openSummaryReport() {
+CryptoTracker.prototype.openSummaryReport = function() {
 
-  const sheetName = 'Open Summary Report 2';
-  const referenceSheetName = 'Open Positions Report 2';
-  const exRatesSheetName = 'Current Ex rates';
+  const sheetName = this.settings['Open Summary Report'];
+  const referenceSheetName = this.settings['Open Positions Report'];
+  const exRatesSheetName = this.settings['Ex Rates Sheet'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -43,8 +43,9 @@ function openSummaryReport() {
 
   sheet.getRange('A2:H2').setFormulas(formulas);
 
-  const neededColumns = 15;
-  ReportHelper.trimColumns(sheet, neededColumns);
+  SpreadsheetApp.flush();
+
+  this.trimColumns(sheet, 15);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder

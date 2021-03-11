@@ -19,13 +19,13 @@ CryptoTracker.prototype.updateExRates = function () {
 CryptoTracker.prototype.getCryptoCompareExRates = function () {
 
   let exRatesTable = this.getCryptoCompareTable();
-  this.dumpData(exRatesTable, this.currentExRatesSheetName);
+  this.dumpData(exRatesTable, this.exRatesSheetName);
 }
 
 CryptoTracker.prototype.getCoinMarketCapExRates = function () {
 
   let exRatesTable = this.getCoinMarketCapTable();
-  this.dumpData(exRatesTable, this.currentExRatesSheetName);
+  this.dumpData(exRatesTable, this.exRatesSheetName);
 }
 
 CryptoTracker.prototype.getCryptoCompareTable = function () {

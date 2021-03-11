@@ -1,9 +1,9 @@
-function closedPLReport() {
+CryptoTracker.prototype.closedPLReport = function () {
 
-  const sheetName = 'Closed P/L Report 2';
-  const referenceSheetName = 'Closed Positions Report 2';
+  const sheetName = this.settings['Closed P/L Report'];
+  const referenceSheetName = this.settings['Closed Positions Report'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -65,7 +65,8 @@ function closedPLReport() {
 
   sheet.getRange('A3:K3').setFormulas(formulas);
 
-  const neededColumns = 11;
-  ReportHelper.trimColumns(sheet, neededColumns);
+  SpreadsheetApp.flush();
+
+  this.trimColumns(sheet, 11);
 
 }

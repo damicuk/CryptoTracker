@@ -1,9 +1,9 @@
-function incomeSummaryReport() {
+CryptoTracker.prototype.incomeSummaryReport = function() {
 
-  const sheetName = 'Income Summary Report 2';
-  const referenceSheetName = 'Income Report 2';
+  const sheetName = this.settings['Income Summary Report'];
+  const referenceSheetName = this.settings['Income Report'];
 
-  let sheet = ReportHelper.getSheet(sheetName);
+  let sheet = this.getSheet(sheetName);
 
   let headers = [
     [
@@ -29,7 +29,8 @@ function incomeSummaryReport() {
 
   sheet.getRange('A2:D2').setFormulas(formulas);
 
-  const neededColumns = 4;
-  ReportHelper.trimColumns(sheet, neededColumns);
+  SpreadsheetApp.flush();
+
+  this.trimColumns(sheet, 4);
 
 }

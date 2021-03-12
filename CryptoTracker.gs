@@ -55,12 +55,12 @@ class CryptoTracker {
 
   get accountingCurrency() {
 
-    return this.settings['Accounting Currency'];
+    return PropertiesService.getUserProperties().getProperty('accountingCurrency');
   }
 
   get defaultLotMatching() {
-
-    return this.settings['Default Lot Matching'];
+    
+    return PropertiesService.getUserProperties().getProperty('defaultLotMatching');
   }
 
   get cryptoCompareApiKey() {

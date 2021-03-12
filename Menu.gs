@@ -2,22 +2,17 @@ function onOpen() {
 
   let ui = SpreadsheetApp.getUi();
 
-  ui.createMenu('Crypto Tracker')
-    .addItem('Validate Ledger', 'validateLedger')
-    .addItem('Process Ledger', 'processLedger')
+  ui.createMenu('CryptoTracker')
+    .addItem('Step 1: Create sample ledger', 'createSampleLedger')
     .addSeparator()
-    .addItem('Update Exchange Rates', 'updateExRates')
+    .addItem('Step 2: Validate ledger (optional)', 'validateLedger')
+    .addSeparator()
+    .addItem('Step 3: Generate reports', 'processLedger')
+    .addSeparator()
+    .addItem('Update exchange rates', 'updateExRates')
+    .addSeparator()
+    .addItem('Settings', 'showSettingsDialog')
     .addToUi();
-}
-
-function getCryptoCompareExRates() {
-
-  new CryptoTracker().getCryptoCompareExRates();
-}
-
-function getCoinMarketCapExRates() {
-
-  new CryptoTracker().getCoinMarketCapExRates();
 }
 
 function validateLedger() {
@@ -58,7 +53,7 @@ function writeReports() {
 }
 
 function deleteReports() {
-  
+
   new CryptoTracker().deleteReports();
 
 }
@@ -66,4 +61,16 @@ function deleteReports() {
 function writeSampleLedger() {
 
   new CryptoTracker().sampleLedger();
+}
+
+function showSettingsDialog() {
+
+  var html = HtmlService.createTemplateFromFile('SettingsDialog').evaluate();
+  SpreadsheetApp.getUi().showModalDialog(html, 'Settings');
+}
+
+function saveSettings(settings) {
+
+  PropertiesService.getUserProperties().setProperties(settings);
+  SpreadsheetApp.getActive().toast("Settings saved");
 }

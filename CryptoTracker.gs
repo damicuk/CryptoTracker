@@ -7,6 +7,8 @@ class CryptoTracker {
     this.closedLots = new Array();
     this.donatedLots = new Array();
 
+    this.validFiats = new Set(['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF','JPY']);
+
     //get user properties or set defaults
     let userProperties = PropertiesService.getUserProperties();
     this.accountingCurrency = this.getUserProperty(userProperties, 'accountingCurrency', 'USD');
@@ -90,12 +92,12 @@ class CryptoTracker {
 
   isFiat(currency) {
 
-    return this.fiats.has(currency);
+    return this.validFiats.has(currency);
   }
 
   isCrypto(currency) {
 
-    return this.cryptos.has(currency);
+    return !this.validFiats.has(currency);
   }
 
   closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {

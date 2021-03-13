@@ -21,18 +21,18 @@
 <script>
 	function saveSettings() {
 
-    let accountingCurrency = document.getElementById("accounting-currency").value;
-    let fiats = document.getElementById("fiats").value;
-    let cryptos = document.getElementById("cryptos").value;
-    let defaultLotMatching = document.getElementById("default-lot-matching").value;
+    let accountingCurrency = document.getElementById('accounting-currency').value;
+    let fiats = document.getElementById('fiats').value;
+    let cryptos = document.getElementById('cryptos').value;
+    let defaultLotMatching = document.getElementById('default-lot-matching').value;
 
-    let apiProvider = document.getElementById("api-provider-cc").checked ? 
-      "CryptoCompare" : 
-      document.getElementById("api-provider-cmc").checked ?
-      "CoinMarketCap" : 
+    let apiProvider = document.getElementById('api-provider-cc').checked ? 
+      'CryptoCompare' : 
+      document.getElementById('api-provider-cmc').checked ?
+      'CoinMarketCap' : 
       null;
     
-    let apiKey = document.getElementById("api-key").value;
+    let apiKey = document.getElementById('api-key').value;
 
     let settings = {
       accountingCurrency: accountingCurrency,
@@ -68,7 +68,7 @@
 let userProperties = PropertiesService.getUserProperties();
 let accountingCurrency = userProperties.getProperty('accountingCurrency');
 let defaultLotMatching = userProperties.getProperty('defaultLotMatching');
-let lotMatchings = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
+let lotMatchings = CryptoTracker.lotMatchings;
 let apiProvider = userProperties.getProperty('apiProvider');
 let apiKey = userProperties.getProperty('apiKey');
 
@@ -130,7 +130,7 @@ if(cryptoList) {
 					<?} ?>>
 					<label for="api-provider-cmc">CoinMarketCap API key</label>
 				</div>
-				<input type="text" id="api-key" style="width: 460px;" value="<?=apiKey?>" placeholder="< -- paste API key here -- >">
+				<input type="text" id="api-key" style="width: 480px;" value="<?=apiKey?>" placeholder="< -- paste API key here -- >">
 			</div>
 				<div class="block form-group">
 					<input type="button" class="action" value="Save" onclick="saveSettings();" />

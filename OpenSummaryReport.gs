@@ -1,10 +1,18 @@
-CryptoTracker.prototype.openSummaryReport = function() {
+CryptoTracker.prototype.openSummaryReport = function () {
 
-  const sheetName = this.settings['Open Summary Report'];
-  const referenceSheetName = this.settings['Open Positions Report'];
-  const exRatesSheetName = this.settings['Ex Rates Sheet'];
+  const sheetName = this.openSummaryReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.openPositionsReportName;
+  const exRatesSheetName = this.exRatesSheetName;
 
   let headers = [
     [
@@ -46,6 +54,8 @@ CryptoTracker.prototype.openSummaryReport = function() {
   SpreadsheetApp.flush();
 
   this.trimColumns(sheet, 15);
+
+  sheet.autoResizeColumns(7, 2);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder

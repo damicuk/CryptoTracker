@@ -1,9 +1,17 @@
 CryptoTracker.prototype.closedPositionsReport = function () {
 
-  const sheetName = this.settings['Closed Positions Report'];
-  const referenceSheetName = this.settings['Closed Positions Sheet'];
+  const sheetName = this.closedPositionsReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.closedPositionsSheetName;
 
   let headers = [
     [

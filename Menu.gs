@@ -7,12 +7,19 @@ function onOpen() {
     .addSeparator()
     .addItem('Step 2: Validate ledger (optional)', 'validateLedger')
     .addSeparator()
-    .addItem('Step 3: Generate reports', 'processLedger')
+    .addItem('Step 3: Write reports', 'writeReports')
+    .addSeparator()
+    .addItem('Delete all reports', 'deleteReports')
     .addSeparator()
     .addItem('Update exchange rates', 'updateExRates')
     .addSeparator()
     .addItem('Settings', 'showSettingsDialog')
     .addToUi();
+}
+
+function createSampleLedger() {
+
+  new CryptoTracker().sampleLedger();
 }
 
 function validateLedger() {
@@ -22,33 +29,9 @@ function validateLedger() {
   SpreadsheetApp.getActive().toast('All looks good', 'Ledger Valid', 10);
 }
 
-function processLedger() {
-
-  new CryptoTracker().processLedger();
-}
-
-function updateExRates() {
-
-  new CryptoTracker().updateExRates();
-}
-
 function writeReports() {
 
-  let cryptoTracker = new CryptoTracker();
-
-  cryptoTracker.openPositionsReport();
-  cryptoTracker.closedPositionsReport();
-  cryptoTracker.donationsReport();
-  cryptoTracker.incomeReport();
-  cryptoTracker.openSummaryReport();
-  cryptoTracker.closedSummaryReport();
-  cryptoTracker.incomeSummaryReport();
-  cryptoTracker.donationsSummaryReport();
-  cryptoTracker.cryptoWalletsReport();
-  cryptoTracker.fiatWalletsReport();
-  cryptoTracker.openPLReport();
-  cryptoTracker.closedPLReport();
-  cryptoTracker.exRatesTable();
+  new CryptoTracker().writeReports();
 
 }
 
@@ -58,19 +41,29 @@ function deleteReports() {
 
 }
 
-function writeSampleLedger() {
+function updateExRates() {
 
-  new CryptoTracker().sampleLedger();
+  new CryptoTracker().updateExRates();
 }
+
 
 function showSettingsDialog() {
 
-  var html = HtmlService.createTemplateFromFile('SettingsDialog').evaluate();
+  var html = HtmlService.createTemplateFromFile('SettingsDialog').evaluate()
+    .setWidth(550);
   SpreadsheetApp.getUi().showModalDialog(html, 'Settings');
 }
 
 function saveSettings(settings) {
 
-  PropertiesService.getUserProperties().setProperties(settings);
+  let userProperties = PropertiesService.getUserProperties()
+  userProperties.setProperties(settings);
   SpreadsheetApp.getActive().toast("Settings saved");
+}
+
+function deleteSettings() {
+
+  let userProperties = PropertiesService.getUserProperties();
+  userProperties.deleteAllProperties();
+
 }

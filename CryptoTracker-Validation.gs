@@ -19,30 +19,6 @@ CryptoTracker.prototype.validateSettings = function () {
   else if (this.isCrypto(this.accountingCurrency)) { //never called
     throw Error(`Accounting Currency (${this.accountingCurrency}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
   }
-  else if (!this.ledgerSheetName) {
-    throw Error(`Ledger Sheet is missing from the settings sheet.`);
-  }
-  else if (!this.openPositionsSheetName) {
-    throw Error(`Open Positions Sheet is missing from the settings sheet.`);
-  }
-  else if (!this.closedPositionsSheetName) {
-    throw Error(`Closed Positions Sheet is missing from the settings sheet.`);
-  }
-  else if (!this.incomeSheetName) {
-    throw Error(`Income Sheet is missing from the settings sheet.`);
-  }
-  else if (!this.donationsSheetName) {
-    throw Error(`Donations Sheet is missing from the settings sheet.`);
-  }
-  else if (!this.fiatAccountsSheetName) {
-    throw Error(`Fiat Accounts Sheet is missing from the settings sheet.`);
-  }
-  else if (!this.exRatesSheetName) {
-    throw Error(`Ex Rates Sheet is missing from the settings sheet.`);
-  }
-  else if (!this.defaultLotMatching) {
-    throw Error(`Default Lot Matching is missing from the settings sheet.`);
-  }
 }
 
 CryptoTracker.prototype.validateLedger = function (checkExRates = true) {
@@ -102,8 +78,8 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
   else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
     throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`);
   }
-  else if (lotMatching && !this.lotMatchingArray.includes(lotMatching)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record lot matching (${lotMatching}) is not valid (${this.lotMatchingArray}) or blank.`);
+  else if (lotMatching && !CryptoTracker.lotMatchings.includes(lotMatching)) {
+    throw Error(`[${date.toISOString()}] [${action}] Ledger record lot matching (${lotMatching}) is not valid (${CryptoTracker.lotMatchings}) or blank.`);
   }
   else if (action == 'Transfer') { //Transfer
     if (!debitCurrency) {

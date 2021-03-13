@@ -2,85 +2,70 @@ class CryptoTracker {
 
   constructor() {
 
-    this.settings = new Settings();
-    this.validateSettings();
     this._wallets = new Map();
     this.incomeLots = new Array();
     this.closedLots = new Array();
     this.donatedLots = new Array();
+
+    //get user properties or set defaults
+    let userProperties = PropertiesService.getUserProperties();
+    this.accountingCurrency = this.getUserProperty(userProperties, 'accountingCurrency', 'USD');
+    this.defaultLotMatching = this.getUserProperty(userProperties, 'defaultLotMatching', 'FIFO');
+
+    let fiatList = this.getUserProperty(userProperties, 'fiats', 'EUR,USD');
+    this.fiats = new Set(fiatList.split(","));
+
+    let cryptoList = this.getUserProperty(userProperties, 'cryptos', 'ADA,BTC,ETH');
+    this.cryptos = new Set(cryptoList.split(","));
+
+    this.apiProvider = userProperties.getProperty('apiProvider');
+    this.apiKey = userProperties.getProperty('apiKey');
+
     this.lotMatching = this.defaultLotMatching;
-    this.lotMatchingArray = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
 
+    //sheet names
+    this.ledgerSheetName = 'Ledger';
+    this.openPositionsSheetName = 'Open Positions Data';
+    this.closedPositionsSheetName = 'Closed Positions Data';
+    this.incomeSheetName = 'Income Data';
+    this.donationsSheetName = 'Donations Data';
+    this.fiatAccountsSheetName = 'Fiat Accounts Data';
+    this.exRatesSheetName = 'Ex Rates Data';
+    this.openPositionsReportName = 'Open Positions Report';
+    this.closedPositionsReportName = 'Closed Positions Report';
+    this.donationsReportName = 'Donations Report';
+    this.incomeReportName = 'Income Report'
+    this.openSummaryReportName = 'Open Summary Report';
+    this.closedSummaryReportName = 'Closed Summary Report';
+    this.incomeSummaryReportName = 'Income Summary Report';
+    this.donationsSummaryReportName = 'Donations Summary Report';
+    this.cryptoWalletsReportName = 'Crypto Wallets Report';
+    this.fiatWalletsReportName = 'Fiat Wallets Report';
+    this.openPLReportName = 'Open P/L Report';
+    this.closedPLReportName = 'Closed P/L Report';
+    this.exRatesTableSheetName = 'Ex Rates Table';
   }
 
-  get ledgerSheetName() {
+  getUserProperty(userProperties, key, defaultValue) {
 
-    return this.settings['Ledger Sheet'];
+    let value = userProperties.getProperty(key);
+
+    if (value) {
+
+      return value;
+
+    }
+    else {
+
+      userProperties.setProperty(key, defaultValue);
+      return defaultValue;
+
+    }
   }
 
-  get openPositionsSheetName() {
+  static get lotMatchings() {
 
-    return this.settings['Open Positions Sheet'];
-  }
-
-  get closedPositionsSheetName() {
-
-    return this.settings['Closed Positions Sheet'];
-  }
-
-  get incomeSheetName() {
-
-    return this.settings['Income Sheet'];
-  }
-
-  get donationsSheetName() {
-
-    return this.settings['Donations Sheet'];
-  }
-
-  get fiatAccountsSheetName() {
-
-    return this.settings['Fiat Accounts Sheet'];
-  }
-
-  get exRatesSheetName() {
-
-    return this.settings['Ex Rates Sheet'];
-  }
-
-  get exRateMinutesMargin() {
-
-    return this.settings['Ex Rate Minutes Margin'];
-  }
-
-  get accountingCurrency() {
-
-    return PropertiesService.getUserProperties().getProperty('accountingCurrency');
-  }
-
-  get defaultLotMatching() {
-    
-    return PropertiesService.getUserProperties().getProperty('defaultLotMatching');
-  }
-
-  get cryptoCompareApiKey() {
-
-    return this.settings['CryptoCompare ApiKey'];
-  }
-
-  get coinMarketCapApiKey() {
-
-    return this.settings['CoinMarketCap ApiKey'];
-  }
-
-  get fiats() {
-
-    return Array.from(this.settings['Fiats']);
-  }
-
-  get cryptos() {
-
-    return Array.from(this.settings['Cryptos']);
+    return ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
   }
 
   get wallets() {
@@ -100,12 +85,12 @@ class CryptoTracker {
 
   isFiat(currency) {
 
-    return this.settings['Fiats'].has(currency);
+    return this.fiats.has(currency);
   }
 
   isCrypto(currency) {
 
-    return this.settings['Cryptos'].has(currency);
+    return this.cryptos.has(currency);
   }
 
   closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
@@ -210,7 +195,7 @@ class CryptoTracker {
     let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
 
     if (!ledgerSheet) {
-      throw Error(`Ledger Sheet (${this.ledgerSheetName}) specified in the settings sheet not found.`);
+      throw Error(`${this.ledgerSheetName} Sheet not found.`);
     }
 
     let ledgerRange = ledgerSheet.getDataRange();

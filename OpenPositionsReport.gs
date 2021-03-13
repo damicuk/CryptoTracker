@@ -1,10 +1,18 @@
 CryptoTracker.prototype.openPositionsReport = function () {
 
-  const sheetName = this.settings['Open Positions Report'];
-  const referenceSheetName = this.settings['Open Positions Sheet'];
-  const exRatesSheetName = this.settings['Ex Rates Sheet'];
+  const sheetName = this.openPositionsReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.openPositionsSheetName;
+  const exRatesSheetName = this.exRatesSheetName;
 
   let headers = [
     [

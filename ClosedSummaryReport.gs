@@ -1,9 +1,17 @@
-CryptoTracker.prototype.closedSummaryReport = function() {
+CryptoTracker.prototype.closedSummaryReport = function () {
 
-  const sheetName = this.settings['Closed Summary Report'];
-  const referenceSheetName = this.settings['Closed Positions Report'];
+  const sheetName = this.closedSummaryReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.closedPositionsReportName;
 
   let headers = [
     [
@@ -13,8 +21,8 @@ CryptoTracker.prototype.closedSummaryReport = function() {
       'Av. Sell Price',
       'Cost Basis',
       'Proceeds',
-      'Unrealized P/L',
-      'Unrealized P/L %'
+      'Realized P/L',
+      'Realized P/L %'
     ]
   ];
 

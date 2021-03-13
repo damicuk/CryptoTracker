@@ -1,9 +1,17 @@
 CryptoTracker.prototype.donationsReport = function () {
 
-  const sheetName = this.settings['Donations Report'];
-  const referenceSheetName = this.settings['Donations Sheet'];
+  const sheetName = this.donationsReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.donationsSheetName;
 
   let headers = [
     [

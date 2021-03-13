@@ -1,10 +1,18 @@
-CryptoTracker.prototype.exRatesTable = function() {
+CryptoTracker.prototype.exRatesTable = function () {
 
-  const sheetName = this.settings['Ex Rates Table'];
-  const referenceSheetName = this.settings['Ex Rates Sheet'];
+  const sheetName = this.exRatesTableSheetName;
 
-  let sheet = this.getSheet(sheetName);
-  
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.exRatesSheetName;
+
   sheet.getRange('B1').setFormula(`=TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!C2:C)))`);
   sheet.getRange('A2').setFormula(`=SORT(UNIQUE('${referenceSheetName}'!C2:C))`);
   sheet.getRange('A3').setFormula(`=SORT(UNIQUE('${referenceSheetName}'!B2:B))`);
@@ -15,7 +23,7 @@ CryptoTracker.prototype.exRatesTable = function() {
 
   sheet.getRange('A1:1').setFontWeight('bold').setHorizontalAlignment("center").setBorder(null, null, true, null, null, null);
   sheet.getRange('A1:A').setFontWeight('bold').setHorizontalAlignment("center").setBorder(null, null, null, true, null, null);
-  
+
   sheet.getRange(2, 2, sheet.getMaxRows(), sheet.getMaxColumns()).setNumberFormat('#,##0.000000;(#,##0.000000)');
 
   SpreadsheetApp.flush();

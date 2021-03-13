@@ -10,6 +10,19 @@ CryptoTracker.prototype.getSheet = function (sheetName) {
   return sheet;
 }
 
+CryptoTracker.prototype.deleteSheet = function (sheetName) {
+
+  let ss = SpreadsheetApp.getActive();
+
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+
+    ss.deleteSheet(sheet);
+
+  }
+}
+
 CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) {
 
   if (neededRows) {
@@ -111,48 +124,6 @@ CryptoTracker.prototype.addEmptyCondtion = function (sheet, range) {
   rules.push(rule);
   sheet.setConditionalFormatRules(rules);
 
-}
-
-CryptoTracker.prototype.deleteReports = function () {
-
-  reportSheets = [
-    'Open Positions Report',
-    'Closed Positions Report',
-    'Donations Report',
-    'Income Report',
-    'Open Summary Report',
-    'Closed Summary Report',
-    'Income Summary Report',
-    'Donations Summary Report',
-    'Crypto Wallets Report',
-    'Fiat Wallets Report',
-    'Open P/L Report',
-    'Closed P/L Report'
-  ];
-
-  for (reportSheet of reportSheets) {
-
-    sheetName = this.settings[reportSheet];
-
-    if (sheetName) {
-
-      this.deleteSheet(sheetName);
-
-    }
-  }
-}
-
-CryptoTracker.prototype.deleteSheet = function (sheetName) {
-
-  let ss = SpreadsheetApp.getActive();
-
-  let sheet = ss.getSheetByName(sheetName);
-
-  if (sheet) {
-
-    ss.deleteSheet(sheet);
-
-  }
 }
 
 

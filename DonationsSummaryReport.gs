@@ -1,9 +1,17 @@
-CryptoTracker.prototype.donationsSummaryReport = function() {
+CryptoTracker.prototype.donationsSummaryReport = function () {
 
-  const sheetName = this.settings['Donations Summary Report'];
-  const referenceSheetName = this.settings['Donations Report'];
+  const sheetName = this.donationsSummaryReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.donationsReportName;
 
   let headers = [
     [

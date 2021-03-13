@@ -1,9 +1,17 @@
-CryptoTracker.prototype.cryptoWalletsReport = function() {
+CryptoTracker.prototype.cryptoWalletsReport = function () {
 
-  const sheetName = this.settings['Crypto Wallets Report'];
-  const referenceSheetName = this.settings['Open Positions Report'];
+  const sheetName = this.cryptoWalletsReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.openPositionsReportName;
 
   sheet.getRange('A1').setValue('Wallet');
   sheet.getRange('B1').setFormula(`=TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!G3:G)))`);

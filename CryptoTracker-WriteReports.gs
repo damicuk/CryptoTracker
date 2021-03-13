@@ -1,3 +1,51 @@
+CryptoTracker.prototype.writeReports = function() {
+
+  this.processLedger();
+
+  this.openPositionsReport();
+  this.closedPositionsReport();
+  this.donationsReport();
+  this.incomeReport();
+  this.openSummaryReport();
+  this.closedSummaryReport();
+  this.incomeSummaryReport();
+  this.donationsSummaryReport();
+  this.cryptoWalletsReport();
+  this.fiatWalletsReport();
+  this.openPLReport();
+  this.closedPLReport();
+  this.exRatesTable();
+
+}
+
+CryptoTracker.prototype.deleteReports = function () {
+
+  reportNames = [
+    this.openPositionsReportName,
+    this.closedPositionsReportName,
+    this.donationsReportName,
+    this.incomeReportName,
+    this.openSummaryReportName,
+    this.closedSummaryReportName,
+    this.incomeSummaryReportName,
+    this.donationsSummaryReportName,
+    this.cryptoWalletsReportName,
+    this.fiatWalletsReportName,
+    this.openPLReportName,
+    this.closedPLReportName,
+    this.exRatesTableSheetName
+  ];
+
+  for (sheetName of reportNames) {
+
+    if (sheetName) {
+
+      this.deleteSheet(sheetName);
+
+    }
+  }
+}
+
 CryptoTracker.prototype.processLedger = function () {
 
   this.processLedgerRecords();

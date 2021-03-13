@@ -1,18 +1,18 @@
 CryptoTracker.prototype.updateExRates = function () {
 
-  if (this.cryptoCompareApiKey) {
+  if (this.apiKey && this.apiProvider == 'CryptoCompare') {
 
     this.getCryptoCompareExRates();
 
   }
-  else if (this.coinMarketCapApiKey) {
+  else if (this.apiKey && this.apiProvider == 'CoinMarketCap') {
 
     this.getCoinMarketCapExRates();
 
   }
   else {
 
-    throw Error(`Update Exchange Rates requires either CryptoCompare or CoinMarketCap ApiKey in the settings sheet.`);
+    throw Error(`Update Exchange Rates requires either CryptoCompare or CoinMarketCap ApiKey in Settings.`);
   }
 }
 
@@ -30,13 +30,8 @@ CryptoTracker.prototype.getCoinMarketCapExRates = function () {
 
 CryptoTracker.prototype.getCryptoCompareTable = function () {
 
-  let apiKey = this.cryptoCompareApiKey;
-
-  if (!apiKey) {
-    throw Error(`CryptoCompare ApiKey is missing from the settings sheet.`);
-  }
-
-  let cryptos = this.cryptos;
+  let apiKey = this.apiKey;
+  let cryptos = Array.from(this.cryptos).toString();
   let accountingCurrency = this.accountingCurrency;
 
   let url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos}&tsyms=${accountingCurrency}&api_key=${apiKey}`;
@@ -58,13 +53,8 @@ CryptoTracker.prototype.getCryptoCompareTable = function () {
 
 CryptoTracker.prototype.getCoinMarketCapTable = function () {
 
-  let apiKey = this.coinMarketCapApiKey;
-
-  if (!apiKey) {
-    throw Error(`CoinMarketCap ApiKey is missing from the settings sheet.`);
-  }
-
-  let cryptos = this.cryptos;
+  let apiKey = this.apiKey;
+  let cryptos = Array.from(this.cryptos).toString();
   let accountingCurrency = this.accountingCurrency;
 
   let url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${cryptos}&convert=${accountingCurrency}`;

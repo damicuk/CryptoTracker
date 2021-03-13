@@ -1,6 +1,6 @@
 CryptoTracker.prototype.sampleLedger = function () {
 
-  const sheetName = this.settings['Ledger Sheet'];
+  const sheetName = this.ledgerSheetName;
 
   let sheet = this.getSheet(sheetName);
 
@@ -82,7 +82,7 @@ CryptoTracker.prototype.sampleLedger = function () {
     ['2019-03-01 12:00:00', 'Transfer', 'USD', , 15000, , , , , , , 'Binance', , `Leave Debit Wallet blank when transfering fiat from bank account`],
     ['2019-03-02 12:00:00', 'Trade', 'USD', , 3990, 10, 'Binance', 'BTC', , 1, , , , `Debit Amount is debited and Credit Amount is credited but Fee is always debited`],
     ['2019-03-03 12:00:00', 'Trade', 'USD', , 9990, 10, 'Binance', 'BTC', , 2, , , , ,],
-    ['2019-03-04 12:00:00', 'Trade', 'BTC', , 1, , 'Binance', 'USD', , 6010, 10, , 'LIFO', `Lot Matching applies to the current and subsequent Transfers and Trades  (Default in settings sheet)`],
+    ['2019-03-04 12:00:00', 'Trade', 'BTC', , 1, , 'Binance', 'USD', , 6010, 10, , 'LIFO', `Lot Matching applies to the current and subsequent Transfers and Trades  (Default in Settings)`],
     ['2019-03-05 12:00:00', 'Transfer', 'BTC', , 1.9995, 0.0005, 'Binance', , , , , 'Ledger', , `Tansfer Amount and Fee are always and only entered in the debit column`],
     ['2019-03-06 12:00:00', 'Transfer', 'USD', , 7000, , 'Binance', , , , , , , `Leave Credit Wallet blank when transfering fiat to bank account`],
     ['2020-12-01 12:00:00', 'Transfer', 'USD', , 10000, , , , , , , 'Kraken', , ,],

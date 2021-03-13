@@ -1,10 +1,18 @@
-CryptoTracker.prototype.incomeSummaryReport = function() {
+CryptoTracker.prototype.incomeSummaryReport = function () {
 
-  const sheetName = this.settings['Income Summary Report'];
-  const referenceSheetName = this.settings['Income Report'];
+  const sheetName = this.incomeSummaryReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
 
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.incomeReportName;
+  
   let headers = [
     [
       'Year',

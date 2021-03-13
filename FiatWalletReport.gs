@@ -1,9 +1,17 @@
-CryptoTracker.prototype.fiatWalletsReport = function() {
+CryptoTracker.prototype.fiatWalletsReport = function () {
 
-  const sheetName = this.settings['Fiat Wallets Report'];
-  const referenceSheetName = this.settings['Fiat Accounts Sheet'];
+  const sheetName = this.fiatWalletsReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.fiatAccountsSheetName;
 
   sheet.getRange('A1').setValue('Wallet');
   sheet.getRange('B1').setFormula(`=TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!B2:B)))`);

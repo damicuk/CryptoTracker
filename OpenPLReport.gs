@@ -1,9 +1,17 @@
-CryptoTracker.prototype.openPLReport = function() {
+CryptoTracker.prototype.openPLReport = function () {
 
-  const sheetName = this.settings['Open P/L Report'];
-  const referenceSheetName = this.settings['Open Positions Report'];
+  const sheetName = this.openPLReportName;
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    return;
+  }
+  
+  sheet = ss.insertSheet(sheetName);
+
+  const referenceSheetName = this.openPositionsReportName;
 
   let headers = [
     [

@@ -20,7 +20,8 @@ class CryptoTracker {
     let cryptoList = this.getUserProperty(userProperties, 'cryptos', 'ADA,BTC,ETH');
     this.cryptos = new Set(cryptoList.split(","));
 
-    this.apiProvider = userProperties.getProperty('apiProvider');
+    let walletList = this.getUserProperty(userProperties, 'wallets', 'Binance,Deposit,Kraken,Ledger,Rewards,Yoroi');
+    
     this.apiKey = userProperties.getProperty('apiKey');
 
     this.lotMatching = this.defaultLotMatching;

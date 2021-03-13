@@ -22,24 +22,18 @@
 	function saveSettings() {
 
     let accountingCurrency = document.getElementById('accounting-currency').value;
+    let defaultLotMatching = document.getElementById('default-lot-matching').value;
     let fiats = document.getElementById('fiats').value;
     let cryptos = document.getElementById('cryptos').value;
-    let defaultLotMatching = document.getElementById('default-lot-matching').value;
-
-    let apiProvider = document.getElementById('api-provider-cc').checked ? 
-      'CryptoCompare' : 
-      document.getElementById('api-provider-cmc').checked ?
-      'CoinMarketCap' : 
-      null;
-    
+    let wallets = document.getElementById('wallets').value;
     let apiKey = document.getElementById('api-key').value;
 
     let settings = {
       accountingCurrency: accountingCurrency,
+      defaultLotMatching: defaultLotMatching,
       fiats: fiats,
       cryptos: cryptos,
-      defaultLotMatching: defaultLotMatching,
-      apiProvider: apiProvider,
+      wallets: wallets,
       apiKey: apiKey
     }
 
@@ -69,7 +63,6 @@ let userProperties = PropertiesService.getUserProperties();
 let accountingCurrency = userProperties.getProperty('accountingCurrency');
 let defaultLotMatching = userProperties.getProperty('defaultLotMatching');
 let lotMatchings = CryptoTracker.lotMatchings;
-let apiProvider = userProperties.getProperty('apiProvider');
 let apiKey = userProperties.getProperty('apiKey');
 
 let fiatList = userProperties.getProperty('fiats');
@@ -82,6 +75,12 @@ let cryptoList = userProperties.getProperty('cryptos');
 let cryptos = [];
 if(cryptoList) {
   cryptos = cryptoList.split(',');
+}
+
+let walletList = userProperties.getProperty('wallets');
+let wallets = [];
+if(walletList) {
+  wallets = walletList.split(',');
 }
 
 ?>
@@ -103,6 +102,10 @@ if(cryptoList) {
 						<label for="fiats">Fiat Tickers</label>
 						<textarea id="fiats" rows="3"><?=fiatList?></textarea>
 					</div>
+          <div class="block form-group">
+						<label for="wallets">Wallets</label>
+						<textarea id="wallets" rows="3"><?=wallets?></textarea>
+					</div>
 				</div>
 				<div>
 					<div class="block form-group">
@@ -120,16 +123,7 @@ if(cryptoList) {
 				</div>
 			</div>
 			<div class="block form-group">
-				<div>
-					<input type="radio" name="api-provider" id="api-provider-cc" value="cc" <? if(apiProvider == 'CryptoCompare') {?>checked
-					<?} ?>>
-					<label for="api-provider-cc">CryptoCompare API key</label>
-				</div>
-				<div>
-					<input type="radio" name="api-provider" id="api-provider-cmc" value="cmc" <? if(apiProvider == 'CoinMarketCap') {?>checked
-					<?} ?>>
-					<label for="api-provider-cmc">CoinMarketCap API key</label>
-				</div>
+				<label for="api-key">CryptoCompare API key</label>
 				<input type="text" id="api-key" style="width: 460px;" value="<?=apiKey?>" placeholder="< -- paste API key here -- >">
 			</div>
 				<div class="block form-group">

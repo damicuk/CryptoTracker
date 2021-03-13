@@ -56,24 +56,24 @@ CryptoTracker.prototype.sampleLedger = function () {
 
   let actions = ['Donation', 'Gift', 'Income', 'Payment', 'Stop', 'Trade', 'Transfer'];
 
-  let actionRule = SpreadsheetApp.newDataValidation().requireValueInList(actions).build();
+  let actionRule = SpreadsheetApp.newDataValidation().requireValueInList(actions).setAllowInvalid(false).build();
   sheet.getRange('B3:B').setDataValidation(actionRule);
 
   let currencies = ['USD', 'ADA', 'BTC'];
 
-  let currencyRule = SpreadsheetApp.newDataValidation().requireValueInList(currencies).build();
+  let currencyRule = SpreadsheetApp.newDataValidation().requireValueInList(currencies).setAllowInvalid(false).setHelpText('Open settings to change the list of valid currencies').build();
   sheet.getRange('C3:C').setDataValidation(currencyRule);
   sheet.getRange('H3:H').setDataValidation(currencyRule);
 
   let wallets = ['Binance', 'Deposit', 'Kraken', 'Ledger', 'Rewards', 'Yoroi'];
 
-  let walletRule = SpreadsheetApp.newDataValidation().requireValueInList(wallets).build();
+  let walletRule = SpreadsheetApp.newDataValidation().requireValueInList(wallets).setAllowInvalid(false).setHelpText('Open settings to change the list of valid wallets').build();
   sheet.getRange('G3:G').setDataValidation(walletRule);
   sheet.getRange('L3:L').setDataValidation(walletRule);
 
   let lotMatchings = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
 
-  let lotMatchingRule = SpreadsheetApp.newDataValidation().requireValueInList(lotMatchings).build();
+  let lotMatchingRule = SpreadsheetApp.newDataValidation().requireValueInList(lotMatchings).setAllowInvalid(false).build();
   sheet.getRange('M3:M').setDataValidation(lotMatchingRule);
 
   if (!sheet.getFilter()) {

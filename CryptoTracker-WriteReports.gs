@@ -2,6 +2,8 @@ CryptoTracker.prototype.writeReports = function() {
 
   this.processLedger();
 
+  this.updateLedgerWallets();
+
   this.openPositionsReport();
   this.closedPositionsReport();
   this.donationsReport();

@@ -57,27 +57,27 @@ CryptoTracker.prototype.sampleLedger = function () {
   let actions = ['Donation', 'Gift', 'Income', 'Payment', 'Stop', 'Trade', 'Transfer'];
 
   let actionRule = SpreadsheetApp.newDataValidation().requireValueInList(actions).build();
-  sheet.getRange('B3:B21').setDataValidation(actionRule);
+  sheet.getRange('B3:B').setDataValidation(actionRule);
 
   let currencies = ['USD', 'ADA', 'BTC'];
 
   let currencyRule = SpreadsheetApp.newDataValidation().requireValueInList(currencies).build();
-  sheet.getRange('C3:C21').setDataValidation(currencyRule);
-  sheet.getRange('H3:H21').setDataValidation(currencyRule);
+  sheet.getRange('C3:C').setDataValidation(currencyRule);
+  sheet.getRange('H3:H').setDataValidation(currencyRule);
 
   let wallets = ['Binance', 'Deposit', 'Kraken', 'Ledger', 'Rewards', 'Yoroi'];
 
   let walletRule = SpreadsheetApp.newDataValidation().requireValueInList(wallets).build();
-  sheet.getRange('G3:G21').setDataValidation(walletRule);
-  sheet.getRange('L3:L21').setDataValidation(walletRule);
+  sheet.getRange('G3:G').setDataValidation(walletRule);
+  sheet.getRange('L3:L').setDataValidation(walletRule);
 
   let lotMatchings = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
 
   let lotMatchingRule = SpreadsheetApp.newDataValidation().requireValueInList(lotMatchings).build();
-  sheet.getRange('M3:M21').setDataValidation(lotMatchingRule);
+  sheet.getRange('M3:M').setDataValidation(lotMatchingRule);
 
   if (!sheet.getFilter()) {
-    sheet.getRange('A2:N21').createFilter();
+    sheet.getRange('A2:N').createFilter();
   }
 
   let sampleData = [

@@ -73,6 +73,11 @@ class CryptoTracker {
     return Array.from(this._wallets.values());
   }
 
+  get walletNames() {
+
+    return Array.from(this._wallets.keys());
+  }
+
   getWallet(name) {
 
     if (!this._wallets.has(name)) {

@@ -58,6 +58,9 @@ function saveSettings(settings) {
 
   let userProperties = PropertiesService.getUserProperties()
   userProperties.setProperties(settings);
+
+  new CryptoTracker().updateLedgerCurrencies();
+  
   SpreadsheetApp.getActive().toast("Settings saved");
 }
 

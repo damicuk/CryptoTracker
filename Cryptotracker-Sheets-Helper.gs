@@ -23,6 +23,24 @@ CryptoTracker.prototype.deleteSheet = function (sheetName) {
   }
 }
 
+CryptoTracker.prototype.renameSheet = function (sheetName) {
+
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+
+    let i=1;
+
+    while(Boolean(ss.getSheetByName(`${sheetName} ${i}`))) {
+      i++;
+    }
+    
+    sheet.setName(`${sheetName} ${i}`);
+
+  }
+}
+
 CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) {
 
   if (neededRows) {

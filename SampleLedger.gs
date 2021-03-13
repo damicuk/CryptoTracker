@@ -2,6 +2,8 @@ CryptoTracker.prototype.sampleLedger = function () {
 
   const sheetName = this.ledgerSheetName;
 
+  this.renameSheet(sheetName);
+
   let sheet = this.getSheet(sheetName);
 
   let headers = [

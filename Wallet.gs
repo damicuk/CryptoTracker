@@ -6,11 +6,11 @@ class Wallet {
     this.fiatAccounts = new Set();
     this.cryptoAccounts = new Set();
   }
-  
+
   getFiatAccount(fiat) {
 
     for(let fiatAccount of this.fiatAccounts) {
-      if(fiatAccount.currency == fiat) {
+      if(fiatAccount.fiat == fiat) {
         return fiatAccount;
       }
     }
@@ -23,7 +23,7 @@ class Wallet {
   getCryptoAccount(crypto) {
 
     for(let cryptoAccount of this.cryptoAccounts) {
-      if(cryptoAccount.currency == crypto) {
+      if(cryptoAccount.crypto == crypto) {
         return cryptoAccount;
       }
     }

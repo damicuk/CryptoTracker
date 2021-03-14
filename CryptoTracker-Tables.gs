@@ -221,7 +221,7 @@ CryptoTracker.prototype.getFiatTable = function () {
 
   for (let wallet of this.wallets) {
     for (let fiatAccount of wallet.fiatAccounts) {
-      table.push([wallet.name, fiatAccount.currency, fiatAccount.balance])
+      table.push([wallet.name, fiatAccount.fiat, fiatAccount.balance])
     }
   }
 

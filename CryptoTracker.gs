@@ -70,7 +70,7 @@ class CryptoTracker {
     let fiats = new Set();
     for(let wallet of this.wallets) {
       for(let fiatAccount of wallet.fiatAccounts) {
-        fiats.add(fiatAccount.currency);
+        fiats.add(fiatAccount.fiat);
       }
     }
     return fiats;
@@ -81,7 +81,7 @@ class CryptoTracker {
     let cryptos = new Set();
      for(let wallet of this.wallets) {
       for(let cryptoAccount of wallet.cryptoAccounts) {
-        cryptos.add(cryptoAccount.currency);
+        cryptos.add(cryptoAccount.crypto);
       }
     }
     return cryptos;

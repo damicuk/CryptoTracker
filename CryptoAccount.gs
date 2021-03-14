@@ -1,8 +1,8 @@
 class CryptoAccount {
 
-  constructor(currency) {
+  constructor(crypto) {
 
-    this.currency = currency;
+    this.crypto = crypto;
     this.lots = new Array();
 
   }
@@ -38,7 +38,7 @@ class CryptoAccount {
     let neededSatoshi = amountSatoshi + feeSatoshi;
 
     if (neededSatoshi > this.satoshi) {
-      throw Error(`Crypto account withdraw ${this.currency} ${amount} + fee ${fee}, insufficient funds ${this.currency} ${this.balance}`);
+      throw Error(`Crypto account withdraw ${this.crypto} ${amount} + fee ${fee}, insufficient funds ${this.crypto} ${this.balance}`);
     }
 
     this.lots.sort(this.lotComparator(lotMatching));

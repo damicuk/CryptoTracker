@@ -3,57 +3,33 @@ class Wallet {
   constructor(name) {
 
     this.name = name;
-    this._fiatAccounts = new Map();
-    this._cryptoAccounts = new Map();
+    this.fiatAccounts = new Set();
+    this.cryptoAccounts = new Set();
   }
-
-  get fiatAccounts() {
-
-    return Array.from(this._fiatAccounts.values());
-  }
-
-  get fiats() {
-
-    return Array.from(this._fiatAccounts.keys());
-  }
-
-  get cryptoAccounts() {
-
-    return Array.from(this._cryptoAccounts.values());
-  }
-
-  get cryptos() {
-
-    return Array.from(this._cryptoAccounts.keys());
-  }
-
-  hasFiatAccount(fiat) {
-
-    return this._fiatAccounts.has(fiat);
-  }
-
-  hasCryptoAccount(crypto) {
-
-    return this._cryptoAccounts.has(crypto);
-  }
-
+  
   getFiatAccount(fiat) {
 
-    if (!this.hasFiatAccount(fiat)) {
-
-      this._fiatAccounts.set(fiat, new FiatAccount(fiat));
-
+    for(let fiatAccount of this.fiatAccounts) {
+      if(fiatAccount.currency == fiat) {
+        return fiatAccount;
+      }
     }
-    return this._fiatAccounts.get(fiat);
+
+    let fiatAccount = new FiatAccount(fiat);
+    this.fiatAccounts.add(fiatAccount);
+    return fiatAccount;
   }
 
   getCryptoAccount(crypto) {
 
-    if (!this.hasCryptoAccount(crypto)) {
-
-      this._cryptoAccounts.set(crypto, new CryptoAccount(crypto));
-
+    for(let cryptoAccount of this.cryptoAccounts) {
+      if(cryptoAccount.currency == crypto) {
+        return cryptoAccount;
+      }
     }
-    return this._cryptoAccounts.get(crypto);
+
+    let cryptoAccount = new CryptoAccount(crypto);
+    this.cryptoAccounts.add(cryptoAccount);
+    return cryptoAccount;
   }
 }

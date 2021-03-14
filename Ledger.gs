@@ -1,3 +1,18 @@
+CryptoTracker.prototype.getLedgerRange = function () {
+
+  let ss = SpreadsheetApp.getActive();
+  let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
+
+  if (!ledgerSheet) {
+    throw Error(`${this.ledgerSheetName} Sheet not found.`);
+  }
+
+  let ledgerRange = ledgerSheet.getDataRange();
+  ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 13);
+
+  return ledgerRange;
+}
+
 CryptoTracker.prototype.updateLedgerCurrencies = function () {
 
   const sheetName = this.ledgerSheetName;

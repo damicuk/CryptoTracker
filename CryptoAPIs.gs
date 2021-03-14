@@ -1,27 +1,18 @@
-CryptoTracker.prototype.updateExRates = function () {
-
-  if (this.apiKey) {
-
-    this.getCryptoCompareExRates();
-
-  }
-  else {
-
-    throw Error(`Update Exchange Rates requires a CryptoCompare API key in settings.`);
-  }
-}
-
-CryptoTracker.prototype.getCryptoCompareExRates = function () {
-
-  let exRatesTable = this.getCryptoCompareTable();
-  this.dumpData(exRatesTable, this.exRatesSheetName);
-}
-
-CryptoTracker.prototype.getCryptoCompareTable = function () {
-
-  let apiKey = this.apiKey;
+CryptoTracker.prototype.updateCryptoPrices = function () {
+  
   let cryptos = Array.from(this.cryptos).toString();
+  let apiKey = this.apiKey;
   let accountingCurrency = this.accountingCurrency;
+
+  if(!cryptos) {
+
+    return;
+  }
+
+  if (!apiKey) {
+
+    throw Error(`Update Exchange Rates requires a CryptoCompare API key in settings.`); 
+  }
 
   let url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos}&tsyms=${accountingCurrency}&api_key=${apiKey}`;
 
@@ -37,5 +28,6 @@ CryptoTracker.prototype.getCryptoCompareTable = function () {
 
   }
 
-  return exRatesTable;
+  this.dumpData(exRatesTable, this.exRatesSheetName);
+
 }

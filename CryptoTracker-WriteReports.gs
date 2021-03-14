@@ -1,5 +1,6 @@
 CryptoTracker.prototype.writeReports = function() {
 
+  this.validateLedger();
   this.processLedger();
 
   this.openPositionsReport();
@@ -15,9 +16,11 @@ CryptoTracker.prototype.writeReports = function() {
   this.openPLReport();
   this.closedPLReport();
   this.exRatesTable();
-
+  
   this.updateLedgerCurrencies();
   this.updateLedgerWallets();
+
+  this.updateCryptoPrices();
 
 }
 

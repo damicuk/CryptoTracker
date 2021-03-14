@@ -12,7 +12,7 @@ class CryptoTracker {
     this.accountingCurrency = this.getUserProperty(userProperties, 'accountingCurrency', 'USD');
     this.defaultLotMatching = this.getUserProperty(userProperties, 'defaultLotMatching', 'FIFO');
     this.apiKey = userProperties.getProperty('apiKey');
-    
+
     this.lotMatching = this.defaultLotMatching;
 
     //sheet names
@@ -62,14 +62,14 @@ class CryptoTracker {
 
   static get validFiats() {
 
-    return ['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF','JPY'];
+    return ['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF', 'JPY'];
   }
 
   get fiats() {
 
     let fiats = new Set();
-    for(let wallet of this.wallets) {
-      for(let fiatAccount of wallet.fiatAccounts) {
+    for (let wallet of this.wallets) {
+      for (let fiatAccount of wallet.fiatAccounts) {
         fiats.add(fiatAccount.fiat);
       }
     }
@@ -79,8 +79,8 @@ class CryptoTracker {
   get cryptos() {
 
     let cryptos = new Set();
-     for(let wallet of this.wallets) {
-      for(let cryptoAccount of wallet.cryptoAccounts) {
+    for (let wallet of this.wallets) {
+      for (let cryptoAccount of wallet.cryptoAccounts) {
         cryptos.add(cryptoAccount.crypto);
       }
     }
@@ -89,8 +89,8 @@ class CryptoTracker {
 
   getWallet(name) {
 
-    for(let wallet of this.wallets) {
-      if(wallet.name == name) {
+    for (let wallet of this.wallets) {
+      if (wallet.name == name) {
         return wallet;
       }
     }
@@ -205,20 +205,5 @@ class CryptoTracker {
 
     }
     return ledgerRecords;
-  }
-
-  getLedgerRange() {
-
-    let ss = SpreadsheetApp.getActive();
-    let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
-
-    if (!ledgerSheet) {
-      throw Error(`${this.ledgerSheetName} Sheet not found.`);
-    }
-
-    let ledgerRange = ledgerSheet.getDataRange();
-    ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 13);
-
-    return ledgerRange;
   }
 }

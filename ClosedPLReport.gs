@@ -6,6 +6,8 @@ CryptoTracker.prototype.closedPLReport = function () {
   let sheet = ss.getSheetByName(sheetName);
 
   if (sheet) {
+
+    this.trimSheet(sheet);
     return;
   }
 
@@ -75,6 +77,6 @@ CryptoTracker.prototype.closedPLReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimColumns(sheet, 11);
+  this.trimSheet(sheet);
 
 }

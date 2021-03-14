@@ -6,6 +6,8 @@ CryptoTracker.prototype.openPLReport = function () {
   let sheet = ss.getSheetByName(sheetName);
 
   if (sheet) {
+
+    this.trimSheet(sheet);
     return;
   }
   
@@ -74,6 +76,8 @@ CryptoTracker.prototype.openPLReport = function () {
   sheet.getRange('A3:K3').setFormulas(formulas);
 
   SpreadsheetApp.flush();
+
+  this.trimSheet(sheet);
 
   sheet.autoResizeColumns(4, 2);
   sheet.autoResizeColumns(7, 2);

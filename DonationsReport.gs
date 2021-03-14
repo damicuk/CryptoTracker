@@ -6,6 +6,8 @@ CryptoTracker.prototype.donationsReport = function () {
   let sheet = ss.getSheetByName(sheetName);
 
   if (sheet) {
+
+    this.trimSheet(sheet);
     return;
   }
   
@@ -93,7 +95,7 @@ CryptoTracker.prototype.donationsReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimColumns(sheet, 20);
+  this.trimSheet(sheet);
 
   sheet.autoResizeColumns(1, 20);
 

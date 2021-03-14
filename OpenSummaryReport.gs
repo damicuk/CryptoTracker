@@ -6,6 +6,8 @@ CryptoTracker.prototype.openSummaryReport = function () {
   let sheet = ss.getSheetByName(sheetName);
 
   if (sheet) {
+
+    this.trimSheet(sheet, null, 15);
     return;
   }
   
@@ -53,8 +55,8 @@ CryptoTracker.prototype.openSummaryReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimColumns(sheet, 15);
-
+  this.trimSheet(sheet, null, 15);
+  
   sheet.autoResizeColumns(7, 2);
 
   let pieChartBuilder = sheet.newChart().asPieChart();

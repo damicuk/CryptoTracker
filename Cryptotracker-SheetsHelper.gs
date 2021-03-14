@@ -43,6 +43,24 @@ CryptoTracker.prototype.renameSheet = function (sheetName) {
 
 CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) {
 
+  
+  if(!neededRows || !neededColumns) {
+    
+    let dataRange = sheet.getDataRange();
+
+    if(!neededRows) {
+
+      neededRows = dataRange.getHeight();
+
+    }
+
+    if(!neededColumns) {
+
+      neededColumns = dataRange.getWidth();
+
+    }
+  }
+
   if (neededRows) {
 
     const totalRows = sheet.getMaxRows();
@@ -70,12 +88,6 @@ CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) 
       sheet.insertColumnsAfter(totalColumns, -extraColumns);
     }
   }
-}
-
-CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
-
-  this.trimSheet(sheet, undefined, neededColumns);
-
 }
 
 CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
@@ -126,20 +138,6 @@ CryptoTracker.prototype.addLongShortCondition = function (sheet, a1Notation) {
   let rules = sheet.getConditionalFormatRules();
   rules.push(shortRule);
   rules.push(longRule);
-  sheet.setConditionalFormatRules(rules);
-
-}
-
-CryptoTracker.prototype.addEmptyCondtion = function (sheet, range) {
-
-  let rule = SpreadsheetApp.newConditionalFormatRule()
-    .whenCellEmpty()
-    .setBackground('#efefef')
-    .setRanges([range])
-    .build();
-
-  let rules = sheet.getConditionalFormatRules();
-  rules.push(rule);
   sheet.setConditionalFormatRules(rules);
 
 }

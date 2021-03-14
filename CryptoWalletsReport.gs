@@ -6,6 +6,8 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
   let sheet = ss.getSheetByName(sheetName);
 
   if (sheet) {
+
+    this.trimSheet(sheet);
     return;
   }
   
@@ -30,5 +32,7 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
   sheet.getRange('A2:B2').setFormulas(formulas);
 
   SpreadsheetApp.flush();
+
+  this.trimSheet(sheet);
 
 }

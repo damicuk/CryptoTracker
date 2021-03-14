@@ -30,8 +30,8 @@ CryptoTracker.prototype.updateLedgerWallets = function () {
   }
 
   let walletNames = [];
-  for (walletName of this.walletNames) {
-    walletNames.push(walletName);
+  for (let wallet of this.wallets) {
+    walletNames.push(wallet.name);
   }
   walletNames.sort(function (a, b) {
     return a > b ? 1 : b > a ? -1 : 0;

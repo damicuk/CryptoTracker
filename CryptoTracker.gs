@@ -2,7 +2,7 @@ class CryptoTracker {
 
   constructor() {
 
-    this._wallets = new Map();
+    this.wallets = new Set();
     this.incomeLots = new Array();
     this.closedLots = new Array();
     this.donatedLots = new Array();
@@ -65,16 +65,6 @@ class CryptoTracker {
     return ['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF','JPY'];
   }
 
-  get wallets() {
-
-    return Array.from(this._wallets.values());
-  }
-
-  get walletNames() {
-
-    return Array.from(this._wallets.keys());
-  }
-
   get fiats() {
 
     let fiats = new Set();
@@ -99,12 +89,16 @@ class CryptoTracker {
 
   getWallet(name) {
 
-    if (!this._wallets.has(name)) {
-
-      this._wallets.set(name, new Wallet(name));
-
+    for(let wallet of this.wallets) {
+      if(wallet.name == name) {
+        return wallet;
+      }
     }
-    return this._wallets.get(name);
+
+    let wallet = new Wallet(name);
+    this.wallets.add(wallet);
+    return wallet;
+
   }
 
   isFiat(currency) {

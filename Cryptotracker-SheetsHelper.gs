@@ -13,7 +13,6 @@ CryptoTracker.prototype.getSheet = function (sheetName) {
 CryptoTracker.prototype.deleteSheet = function (sheetName) {
 
   let ss = SpreadsheetApp.getActive();
-
   let sheet = ss.getSheetByName(sheetName);
 
   if (sheet) {

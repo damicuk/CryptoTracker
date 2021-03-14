@@ -7,8 +7,6 @@ function onOpen() {
     .addSeparator()
     .addItem('Step 2: Write reports', 'writeReports')
     .addSeparator()
-    .addItem('Delete all reports', 'deleteReports')
-    .addSeparator()
     .addItem('Settings', 'showSettingsDialog')
     .addToUi();
 }
@@ -21,12 +19,6 @@ function createSampleLedger() {
 function writeReports() {
 
   new CryptoTracker().writeReports();
-}
-
-function deleteReports() {
-
-  new CryptoTracker().deleteReports();
-
 }
 
 function showSettingsDialog() {
@@ -54,6 +46,12 @@ function validateLedger() {
 function updateCryptoPrices() {
 
   new CryptoTracker().updateCryptoPrices();
+}
+
+function deleteReports() {
+
+  new CryptoTracker().deleteReports();
+
 }
 
 function deleteSettings() {

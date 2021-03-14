@@ -30,12 +30,12 @@ CryptoTracker.prototype.renameSheet = function (sheetName) {
 
   if (sheet) {
 
-    let i=1;
+    let i = 1;
 
-    while(Boolean(ss.getSheetByName(`${sheetName} ${i}`))) {
+    while (Boolean(ss.getSheetByName(`${sheetName} ${i}`))) {
       i++;
     }
-    
+
     sheet.setName(`${sheetName} ${i}`);
 
   }
@@ -144,5 +144,29 @@ CryptoTracker.prototype.addEmptyCondtion = function (sheet, range) {
 
 }
 
+CryptoTracker.prototype.addCurrencyValidation = function (sheet, a1Notation, values) {
+
+  this.addValidation(sheet, a1Notation, values, 'New currencies will be added to the data validation dropdown when write reports is run.');
+
+}
+
+CryptoTracker.prototype.addWalletValidation = function (sheet, a1Notation, values) {
+
+  this.addValidation(sheet, a1Notation, values, 'New wallets will be added to the data validation dropdown when write reports is run.');
+
+}
+
+CryptoTracker.prototype.addValidation = function (sheet, a1Notation, values, helpText) {
+
+  let range = sheet.getRange(a1Notation);
+
+  let rule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(values)
+    .setHelpText(helpText)
+    .build();
+
+  range.setDataValidation(rule);
+
+}
 
 

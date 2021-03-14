@@ -61,15 +61,13 @@ CryptoTracker.prototype.sampleLedger = function () {
 
   let currencies = ['USD', 'ADA', 'BTC'];
 
-  let currencyRule = SpreadsheetApp.newDataValidation().requireValueInList(currencies).setAllowInvalid(false).setHelpText('To edit the list of valid currencies, select the cells in the column, then select Data validation from the Data menu. Repeat for the other currency column.').build();
-  sheet.getRange('C3:C').setDataValidation(currencyRule);
-  sheet.getRange('H3:H').setDataValidation(currencyRule);
+  this.addCurrencyValidation(sheet, 'C3:C', currencies);
+  this.addCurrencyValidation(sheet, 'H3:H', currencies);
 
   let wallets = ['Binance', 'Deposit', 'Kraken', 'Ledger', 'Rewards', 'Yoroi'];
 
-  let walletRule = SpreadsheetApp.newDataValidation().requireValueInList(wallets).setAllowInvalid(false).setHelpText('To edit the list of valid wallets, select the cells in the column, then select Data validation from the Data menu. Repeat for the other wallet column.').build();
-  sheet.getRange('G3:G').setDataValidation(walletRule);
-  sheet.getRange('L3:L').setDataValidation(walletRule);
+  this.addWalletValidation(sheet, 'G3:G', wallets);
+  this.addWalletValidation(sheet, 'L3:L', wallets);
 
   let lotMatchings = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
 

@@ -50,8 +50,8 @@ function updateExRates() {
 function showSettingsDialog() {
 
   var html = HtmlService.createTemplateFromFile('SettingsDialog').evaluate()
-    .setWidth(550)
-    .setHeight(400);
+    .setWidth(480)
+    .setHeight(250);
   SpreadsheetApp.getUi().showModalDialog(html, 'Settings');
 }
 
@@ -59,9 +59,6 @@ function saveSettings(settings) {
 
   let userProperties = PropertiesService.getUserProperties()
   userProperties.setProperties(settings);
-
-  new CryptoTracker().updateLedgerCurrencies();
-
   SpreadsheetApp.getActive().toast("Settings saved");
 }
 

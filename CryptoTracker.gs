@@ -7,21 +7,12 @@ class CryptoTracker {
     this.closedLots = new Array();
     this.donatedLots = new Array();
 
-    this.validFiats = new Set(['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF','JPY']);
-
     //get user properties or set defaults
     let userProperties = PropertiesService.getUserProperties();
     this.accountingCurrency = this.getUserProperty(userProperties, 'accountingCurrency', 'USD');
     this.defaultLotMatching = this.getUserProperty(userProperties, 'defaultLotMatching', 'FIFO');
-
-    let fiatList = this.getUserProperty(userProperties, 'fiats', 'EUR,USD');
-    this.fiats = new Set(fiatList.split(","));
-
-    let cryptoList = this.getUserProperty(userProperties, 'cryptos', 'ADA,BTC,ETH');
-    this.cryptos = new Set(cryptoList.split(","));
-    
     this.apiKey = userProperties.getProperty('apiKey');
-
+    
     this.lotMatching = this.defaultLotMatching;
 
     //sheet names
@@ -69,6 +60,11 @@ class CryptoTracker {
     return ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
   }
 
+  static get validFiats() {
+
+    return ['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF','JPY'];
+  }
+
   get wallets() {
 
     return Array.from(this._wallets.values());
@@ -77,6 +73,28 @@ class CryptoTracker {
   get walletNames() {
 
     return Array.from(this._wallets.keys());
+  }
+
+  get fiats() {
+
+    let fiats = new Set();
+    for(let wallet of this.wallets) {
+      for(let fiat of wallet.fiats) {
+        fiats.add(fiat);
+      }
+    }
+    return fiats;
+  }
+
+  get cryptos() {
+
+    let cryptos = new Set();
+     for(let wallet of this.wallets) {
+      for(let crypto of wallet.cryptos) {
+        cryptos.add(crypto);
+      }
+    }
+    return cryptos;
   }
 
   getWallet(name) {
@@ -91,12 +109,12 @@ class CryptoTracker {
 
   isFiat(currency) {
 
-    return this.validFiats.has(currency);
+    return CryptoTracker.validFiats.includes(currency);
   }
 
   isCrypto(currency) {
 
-    return !this.validFiats.has(currency);
+    return !CryptoTracker.validFiats.includes(currency);
   }
 
   closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {

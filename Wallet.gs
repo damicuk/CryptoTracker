@@ -12,9 +12,19 @@ class Wallet {
     return Array.from(this._fiatAccounts.values());
   }
 
+  get fiats() {
+
+    return Array.from(this._fiatAccounts.keys());
+  }
+
   get cryptoAccounts() {
 
     return Array.from(this._cryptoAccounts.values());
+  }
+
+  get cryptos() {
+
+    return Array.from(this._cryptoAccounts.keys());
   }
 
   hasFiatAccount(fiat) {

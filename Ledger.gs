@@ -13,9 +13,8 @@ CryptoTracker.prototype.updateLedgerCurrencies = function () {
   let cryptos = Array.from(this.cryptos);
   let currencies = fiats.concat(cryptos);
 
-  let currencyRule = SpreadsheetApp.newDataValidation().requireValueInList(currencies).build();
-  sheet.getRange('C3:C').setDataValidation(currencyRule);
-  sheet.getRange('H3:H').setDataValidation(currencyRule);
+  this.addCurrencyValidation(sheet, 'C3:C', currencies);
+  this.addCurrencyValidation(sheet, 'H3:H', currencies);
 
 }
 
@@ -38,8 +37,7 @@ CryptoTracker.prototype.updateLedgerWallets = function () {
     return a > b ? 1 : b > a ? -1 : 0;
   });
 
-  let walletRule = SpreadsheetApp.newDataValidation().requireValueInList(walletNames).build();
-  sheet.getRange('G3:G').setDataValidation(walletRule);
-  sheet.getRange('L3:L').setDataValidation(walletRule);
+  this.addWalletValidation(sheet, 'G3:G', walletNames);
+  this.addWalletValidation(sheet, 'L3:L', walletNames);
 
 }

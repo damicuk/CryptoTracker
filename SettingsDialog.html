@@ -5,17 +5,6 @@
 	<base target="_top">
 	<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
 	<!-- The CSS package above applies Google styling to buttons and other elements. -->
-
-	<style>
-		.col-contain {
-			overflow: hidden;
-		}
-
-		.col-one {
-			float: left;
-			width: 50%;
-		}
-	</style>
 </head>
 
 <script>
@@ -23,17 +12,11 @@
 
     let accountingCurrency = document.getElementById('accounting-currency').value;
     let defaultLotMatching = document.getElementById('default-lot-matching').value;
-    let fiats = document.getElementById('fiats').value;
-    let cryptos = document.getElementById('cryptos').value;
-    let wallets = document.getElementById('wallets').value;
     let apiKey = document.getElementById('api-key').value;
 
     let settings = {
       accountingCurrency: accountingCurrency,
       defaultLotMatching: defaultLotMatching,
-      fiats: fiats,
-      cryptos: cryptos,
-      wallets: wallets,
       apiKey: apiKey
     }
 
@@ -59,77 +42,43 @@
 </script>
 
 <? 
+
 let userProperties = PropertiesService.getUserProperties();
 let accountingCurrency = userProperties.getProperty('accountingCurrency');
 let defaultLotMatching = userProperties.getProperty('defaultLotMatching');
 let lotMatchings = CryptoTracker.lotMatchings;
+let validFiats = CryptoTracker.validFiats;
 let apiKey = userProperties.getProperty('apiKey');
-
-let fiatList = userProperties.getProperty('fiats');
-let fiats = [];
-if(fiatList) {
-  fiats = fiatList.split(',');
-}
-
-let cryptoList = userProperties.getProperty('cryptos');
-let cryptos = [];
-if(cryptoList) {
-  cryptos = cryptoList.split(',');
-}
-
-let walletList = userProperties.getProperty('wallets');
-let wallets = [];
-if(walletList) {
-  wallets = walletList.split(',');
-}
 
 ?>
 
 <body>
 	<div>
 		<form id="settingsForm">
-			<div class="block col-contain">
-				<div class="col-one">
-					<div class="block form-group">
-						<label for="accounting-currency">Accounting Currency</label>
-					  <select id="accounting-currency">
-              <? for(let fiat of fiats) {?>
-              <option <? if(fiat == accountingCurrency) {?>selected<?} ?>><?= fiat ?></option>
-              <?}?>
-              </select>
-					</div>
-					<div class="block form-group">
-						<label for="fiats">Fiat Tickers</label>
-						<textarea id="fiats" rows="3"><?=fiatList?></textarea>
-					</div>
-          <div class="block form-group">
-						<label for="wallets">Wallets</label>
-						<textarea id="wallets" rows="3"><?=wallets?></textarea>
-					</div>
-				</div>
-				<div>
-					<div class="block form-group">
-						<label for="default-lot-matching">Default Lot Matching</label>
-						<select id="default-lot-matching">
-              <? for(let lotMatching of lotMatchings) {?>
-              <option <? if(lotMatching == defaultLotMatching) {?>selected<?} ?>><?=lotMatching?></option>
-              <?}?>
-            </select>
-					</div>
-					<div class="block form-group">
-						<label for="cryptos">Crypto Tickers</label>
-						<textarea id="cryptos" rows="3"><?=cryptoList?></textarea>
-					</div>
-				</div>
+			<div class="block form-group">
+				<label for="accounting-currency">Accounting Currency</label>
+				 <select id="accounting-currency">
+           <? for(let fiat of validFiats) {?>
+           <option <? if(fiat == accountingCurrency) {?>selected<?} ?>><?= fiat ?></option>
+           <?}?>
+           </select>
+			</div>
+			<div class="block form-group">
+				<label for="default-lot-matching">Default Lot Matching</label>
+				<select id="default-lot-matching">
+           <? for(let lotMatching of lotMatchings) {?>
+           <option <? if(lotMatching == defaultLotMatching) {?>selected<?} ?>><?=lotMatching?></option>
+           <?}?>
+         </select>
 			</div>
 			<div class="block form-group">
 				<label for="api-key">CryptoCompare API key</label>
 				<input type="text" id="api-key" style="width: 460px;" value="<?=apiKey?>" placeholder="< -- paste API key here -- >">
 			</div>
-				<div class="block form-group">
-					<input type="button" class="action" value="Save" onclick="saveSettings();" />
-					<input type="button" value="Cancel" onclick="google.script.host.close();" />
-				</div>
+			<div class="block form-group">
+				<input type="button" class="action" value="Save" onclick="saveSettings();" />
+				<input type="button" value="Cancel" onclick="google.script.host.close();" />
+			</div>
 		</form>
 		<div id="output"></div>
 	</div>

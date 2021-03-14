@@ -16,6 +16,9 @@ CryptoTracker.prototype.writeReports = function() {
   this.closedPLReport();
   this.exRatesTable();
 
+  this.updateLedgerCurrencies();
+  this.updateLedgerWallets();
+
 }
 
 CryptoTracker.prototype.deleteReports = function () {

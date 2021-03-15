@@ -7,7 +7,7 @@ CryptoTracker.prototype.donationsReport = function () {
 
   if (sheet) {
 
-    this.trimSheet(sheet);
+    this.adjustSheet(sheet);
     return;
   }
   
@@ -95,9 +95,7 @@ CryptoTracker.prototype.donationsReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimSheet(sheet);
-
-  sheet.autoResizeColumns(1, 20);
+  this.adjustSheet(sheet);
 
 }
 

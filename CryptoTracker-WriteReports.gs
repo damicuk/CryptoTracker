@@ -20,7 +20,7 @@ CryptoTracker.prototype.writeReports = function() {
   this.updateLedgerCurrencies();
   this.updateLedgerWallets();
 
-  this.updateCryptoPrices();
+  //this.updateCryptoPrices();
 
 }
 

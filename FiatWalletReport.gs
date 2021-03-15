@@ -7,7 +7,7 @@ CryptoTracker.prototype.fiatWalletsReport = function () {
 
   if (sheet) {
 
-    this.trimSheet(sheet);
+    this.adjustSheet(sheet);
     return;
   }
   
@@ -26,13 +26,13 @@ CryptoTracker.prototype.fiatWalletsReport = function () {
 
   const formulas = [[
     `=SORT(UNIQUE('${referenceSheetName}'!A2:A))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!$A$2:$A&'${referenceSheetName}'!$B$2:$B, FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), '${referenceSheetName}'!$C$2:$C))`
+    `=ArrayFormula(SUMIF('${referenceSheetName}'!A2:A&'${referenceSheetName}'!B2:B, FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), '${referenceSheetName}'!C2:C))`
   ]];
 
   sheet.getRange('A2:B2').setFormulas(formulas);
 
   SpreadsheetApp.flush();
 
-  this.trimSheet(sheet);
+  this.adjustSheet(sheet);
 
 }

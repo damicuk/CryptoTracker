@@ -3,8 +3,8 @@ class Wallet {
   constructor(name) {
 
     this.name = name;
-    this.fiatAccounts = new Set();
-    this.cryptoAccounts = new Set();
+    this.fiatAccounts = new Array();
+    this.cryptoAccounts = new Array();
   }
 
   getFiatAccount(fiat) {
@@ -16,7 +16,7 @@ class Wallet {
     }
 
     let fiatAccount = new FiatAccount(fiat);
-    this.fiatAccounts.add(fiatAccount);
+    this.fiatAccounts.push(fiatAccount);
     return fiatAccount;
   }
 
@@ -29,7 +29,7 @@ class Wallet {
     }
 
     let cryptoAccount = new CryptoAccount(crypto);
-    this.cryptoAccounts.add(cryptoAccount);
+    this.cryptoAccounts.push(cryptoAccount);
     return cryptoAccount;
   }
 }

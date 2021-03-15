@@ -56,7 +56,7 @@ CryptoTracker.prototype.closedSummaryReport = function () {
 
   this.trimSheet(sheet, null, 15);
   
-  sheet.autoResizeColumns(7, 2);
+  sheet.autoResizeColumns(1, 8);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder

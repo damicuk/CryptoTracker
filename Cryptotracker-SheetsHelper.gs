@@ -42,20 +42,20 @@ CryptoTracker.prototype.renameSheet = function (sheetName) {
 
 CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) {
 
-  
-  if(!neededRows || !neededColumns) {
-    
+
+  if (!neededRows || !neededColumns) {
+
     let dataRange = sheet.getDataRange();
 
-    if(!neededRows) {
+    if (!neededRows) {
 
-      neededRows = dataRange.getHeight();
+      neededRows = Math.max(dataRange.getHeight(), sheet.getFrozenRows() + 1);
 
     }
 
-    if(!neededColumns) {
+    if (!neededColumns) {
 
-      neededColumns = dataRange.getWidth();
+      neededColumns = Math.max(dataRange.getWidth(), sheet.getFrozenColumns() + 1);
 
     }
   }
@@ -87,6 +87,14 @@ CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) 
       sheet.insertColumnsAfter(totalColumns, -extraColumns);
     }
   }
+}
+
+CryptoTracker.prototype.adjustSheet = function (sheet) {
+
+  this.trimSheet(sheet);
+
+  sheet.autoResizeColumns(1, sheet.getMaxColumns());
+
 }
 
 CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {

@@ -7,7 +7,7 @@ CryptoTracker.prototype.openPLReport = function () {
 
   if (sheet) {
 
-    this.trimSheet(sheet);
+    this.adjustSheet(sheet);
     return;
   }
   
@@ -77,10 +77,6 @@ CryptoTracker.prototype.openPLReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimSheet(sheet);
-
-  sheet.autoResizeColumns(4, 2);
-  sheet.autoResizeColumns(7, 2);
-  sheet.autoResizeColumns(10, 2);
+  this.adjustSheet(sheet);
 
 }

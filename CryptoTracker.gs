@@ -2,7 +2,7 @@ class CryptoTracker {
 
   constructor() {
 
-    this.wallets = new Set();
+    this.wallets = new Array();
     this.incomeLots = new Array();
     this.closedLots = new Array();
     this.donatedLots = new Array();
@@ -67,10 +67,10 @@ class CryptoTracker {
 
   get fiats() {
 
-    let fiats = new Set();
+    let fiats = [];
     for (let wallet of this.wallets) {
       for (let fiatAccount of wallet.fiatAccounts) {
-        fiats.add(fiatAccount.fiat);
+        fiats.push(fiatAccount.fiat);
       }
     }
     return fiats;
@@ -78,13 +78,18 @@ class CryptoTracker {
 
   get cryptos() {
 
-    let cryptos = new Set();
+    let cryptos = [];
     for (let wallet of this.wallets) {
       for (let cryptoAccount of wallet.cryptoAccounts) {
-        cryptos.add(cryptoAccount.crypto);
+        cryptos.push(cryptoAccount.crypto);
       }
     }
     return cryptos;
+  }
+
+  get hasClosedLots() {
+
+    return this.closeLots.length > 0;
   }
 
   getWallet(name) {
@@ -96,7 +101,7 @@ class CryptoTracker {
     }
 
     let wallet = new Wallet(name);
-    this.wallets.add(wallet);
+    this.wallets.push(wallet);
     return wallet;
 
   }

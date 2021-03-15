@@ -7,7 +7,7 @@ CryptoTracker.prototype.openPositionsReport = function () {
 
   if (sheet) {
     
-    this.trimSheet(sheet);
+    this.adjustSheet(sheet);
     return;
   }
 
@@ -91,8 +91,6 @@ CryptoTracker.prototype.openPositionsReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimSheet(sheet);
-
-  sheet.autoResizeColumns(1, 18);
+  this.adjustSheet(sheet);
 
 }

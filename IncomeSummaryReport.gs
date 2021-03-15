@@ -7,7 +7,7 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
 
   if (sheet) {
 
-    this.trimSheet(sheet);
+    this.adjustSheet(sheet);
     return;
   }
   
@@ -41,6 +41,6 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimSheet(sheet);
+  this.adjustSheet(sheet);
 
 }

@@ -7,7 +7,7 @@ CryptoTracker.prototype.closedPLReport = function () {
 
   if (sheet) {
 
-    this.trimSheet(sheet);
+    this.adjustSheet(sheet);
     return;
   }
 
@@ -77,6 +77,6 @@ CryptoTracker.prototype.closedPLReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimSheet(sheet);
+  this.adjustSheet(sheet);
 
 }

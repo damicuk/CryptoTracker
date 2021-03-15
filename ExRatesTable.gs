@@ -22,8 +22,10 @@ CryptoTracker.prototype.exRatesTable = function () {
   sheet.getRange('C2').setFormula(`=TRANSPOSE(ArrayFormula(FILTER(1/B3:B, LEN(B3:B))))`);
   sheet.getRange('C3').setFormula(`=ArrayFormula(FILTER(FILTER(IF(A3:A=C1:1,,B3:B*C2:2), LEN(B3:B)), LEN(C2:2)))`);
 
-  sheet.getRange('A1:1').setFontWeight('bold').setHorizontalAlignment("center").setBorder(null, null, true, null, null, null);
-  sheet.getRange('A1:A').setFontWeight('bold').setHorizontalAlignment("center").setBorder(null, null, null, true, null, null);
+  sheet.getRange('A1:1').setFontWeight('bold').setHorizontalAlignment("center");
+  sheet.getRange('A1:A').setFontWeight('bold').setHorizontalAlignment("center");
+  sheet.setFrozenRows(1);
+  sheet.setFrozenColumns(1);
 
   sheet.getRange(2, 2, sheet.getMaxRows() - 1, sheet.getMaxColumns() - 1).setNumberFormat('#,##0.000000;(#,##0.000000)');
 

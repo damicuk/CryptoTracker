@@ -1,3 +1,22 @@
+CryptoTracker.prototype.dataSheets = function () {
+
+  let openPositionsTable = this.getOpenPositionsTable();
+  this.dumpData(openPositionsTable, this.openPositionsSheetName);
+
+  let closedPositionsTable = this.getClosedPositionsTable();
+  this.dumpData(closedPositionsTable, this.closedPositionsSheetName);
+
+  let incomeTable = this.getIncomeTable();
+  this.dumpData(incomeTable, this.incomeSheetName);
+
+  let donationsTable = this.getDonationsTable();
+  this.dumpData(donationsTable, this.donationsSheetName);
+
+  let fiatTable = this.getFiatTable();
+  this.dumpData(fiatTable, this.fiatAccountsSheetName);
+
+}
+
 CryptoTracker.prototype.getOpenPositionsTable = function () {
 
   let table = [[
@@ -238,13 +257,7 @@ CryptoTracker.prototype.sortTable = function (table, index) {
 }
 
 CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 1) {
-
-  const dataRows = dataTable.length;
-
-  if (dataRows == 0) {
-    return;
-  }
-
+  
   let sheet = this.getSheet(sheetName);
 
   sheet.clear();
@@ -253,15 +266,14 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 
   let protection = sheet.protect().setDescription('Essential Data Sheet');
   protection.setWarningOnly(true);
 
+  const dataRows = dataTable.length;
   const dataColumns = dataTable[0].length;
 
   //keep at least header and one row for arrayformula references
   const neededRows = Math.max(dataRows, headerRows + 1);
 
-  //Trim the sheet to fit the data
   this.trimSheet(sheet, neededRows, dataColumns);
 
-  //write the fresh data
   let dataRange = sheet.getRange(1, 1, dataRows, dataColumns);
   dataRange.setValues(dataTable);
 

@@ -22,6 +22,18 @@ CryptoTracker.prototype.deleteSheet = function (sheetName) {
   }
 }
 
+CryptoTracker.prototype.deleteSheets = function (sheetNames) {
+
+  for (sheetName of sheetNames) {
+
+    if (sheetName) {
+
+      this.deleteSheet(sheetName);
+
+    }
+  }
+}
+
 CryptoTracker.prototype.renameSheet = function (sheetName) {
 
   let ss = SpreadsheetApp.getActive();

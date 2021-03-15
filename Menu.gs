@@ -48,6 +48,12 @@ function updateCryptoPrices() {
   new CryptoTracker().updateCryptoPrices();
 }
 
+function deleteDataSheets() {
+
+  new CryptoTracker().deleteDataSheets();
+
+}
+
 function deleteReports() {
 
   new CryptoTracker().deleteReports();

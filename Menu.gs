@@ -5,7 +5,9 @@ function onOpen() {
   ui.createMenu('CryptoTracker')
     .addItem('Step 1: Create sample ledger', 'createSampleLedger')
     .addSeparator()
-    .addItem('Step 2: Write reports', 'writeReports')
+    .addItem('Step 2: Validate ledger (optional)', 'validateLedger')
+    .addSeparator()
+    .addItem('Step 3: Write reports', 'writeReports')
     .addSeparator()
     .addItem('Settings', 'showSettingsDialog')
     .addToUi();

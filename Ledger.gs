@@ -24,8 +24,8 @@ CryptoTracker.prototype.updateLedgerCurrencies = function () {
     return;
   }
 
-  let fiats = this.fiats;
-  let cryptos = this.cryptos;
+  let fiats = Array.from(this.fiats);
+  let cryptos = Array.from(this.cryptos);
   let currencies = fiats.concat(cryptos);
 
   this.addCurrencyValidation(sheet, 'C3:C', currencies);

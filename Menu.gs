@@ -45,11 +45,6 @@ function validateLedger() {
   SpreadsheetApp.getActive().toast('All looks good', 'Ledger Valid', 10);
 }
 
-function updateCryptoPrices() {
-
-  new CryptoTracker().updateCryptoPrices();
-}
-
 function deleteDataSheets() {
 
   new CryptoTracker().deleteDataSheets();

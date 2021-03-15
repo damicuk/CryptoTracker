@@ -67,10 +67,10 @@ class CryptoTracker {
 
   get fiats() {
 
-    let fiats = [];
+    let fiats = new Set();
     for (let wallet of this.wallets) {
       for (let fiatAccount of wallet.fiatAccounts) {
-        fiats.push(fiatAccount.fiat);
+        fiats.add(fiatAccount.fiat);
       }
     }
     return fiats;
@@ -78,10 +78,10 @@ class CryptoTracker {
 
   get cryptos() {
 
-    let cryptos = [];
+    let cryptos = new Set();
     for (let wallet of this.wallets) {
       for (let cryptoAccount of wallet.cryptoAccounts) {
-        cryptos.push(cryptoAccount.crypto);
+        cryptos.add(cryptoAccount.crypto);
       }
     }
     return cryptos;
@@ -115,6 +115,11 @@ class CryptoTracker {
   get hasDonatedLots() {
 
     return this.donatedLots.length > 0;
+  }
+
+  get hasFiats() {
+
+    return this.fiats.size > 0;
   }
 
   getWallet(name) {

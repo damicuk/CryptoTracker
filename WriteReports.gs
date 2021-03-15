@@ -5,8 +5,8 @@ CryptoTracker.prototype.writeReports = function () {
 
   this.dataSheets();
   
-  this.updateCryptoPrices();
-
+  let errorMessage = this.updateCryptoPrices();
+  
   this.openPositionsReport();
   this.closedPositionsReport();
   this.donationsReport();
@@ -34,6 +34,7 @@ CryptoTracker.prototype.hideEmptyReports = function () {
   let hasClosedLots = this.hasClosedLots;
   let hasIncomeLots = this.hasIncomeLots;
   let hasDonatedLots = this.hasDonatedLots;
+  let hasFiats = this.hasFiats;
 
   this.toggleVisibility(this.openPositionsReportName, hasLots);
   this.toggleVisibility(this.openSummaryReportName, hasLots);
@@ -49,6 +50,8 @@ CryptoTracker.prototype.hideEmptyReports = function () {
 
   this.toggleVisibility(this.donationsReportName, hasDonatedLots);
   this.toggleVisibility(this.donationsSummaryReportName, hasDonatedLots);
+
+  this.toggleVisibility(this.fiatWalletsReportName, hasFiats);
 
 }
 

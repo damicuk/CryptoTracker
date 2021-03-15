@@ -87,9 +87,34 @@ class CryptoTracker {
     return cryptos;
   }
 
+  get hasLots() {
+
+    for (let wallet of this.wallets) {
+
+      for (let cryptoAccount of wallet.cryptoAccounts) {
+
+        if(cryptoAccount.lots.length > 0) {
+          
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   get hasClosedLots() {
 
-    return this.closeLots.length > 0;
+    return this.closedLots.length > 0;
+  }
+
+  get hasIncomeLots() {
+
+    return this.incomeLots.length > 0;
+  }
+
+  get hasDonatedLots() {
+
+    return this.donatedLots.length > 0;
   }
 
   getWallet(name) {

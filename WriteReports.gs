@@ -24,6 +24,32 @@ CryptoTracker.prototype.writeReports = function () {
   this.updateLedgerCurrencies();
   this.updateLedgerWallets();
 
+  this.hideEmptyReports();
+
+}
+
+CryptoTracker.prototype.hideEmptyReports = function () {
+
+  let hasLots = this.hasLots;
+  let hasClosedLots = this.hasClosedLots;
+  let hasIncomeLots = this.hasIncomeLots;
+  let hasDonatedLots = this.hasDonatedLots;
+
+  this.toggleVisibility(this.openPositionsReportName, hasLots);
+  this.toggleVisibility(this.openSummaryReportName, hasLots);
+  this.toggleVisibility(this.cryptoWalletsReportName, hasLots);
+  this.toggleVisibility(this.openPLReportName, hasLots);
+
+  this.toggleVisibility(this.closedPositionsReportName, hasClosedLots);
+  this.toggleVisibility(this.closedSummaryReportName, hasClosedLots);
+  this.toggleVisibility(this.closedPLReportName, hasClosedLots);
+
+  this.toggleVisibility(this.incomeReportName, hasIncomeLots);
+  this.toggleVisibility(this.incomeSummaryReportName, hasIncomeLots);
+
+  this.toggleVisibility(this.donationsReportName, hasDonatedLots);
+  this.toggleVisibility(this.donationsSummaryReportName, hasDonatedLots);
+
 }
 
 CryptoTracker.prototype.deleteDataSheets = function () {

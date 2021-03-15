@@ -34,6 +34,26 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
   }
 }
 
+CryptoTracker.prototype.toggleVisibility = function (sheetName, show) {
+
+  let ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+
+    if(show) {
+
+      sheet.showSheet();
+
+    }
+    else {
+
+      sheet.hideSheet();
+
+    }
+  }
+}
+
 CryptoTracker.prototype.renameSheet = function (sheetName) {
 
   let ss = SpreadsheetApp.getActive();

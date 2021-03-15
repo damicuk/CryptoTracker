@@ -5,7 +5,7 @@ CryptoTracker.prototype.writeReports = function () {
 
   this.dataSheets();
   
-  let errorMessage = this.updateCryptoPrices();
+  let apiErrorMessage = this.updateCryptoPrices();
   
   this.openPositionsReport();
   this.closedPositionsReport();
@@ -26,6 +26,15 @@ CryptoTracker.prototype.writeReports = function () {
 
   this.hideEmptyReports();
 
+  if(apiErrorMessage) {
+
+    let message = `Current price data will be missing from the reports.
+    
+    ${apiErrorMessage}`;
+
+    SpreadsheetApp.getUi().alert(`Failed to update crypto prices`, message, SpreadsheetApp.getUi().ButtonSet.OK);
+
+  }
 }
 
 CryptoTracker.prototype.hideEmptyReports = function () {

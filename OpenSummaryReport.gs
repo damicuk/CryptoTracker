@@ -19,7 +19,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
 
   let headers = [
     [
-      'Coin',
+      'Crypto',
       'Balance',
       'Av. Buy Price',
       'Current Price',

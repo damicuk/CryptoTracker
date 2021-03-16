@@ -18,7 +18,7 @@ CryptoTracker.prototype.closedSummaryReport = function () {
 
   let headers = [
     [
-      'Coin',
+      'Crypto',
       'Balance',
       'Av. Buy Price',
       'Av. Sell Price',

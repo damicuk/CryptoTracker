@@ -5,7 +5,7 @@ CryptoTracker.prototype.updateCryptoPrices = function () {
   let accountingCurrency = this.accountingCurrency;
   let errorMessage;
 
-  let exRatesTable = [[`Date Time`, `Coin`, `Fiat`, `Ex Rate`]];
+  let exRatesTable = [[`Date Time`, `Crypto`, `Fiat`, `Ex Rate`]];
 
   if (apiKey && cryptos) {
 

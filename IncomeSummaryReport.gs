@@ -18,7 +18,7 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
   let headers = [
     [
       'Year',
-      'Coin',
+      'Crypto',
       'Amount',
       'Income Value'
     ]

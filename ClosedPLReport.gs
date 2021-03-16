@@ -24,7 +24,7 @@ CryptoTracker.prototype.closedPLReport = function () {
     ],
     [
       'Wallet',
-      'Coin',
+      'Crypto',
       'Balance',
       'Realized P/L',
       'Realized P/L %',

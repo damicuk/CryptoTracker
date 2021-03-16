@@ -18,7 +18,7 @@ CryptoTracker.prototype.donationsSummaryReport = function () {
   let headers = [
     [
       'Year',
-      'Coin',
+      'Crypto',
       'Amount',
       'Cost Basis',
       'Donation Value'

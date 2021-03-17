@@ -2,8 +2,6 @@ CryptoTracker.prototype.writeReports = function () {
 
   this.validateLedger();
   this.processLedger();
-
-  this.dataSheets();
   
   let apiErrorMessage = this.updateCryptoPrices();
   

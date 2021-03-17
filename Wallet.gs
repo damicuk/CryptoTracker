@@ -7,23 +7,32 @@ class Wallet {
     this.cryptoAccounts = new Array();
   }
 
-  getFiatAccount(fiat) {
+  get hasFiat() {
 
-    for(let fiatAccount of this.fiatAccounts) {
-      if(fiatAccount.fiat == fiat) {
+    return this.fiatAccounts.length > 0;
+  }
+
+  getFiatAccount(fiat, construct = true) {
+
+    for (let fiatAccount of this.fiatAccounts) {
+      if (fiatAccount.fiat == fiat) {
         return fiatAccount;
       }
     }
 
-    let fiatAccount = new FiatAccount(fiat);
-    this.fiatAccounts.push(fiatAccount);
-    return fiatAccount;
+    if (construct) {
+      let fiatAccount = new FiatAccount(fiat);
+      this.fiatAccounts.push(fiatAccount);
+      return fiatAccount;
+    }
+
+    return null;
   }
 
   getCryptoAccount(crypto) {
 
-    for(let cryptoAccount of this.cryptoAccounts) {
-      if(cryptoAccount.crypto == crypto) {
+    for (let cryptoAccount of this.cryptoAccounts) {
+      if (cryptoAccount.crypto == crypto) {
         return cryptoAccount;
       }
     }

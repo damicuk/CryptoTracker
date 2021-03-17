@@ -34,6 +34,73 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
   }
 }
 
+CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 1) {
+  
+  let sheet = this.getSheet(sheetName);
+
+  sheet.clear();
+  sheet.hideSheet();
+
+  let protection = sheet.protect().setDescription('Essential Data Sheet');
+  protection.setWarningOnly(true);
+
+  const dataRows = dataTable.length;
+  const dataColumns = dataTable[0].length;
+
+  //keep at least header and one row for arrayformula references
+  const neededRows = Math.max(dataRows, headerRows + 1);
+
+  this.trimSheet(sheet, neededRows, dataColumns);
+
+  let dataRange = sheet.getRange(1, 1, dataRows, dataColumns);
+  dataRange.setValues(dataTable);
+
+  SpreadsheetApp.flush();
+  
+  sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
+
+}
+
+CryptoTracker.prototype.writeTable = function (sheet, dataTable, headerRows, dataColumns, formulaColumns) {
+
+  const dataRows = dataTable.length;
+
+  //keep at least header and one row for arrayformula references
+  const neededRows = Math.max(headerRows + dataRows, headerRows + 1);
+
+  const neededColumns = dataColumns + formulaColumns;
+
+  this.trimSheet(sheet, neededRows, neededColumns);
+
+  if (dataRows > 0) {
+
+    let dataRange = sheet.getRange(headerRows + 1, 1, dataRows, dataColumns);
+
+    dataRange.setValues(dataTable);
+
+  }
+  else {
+
+    let dataRange = sheet.getRange(headerRows + 1, 1, 1, dataColumns);
+
+    dataRange.clearContent();
+
+  }
+
+  SpreadsheetApp.flush();
+
+  sheet.autoResizeColumns(1, sheet.getMaxColumns());
+}
+
+CryptoTracker.prototype.sortTable = function (table, index) {
+
+  table.sort(function (a, b) {
+    return a[index] - b[index];
+  });
+
+  return table;
+}
+
 CryptoTracker.prototype.toggleVisibility = function (sheetName, show) {
 
   let ss = SpreadsheetApp.getActive();
@@ -41,7 +108,7 @@ CryptoTracker.prototype.toggleVisibility = function (sheetName, show) {
 
   if (sheet) {
 
-    if(show) {
+    if (show) {
 
       sheet.showSheet();
 

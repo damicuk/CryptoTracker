@@ -43,6 +43,7 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
   catch (err) {
 
     SpreadsheetApp.getUi().alert(`Ledger validation failed`, err.message, SpreadsheetApp.getUi().ButtonSet.OK);
+    return;
 
   }
 }

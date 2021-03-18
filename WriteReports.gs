@@ -15,16 +15,17 @@ CryptoTracker.prototype.writeReports = function () {
 
   }
 
+  this.fiatAccountsSheet();
   this.openPositionsReport();
   this.closedPositionsReport();
   this.donationsReport();
   this.incomeReport();
-  this.fiatWalletsReport();
   this.openSummaryReport();
   this.closedSummaryReport();
   this.incomeSummaryReport();
   this.donationsSummaryReport();
   this.cryptoWalletsReport();
+  this.fiatWalletsReport();
   this.openPLReport();
   this.closedPLReport();
   this.exRatesTable();

@@ -16,7 +16,7 @@ CryptoTracker.prototype.exRatesSheet = function () {
 
     sheet.getRange('A2:A').setNumberFormat('yyyy-mm-dd hh:mm:ss');
     sheet.getRange('B2:C').setNumberFormat('@');
-    sheet.getRange('D2:D').setNumberFormat('#,##0.00000;(#,##0.00000);');
+    sheet.getRange('D2:D').setNumberFormat('#,##0.00000;(#,##0.00000)');
 
     sheet.hideSheet();
 

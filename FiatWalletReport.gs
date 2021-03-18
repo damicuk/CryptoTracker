@@ -1,93 +1,37 @@
 CryptoTracker.prototype.fiatWalletsReport = function () {
 
   const sheetName = this.fiatWalletsReportName;
-
+  
   let ss = SpreadsheetApp.getActive();
   let sheet = ss.getSheetByName(sheetName);
 
-  if (!sheet) {
+  if (sheet) {
 
-    sheet = ss.insertSheet(sheetName);
-
-    sheet.setFrozenRows(1);
-
-    sheet.getRange('A1:1').setFontWeight('bold').setHorizontalAlignment("center");
-    sheet.getRange('A2:A').setNumberFormat('@');
-    sheet.getRange(2, 2, sheet.getMaxRows(), sheet.getMaxColumns()).setNumberFormat('#,##0.00;(#,##0.00)');
-
-    let protection = sheet.protect().setDescription('Essential Data Sheet');
-    protection.setWarningOnly(true);
-
+    return;
+    
   }
 
-  let dataTable = this.getFiatTable();
+  sheet = ss.insertSheet(sheetName);
 
-  const dataRows = dataTable.length;
+  const referenceSheetName = this.fiatAccountsSheetName;
 
-  const dataColumns = dataTable[0].length;
+  sheet.getRange('A1').setValue('Wallet');
+  sheet.getRange('B1').setFormula(`TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!B2:B)))`);
 
-  //keep at least headers and one data cell
-  const neededRows = Math.max(dataRows, 2);
+  sheet.getRange('A1:1').setFontWeight('bold').setHorizontalAlignment("center");
+  sheet.setFrozenRows(1);
 
-  const neededColumns = Math.max(dataColumns, 2);
+  sheet.getRange('A2:A').setNumberFormat('@');
+  sheet.getRange(2, 2, sheet.getMaxRows(), sheet.getMaxColumns()).setNumberFormat('#,##0.00;(#,##0.00)');
 
-  this.trimSheet(sheet, neededRows, neededColumns);
+  const formulas = [[
+    `SORT(UNIQUE('${referenceSheetName}'!A2:A))`,
+    `IF(NOT(LEN(A2)),,ArrayFormula(SUMIF('${referenceSheetName}'!A2:A&'${referenceSheetName}'!B2:B, FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), '${referenceSheetName}'!C2:C)))`
+  ]];
 
-  sheet.clearContents();
-
-  let dataRange = sheet.getRange(1, 1, dataRows, dataColumns);
-
-  dataRange.setValues(dataTable);
+  sheet.getRange('A2:B2').setFormulas(formulas);
 
   SpreadsheetApp.flush();
 
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
-
-}
-
-CryptoTracker.prototype.getFiatTable = function () {
-
-  let fiats = Array.from(this.fiats);
-  fiats.sort(function (a, b) {
-    return a > b ? 1 : b > a ? -1 : 0;
-  });
-
-  let headers = ['Wallets'].concat(fiats);
-
-  let table = [];
-
-  for (let wallet of this.wallets) {
-
-    if (wallet.hasFiat) {
-
-      let row = [wallet.name];
-
-      for (let fiat of fiats) {
-
-        let balance = 0;
-
-        for (let fiatAccount of wallet.fiatAccounts) {
-
-          if (fiatAccount.fiat == fiat) {
-
-            balance = fiatAccount.balance;
-
-          }
-
-        }
-
-        row.push(balance);
-      }
-
-      table.push(row);
-    }
-  }
-
-  table.sort(function (a, b) {
-    return a[0] > b[0] ? 1 : b[0] > a[0] ? -1 : 0;
-  });
-
-  table.unshift(headers);
-
-  return table;
 }

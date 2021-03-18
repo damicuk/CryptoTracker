@@ -3,8 +3,19 @@ CryptoTracker.prototype.writeReports = function () {
   this.validateLedger();
   this.processLedger();
   
-  let apiErrorMessage = this.updateCryptoPrices();
+  let apiErrorMessage;
   
+  try {
+
+    this.exRatesSheet();
+
+  }
+  catch(err) {
+
+    apiErrorMessage = err.message;
+
+  }
+
   this.openPositionsReport();
   this.closedPositionsReport();
   this.donationsReport();
@@ -22,7 +33,7 @@ CryptoTracker.prototype.writeReports = function () {
   this.updateLedgerCurrencies();
   this.updateLedgerWallets();
 
-  if(apiErrorMessage) {
+  if (apiErrorMessage) {
 
     let message = `Current price data will be missing from the reports.
     

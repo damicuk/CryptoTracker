@@ -1,17 +1,3 @@
-CryptoTracker.prototype.getSheet = function (sheetName) {
-
-  let ss = SpreadsheetApp.getActive();
-  let sheet = ss.getSheetByName(sheetName);
-
-  if (!sheet) {
-
-    sheet = ss.insertSheet(sheetName);
-
-  }
-
-  return sheet;
-}
-
 CryptoTracker.prototype.deleteSheet = function (sheetName) {
 
   let ss = SpreadsheetApp.getActive();
@@ -36,34 +22,7 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
   }
 }
 
-CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 1) {
-
-  let sheet = this.getSheet(sheetName);
-
-  sheet.clear();
-  sheet.hideSheet();
-
-  let protection = sheet.protect().setDescription('Essential Data Sheet');
-  protection.setWarningOnly(true);
-
-  const dataRows = dataTable.length;
-  const dataColumns = dataTable[0].length;
-
-  //keep at least header and one row for arrayformula references
-  const neededRows = Math.max(dataRows, headerRows + 1);
-
-  this.trimSheet(sheet, neededRows, dataColumns);
-
-  let dataRange = sheet.getRange(1, 1, dataRows, dataColumns);
-  dataRange.setValues(dataTable);
-
-  SpreadsheetApp.flush();
-
-  sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
-
-}
-
-CryptoTracker.prototype.writeTable = function (sheet, dataTable, headerRows, dataColumns, formulaColumns) {
+CryptoTracker.prototype.writeTable = function (sheet, dataTable, headerRows, dataColumns, formulaColumns = 0) {
 
   const dataRows = dataTable.length;
 
@@ -179,14 +138,6 @@ CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
     sheet.insertColumnsAfter(totalColumns, -extraColumns);
 
   }
-}
-
-CryptoTracker.prototype.adjustSheet = function (sheet) {
-
-  this.trimSheet(sheet);
-
-  sheet.autoResizeColumns(1, sheet.getMaxColumns());
-
 }
 
 CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {

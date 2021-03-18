@@ -4,7 +4,8 @@ CryptoTracker.prototype.sampleLedger = function () {
 
   this.renameSheet(sheetName);
 
-  let sheet = this.getSheet(sheetName);
+  let ss = SpreadsheetApp.getActive();
+  sheet = ss.insertSheet(sheetName);
 
   let headers = [
     [

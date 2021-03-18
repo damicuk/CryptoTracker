@@ -82,41 +82,6 @@ class CryptoTracker {
     return cryptos;
   }
 
-  get hasLots() {
-
-    for (let wallet of this.wallets) {
-
-      for (let cryptoAccount of wallet.cryptoAccounts) {
-
-        if(cryptoAccount.lots.length > 0) {
-          
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  get hasClosedLots() {
-
-    return this.closedLots.length > 0;
-  }
-
-  get hasIncomeLots() {
-
-    return this.incomeLots.length > 0;
-  }
-
-  get hasDonatedLots() {
-
-    return this.donatedLots.length > 0;
-  }
-
-  get hasFiats() {
-
-    return this.fiats.size > 0;
-  }
-
   getWallet(name) {
 
     for (let wallet of this.wallets) {
@@ -177,8 +142,7 @@ class CryptoTracker {
     this.closedLots.push(closedLot);
 
   }
-
-
+  
   payLots(lots, date, exRate, amount, fee, walletName) {
 
     //convert amount and fee to accounting currency

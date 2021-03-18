@@ -2,7 +2,7 @@ CryptoTracker.prototype.writeReports = function () {
 
   this.validateLedger();
   this.processLedger();
-  
+
   let apiErrorMessage;
   
   try {
@@ -35,11 +35,7 @@ CryptoTracker.prototype.writeReports = function () {
 
   if (apiErrorMessage) {
 
-    let message = `Current price data will be missing from the reports.
-    
-    ${apiErrorMessage}`;
-
-    SpreadsheetApp.getUi().alert(`Failed to update crypto prices`, message, SpreadsheetApp.getUi().ButtonSet.OK);
+    SpreadsheetApp.getUi().alert(`Failed to update crypto prices`, apiErrorMessage, SpreadsheetApp.getUi().ButtonSet.OK);
 
   }
 }

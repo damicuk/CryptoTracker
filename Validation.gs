@@ -21,21 +21,33 @@ CryptoTracker.prototype.validateSettings = function () {
   }
 }
 
-CryptoTracker.prototype.validateLedger = function (checkExRates = true) {
+CryptoTracker.prototype.validateLedger = function () {
 
   let ledgerRecords = this.getLedgerRecords();
-  this.validateLedgerRecords(ledgerRecords, checkExRates);
+
+  this.validateLedgerRecords(ledgerRecords);
 
 }
 
-CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords, checkExRates = true) {
+CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
 
-  for (let ledgerRecord of ledgerRecords) {
-    this.validateLedgerRecord(ledgerRecord, checkExRates);
+  try {
+
+    for (let i = 0; i < ledgerRecords.length; i++) {
+
+      this.validateLedgerRecord(ledgerRecords[i], i + 3);
+
+    }
+
+  }
+  catch (err) {
+
+    SpreadsheetApp.getUi().alert(`Ledger validation failed`, err.message, SpreadsheetApp.getUi().ButtonSet.OK);
+
   }
 }
 
-CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRates = true) {
+CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, row) {
 
   let date = ledgerRecord.date;
   let action = ledgerRecord.action;
@@ -52,25 +64,25 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
   let lotMatching = ledgerRecord.lotMatching;
 
   if (isNaN(date)) {
-    throw Error('Ledger record: missing date.');
+    throw Error(`${action} row ${row}: missing date.`);
   }
   else if (isNaN(debitExRate)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record debit exchange rate is not valid (number or blank).`);
+    throw Error(`${action} row ${row}: debit exchange rate is not valid (number or blank).`);
   }
   else if (isNaN(debitAmount)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record debit amount is not valid (number or blank).`);
+    throw Error(`${action} row ${row}: debit amount is not valid (number or blank).`);
   }
   else if (isNaN(debitFee)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record debit fee is not valid (number or blank).`);
+    throw Error(`${action} row ${row}: debit fee is not valid (number or blank).`);
   }
   else if (isNaN(creditExRate)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate is not valid (number or blank).`);
+    throw Error(`${action} row ${row}: credit exchange rate is not valid (number or blank).`);
   }
   else if (isNaN(creditAmount)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record credit amount is not valid (number or blank).`);
+    throw Error(`${action} row ${row}: credit amount is not valid (number or blank).`);
   }
   else if (isNaN(creditFee)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee is not valid (number or blank).`);
+    throw Error(`${action} row ${row}: credit fee is not valid (number or blank).`);
   }
   else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
     throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`);
@@ -172,7 +184,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (creditCurrency == this.accountingCurrency && creditExRate !== '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is the accounting currency (${this.accountingCurrency}). Leave exchange rate (${creditExRate}) blank.`);
     }
-    else if (checkExRates) {
+    else {
       if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '') {
           throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
@@ -213,6 +225,12 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (!this.isCrypto(creditCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) must be crypto (${this.cryptos}).`);
     }
+    else if (creditExRate === '') {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
+    }
+    else if (creditExRate <= 0) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate must be greater than 0.`);
+    }
     else if (creditAmount === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no credit amount specified.`);
     }
@@ -225,14 +243,6 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     else if (!creditWalletName) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record has no credit wallet specified.`);
     }
-    else if (checkExRates) {
-      if (creditExRate === '') {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
-      }
-      else if (creditExRate <= 0) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate must be greater than 0.`);
-      }
-    }
   }
   else if (action == 'Donation' || action == 'Payment') { //Donation or Payment
     if (!debitCurrency) {
@@ -240,6 +250,12 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     }
     else if (!this.isCrypto(debitCurrency)) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) must be crypto (${this.cryptos}).`);
+    }
+    else if (debitExRate === '') {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
+    }
+    else if (debitExRate <= 0) {
+      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit exchange rate must be greater than 0.`);
     }
     else if (debitAmount === '') {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
@@ -267,14 +283,6 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, checkExRa
     }
     else if (creditWalletName) {
       throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank.`);
-    }
-    else if (checkExRates) {
-      if (debitExRate === '') {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
-      }
-      else if (debitExRate <= 0) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record debit exchange rate must be greater than 0.`);
-      }
     }
   }
   else if (action == 'Gift') { //Gift

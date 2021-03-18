@@ -25,12 +25,24 @@ CryptoTracker.prototype.exRatesSheet = function () {
 
   }
 
-  let dataTable = this.getCryptoPriceTable();
+  let dataTable = [];
 
-  this.writeTable(sheet, dataTable, 1, 4);
+  try {
 
+    dataTable = this.getCryptoPriceTable();
+
+  }
+  catch (err) {
+
+    throw Error(err.message);
+
+  }
+  finally {
+
+    this.writeTable(sheet, dataTable, 1, 4);
+
+  }
 }
-
 
 CryptoTracker.prototype.getCryptoPriceTable = function () {
 

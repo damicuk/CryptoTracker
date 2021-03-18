@@ -1,6 +1,5 @@
 CryptoTracker.prototype.writeReports = function () {
 
-  this.validateLedger();
   this.processLedger();
 
   let apiErrorMessage;

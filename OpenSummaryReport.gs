@@ -47,9 +47,9 @@ CryptoTracker.prototype.openSummaryReport = function () {
     `=IFERROR(ArrayFormula(FILTER(E2:E/B2:B, LEN(A2:A))),)`,
     `=IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, '${exRatesSheetName}'!B2:D, 3, FALSE), LEN(A2:A))),)`,
     `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!N3:N))`,
-    `=IFERROR(ArrayFormula(FILTER(B2:B*D2:D, LEN(A2:A))),)`,
-    `=IFERROR(ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))),)`,
-    `=IFERROR(ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))),)`
+    `=IF(NOT(LEN(D2:D)),,ArrayFormula(FILTER(B2:B*D2:D, LEN(A2:A))))`,
+    `=IF(NOT(LEN(D2:D)),,ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))))`,
+    `=IF(NOT(LEN(D2:D)),,ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))))`
   ]];
 
   sheet.getRange('A2:H2').setFormulas(formulas);

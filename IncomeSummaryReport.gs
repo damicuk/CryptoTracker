@@ -7,14 +7,14 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
 
   if (sheet) {
 
-    this.adjustSheet(sheet);
     return;
+    
   }
-  
-  sheet = ss.insertSheet(sheetName);
 
-  const referenceSheetName = this.incomeReportName;
+  sheet = ss.insertSheet(sheetName);
   
+  const referenceSheetName = this.incomeReportName;
+
   let headers = [
     [
       'Year',
@@ -32,15 +32,17 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
   sheet.getRange('D2:D').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `=IFERROR(SORT(UNIQUE(FILTER({YEAR('${referenceSheetName}'!A2:A),'${referenceSheetName}'!B2:B},LEN('${referenceSheetName}'!A2:A)))),)`, ,
-    `=ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!A2:A)&'${referenceSheetName}'!B2:B, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!D2:D))`,
-    `=ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!A2:A)&'${referenceSheetName}'!B2:B, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!F2:F))`
+    `IFERROR(SORT(UNIQUE(FILTER({YEAR('${referenceSheetName}'!A2:A),'${referenceSheetName}'!B2:B},LEN('${referenceSheetName}'!A2:A)))),)`, ,
+    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!A2:A)&'${referenceSheetName}'!B2:B, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!D2:D))`,
+    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!A2:A)&'${referenceSheetName}'!B2:B, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!F2:F))`
   ]];
 
   sheet.getRange('A2:D2').setFormulas(formulas);
 
+  this.trimColumns(sheet, 4);
+
   SpreadsheetApp.flush();
 
-  this.adjustSheet(sheet);
+  sheet.autoResizeColumns(1, sheet.getMaxColumns());
 
 }

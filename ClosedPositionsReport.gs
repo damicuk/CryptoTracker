@@ -80,14 +80,14 @@ CryptoTracker.prototype.closedPositionsReport = function () {
     this.addLongShortCondition(sheet, 'W3:W');
 
     const formulas = [[
-      `=IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(S3:S/P3:P, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(T3:T/P3:P, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(IF(L3:L, (M3:M-N3:N)*L3:L, M3:M-N3:N), LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(T3:T-S3:S, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(U3:U/S3:S, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, J3:J, "Y") > 1)+(((DATEDIF(A3:A, J3:J, "Y") = 1)*(DATEDIF(A3:A, J3:J, "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
+      `IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(S3:S/P3:P, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(T3:T/P3:P, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(IF(L3:L, (M3:M-N3:N)*L3:L, M3:M-N3:N), LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(T3:T-S3:S, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(U3:U/S3:S, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, J3:J, "Y") > 1)+(((DATEDIF(A3:A, J3:J, "Y") = 1)*(DATEDIF(A3:A, J3:J, "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
     ]];
 
     sheet.getRange('P3:W3').setFormulas(formulas);

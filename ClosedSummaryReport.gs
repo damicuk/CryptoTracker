@@ -7,15 +7,14 @@ CryptoTracker.prototype.closedSummaryReport = function () {
 
   if (sheet) {
 
-    this.trimSheet(sheet, null, 15);
-    sheet.autoResizeColumns(1, 8);
     return;
+    
   }
-  
+
   sheet = ss.insertSheet(sheetName);
-
+  
   const referenceSheetName = this.closedPositionsReportName;
-
+  
   let headers = [
     [
       'Crypto',
@@ -55,7 +54,7 @@ CryptoTracker.prototype.closedSummaryReport = function () {
 
   SpreadsheetApp.flush();
 
-  this.trimSheet(sheet, null, 15);
+  this.trimColumns(sheet, 15);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder

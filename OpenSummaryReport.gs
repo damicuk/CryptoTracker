@@ -7,11 +7,10 @@ CryptoTracker.prototype.openSummaryReport = function () {
 
   if (sheet) {
 
-    this.trimSheet(sheet, null, 15);
-    sheet.autoResizeColumns(1, 8);
     return;
+    
   }
-  
+
   sheet = ss.insertSheet(sheetName);
 
   const referenceSheetName = this.openPositionsReportName;
@@ -42,21 +41,21 @@ CryptoTracker.prototype.openSummaryReport = function () {
 
 
   const formulas = [[
-    `=SORT(UNIQUE('${referenceSheetName}'!G3:G))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!K3:K))`,
-    `=IFERROR(ArrayFormula(FILTER(E2:E/B2:B, LEN(A2:A))),)`,
-    `=IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, '${exRatesSheetName}'!B2:D, 3, FALSE), LEN(A2:A))),)`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!N3:N))`,
-    `=IF(NOT(LEN(D2:D)),,ArrayFormula(FILTER(B2:B*D2:D, LEN(A2:A))))`,
-    `=IF(NOT(LEN(D2:D)),,ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))))`,
-    `=IF(NOT(LEN(D2:D)),,ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))))`
+    `SORT(UNIQUE('${referenceSheetName}'!G3:G))`,
+    `ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!K3:K))`,
+    `IFERROR(ArrayFormula(FILTER(E2:E/B2:B, LEN(A2:A))),)`,
+    `IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, '${exRatesSheetName}'!B2:D, 3, FALSE), LEN(A2:A))),)`,
+    `ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!N3:N))`,
+    `ArrayFormula(IF(NOT(LEN(D2:D)),,FILTER(B2:B*D2:D, LEN(A2:A))))`,
+    `ArrayFormula(IF(NOT(LEN(D2:D)),,FILTER(F2:F-E2:E, LEN(A2:A))))`,
+    `ArrayFormula(IF(NOT(LEN(D2:D)),,FILTER(G2:G/E2:E, LEN(A2:A))))`
   ]];
 
   sheet.getRange('A2:H2').setFormulas(formulas);
 
   SpreadsheetApp.flush();
 
-  this.trimSheet(sheet, null, 15);
+  this.trimColumns(sheet, 15);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder

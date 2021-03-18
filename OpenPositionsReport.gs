@@ -70,15 +70,14 @@ CryptoTracker.prototype.openPositionsReport = function () {
     this.addLongShortCondition(sheet, 'R3:R');
 
     const formulas = [[
-      //`=ArrayFormula('${referenceSheetName}'!A2:J)`, , , , , , , , , ,
-      `=IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(N3:N/K3:K, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(VLOOKUP(G3:G,'${exRatesSheetName}'!B2:D, 3, FALSE), LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
-      `=IF(NOT(LEN(M3:M)),, ArrayFormula(FILTER(K3:K*M3:M, LEN(A3:A))))`,
-      `=IF(NOT(LEN(M3:M)),,ArrayFormula(FILTER(O3:O-N3:N, LEN(A3:A))))`,
-      `=IF(NOT(LEN(M3:M)),,ArrayFormula(FILTER(IF(N3:N>0, P3:P/N3:N, ""), LEN(A3:A))))`,
-      `=IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, NOW(), "Y") > 1)+(((DATEDIF(A3:A, NOW(), "Y") = 1)*(DATEDIF(A3:A, NOW(), "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
+      `IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(N3:N/K3:K, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(VLOOKUP(G3:G,'${exRatesSheetName}'!B2:D, 3, FALSE), LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
+      `ArrayFormula(IF(NOT(LEN(M3:M)),,FILTER(K3:K*M3:M, LEN(A3:A))))`,
+      `ArrayFormula(IF(NOT(LEN(M3:M)),,FILTER(O3:O-N3:N, LEN(A3:A))))`,
+      `ArrayFormula(IF(NOT(LEN(M3:M)),,FILTER(IF(N3:N>0, P3:P/N3:N, ""), LEN(A3:A))))`,
+      `IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, NOW(), "Y") > 1)+(((DATEDIF(A3:A, NOW(), "Y") = 1)*(DATEDIF(A3:A, NOW(), "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
     ]];
 
     sheet.getRange('K3:R3').setFormulas(formulas);

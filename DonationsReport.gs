@@ -74,14 +74,14 @@ CryptoTracker.prototype.donationsReport = function () {
     this.addLongShortCondition(sheet, 'T3:T');
 
     const formulas = [[
-      `=IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(P3:P/M3:M, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(Q3:Q/M3:M, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(K3:K*M3:M, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(Q3:Q-P3:P, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(R3:R/P3:P, LEN(A3:A))),)`,
-      `=IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, J3:J, "Y") > 1)+(((DATEDIF(A3:A, J3:J, "Y") = 1)*(DATEDIF(A3:A, J3:J, "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
+      `IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(P3:P/M3:M, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(Q3:Q/M3:M, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(K3:K*M3:M, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(Q3:Q-P3:P, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(R3:R/P3:P, LEN(A3:A))),)`,
+      `IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, J3:J, "Y") > 1)+(((DATEDIF(A3:A, J3:J, "Y") = 1)*(DATEDIF(A3:A, J3:J, "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
     ]];
 
     sheet.getRange('M3:T3').setFormulas(formulas);

@@ -4,7 +4,9 @@ CryptoTracker.prototype.getSheet = function (sheetName) {
   let sheet = ss.getSheetByName(sheetName);
 
   if (!sheet) {
+
     sheet = ss.insertSheet(sheetName);
+    
   }
 
   return sheet;
@@ -35,7 +37,7 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
 }
 
 CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 1) {
-  
+
   let sheet = this.getSheet(sheetName);
 
   sheet.clear();
@@ -56,7 +58,7 @@ CryptoTracker.prototype.dumpData = function (dataTable, sheetName, headerRows = 
   dataRange.setValues(dataTable);
 
   SpreadsheetApp.flush();
-  
+
   sheet.autoResizeColumns(1, sheet.getDataRange().getWidth());
 
 }
@@ -141,50 +143,61 @@ CryptoTracker.prototype.renameSheet = function (sheetName) {
 
 CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) {
 
+  this.trimRows(sheet, neededRows);
 
-  if (!neededRows || !neededColumns) {
+  this.trimColumns(sheet, neededColumns);
+
+}
+
+CryptoTracker.prototype.trimRows = function (sheet, neededRows) {
+
+  if (!neededRows) {
 
     let dataRange = sheet.getDataRange();
 
-    if (!neededRows) {
+    neededRows = Math.max(dataRange.getHeight(), sheet.getFrozenRows() + 1);
 
-      neededRows = Math.max(dataRange.getHeight(), sheet.getFrozenRows() + 1);
-
-    }
-
-    if (!neededColumns) {
-
-      neededColumns = Math.max(dataRange.getWidth(), sheet.getFrozenColumns() + 1);
-
-    }
   }
 
-  if (neededRows) {
+  const totalRows = sheet.getMaxRows();
 
-    const totalRows = sheet.getMaxRows();
+  const extraRows = totalRows - neededRows;
 
-    const extraRows = totalRows - neededRows;
+  if (extraRows > 0) {
 
-    if (extraRows > 0) {
-      sheet.deleteRows(neededRows + 1, extraRows);
-    }
-    else if (extraRows < 0) {
-      sheet.insertRowsAfter(totalRows, -extraRows);
-    }
+    sheet.deleteRows(neededRows + 1, extraRows);
+
+  }
+  else if (extraRows < 0) {
+
+    sheet.insertRowsAfter(totalRows, -extraRows);
+
+  }
+}
+
+CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
+
+  if (!neededColumns) {
+
+    let dataRange = sheet.getDataRange();
+
+    neededColumns = Math.max(dataRange.getWidth(), sheet.getFrozenColumns() + 1);
+
   }
 
-  if (neededColumns) {
+  const totalColumns = sheet.getMaxColumns();
 
-    const totalColumns = sheet.getMaxColumns();
+  const extraColumns = totalColumns - neededColumns;
 
-    const extraColumns = totalColumns - neededColumns;
+  if (extraColumns > 0) {
 
-    if (extraColumns > 0) {
-      sheet.deleteColumns(neededColumns + 1, extraColumns);
-    }
-    else if (extraColumns < 0) {
-      sheet.insertColumnsAfter(totalColumns, -extraColumns);
-    }
+    sheet.deleteColumns(neededColumns + 1, extraColumns);
+
+  }
+  else if (extraColumns < 0) {
+
+    sheet.insertColumnsAfter(totalColumns, -extraColumns);
+
   }
 }
 

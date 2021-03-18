@@ -7,10 +7,10 @@ CryptoTracker.prototype.donationsSummaryReport = function () {
 
   if (sheet) {
 
-    this.adjustSheet(sheet);
     return;
+    
   }
-  
+
   sheet = ss.insertSheet(sheetName);
 
   const referenceSheetName = this.donationsReportName;
@@ -34,16 +34,18 @@ CryptoTracker.prototype.donationsSummaryReport = function () {
   sheet.getRange('E2:E').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `=IFERROR(SORT(UNIQUE(FILTER({YEAR('${referenceSheetName}'!J3:J),'${referenceSheetName}'!G3:G},LEN('${referenceSheetName}'!A3:A)))),)`, ,
-    `=ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!M2:M))`,
-    `=ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!P2:P))`,
-    `=ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!Q2:Q))`
+    `IFERROR(SORT(UNIQUE(FILTER({YEAR('${referenceSheetName}'!J3:J),'${referenceSheetName}'!G3:G},LEN('${referenceSheetName}'!A3:A)))),)`, ,
+    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!M2:M))`,
+    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!P2:P))`,
+    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!Q2:Q))`
   ]];
 
   sheet.getRange('A2:E2').setFormulas(formulas);
 
+  this.trimColumns(sheet, 5);
+
   SpreadsheetApp.flush();
 
-  this.adjustSheet(sheet);
+  sheet.autoResizeColumns(1, sheet.getMaxColumns());
 
 }

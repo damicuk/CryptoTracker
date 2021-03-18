@@ -17,11 +17,6 @@ class CryptoTracker {
 
     //sheet names
     this.ledgerSheetName = 'Ledger';
-    this.openPositionsSheetName = 'Open Positions Data';
-    this.closedPositionsSheetName = 'Closed Positions Data';
-    this.incomeSheetName = 'Income Data';
-    this.donationsSheetName = 'Donations Data';
-    this.fiatAccountsSheetName = 'Fiat Accounts Data';
     this.exRatesSheetName = 'Ex Rates Data';
     this.openPositionsReportName = 'Open Positions Report';
     this.closedPositionsReportName = 'Closed Positions Report';

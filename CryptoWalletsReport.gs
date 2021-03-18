@@ -7,10 +7,10 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
 
   if (sheet) {
 
-    this.adjustSheet(sheet);
     return;
+    
   }
-  
+
   sheet = ss.insertSheet(sheetName);
 
   const referenceSheetName = this.openPositionsReportName;
@@ -25,14 +25,14 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
   sheet.getRange(2, 2, sheet.getMaxRows(), sheet.getMaxColumns()).setNumberFormat('#,##0.00000000;(#,##0.00000000);');
 
   const formulas = [[
-    `=SORT(UNIQUE('${referenceSheetName}'!J3:J))`,
-    `=ARRAYFORMULA(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), '${referenceSheetName}'!K3:K))`
+    `SORT(UNIQUE('${referenceSheetName}'!J3:J))`,
+    `ARRAYFORMULA(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), '${referenceSheetName}'!K3:K))`
   ]];
 
   sheet.getRange('A2:B2').setFormulas(formulas);
 
   SpreadsheetApp.flush();
 
-  this.adjustSheet(sheet);
+  sheet.autoResizeColumns(1, sheet.getMaxColumns());
 
 }

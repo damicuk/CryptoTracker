@@ -7,10 +7,10 @@ CryptoTracker.prototype.openPLReport = function () {
 
   if (sheet) {
 
-    this.adjustSheet(sheet);
     return;
+
   }
-  
+
   sheet = ss.insertSheet(sheetName);
 
   const referenceSheetName = this.openPositionsReportName;
@@ -61,22 +61,24 @@ CryptoTracker.prototype.openPLReport = function () {
   sheet.getRange('K3:K').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
 
   const formulas = [[
-    `=SORT(UNIQUE({'${referenceSheetName}'!J3:J,'${referenceSheetName}'!G3:G}))`, ,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"SHORT", LEN(A3:A)), '${referenceSheetName}'!K3:K))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"SHORT", LEN(A3:A)), '${referenceSheetName}'!P3:P))`,
-    `=ArrayFormula(IFERROR(FILTER(D3:D, LEN(A3:A)) / SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"SHORT", LEN(A3:A)), '${referenceSheetName}'!N3:N),))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"LONG", LEN(A3:A)), '${referenceSheetName}'!K3:K))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"LONG", LEN(A3:A)), '${referenceSheetName}'!P3:P))`,
-    `=ArrayFormula(IFERROR(FILTER(G3:G, LEN(A3:A)) / SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"LONG", LEN(A3:A)), '${referenceSheetName}'!N3:N),))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A3:A&B3:B, LEN(A3:A)), '${referenceSheetName}'!K3:K))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A3:A&B3:B, LEN(A3:A)), '${referenceSheetName}'!P3:P))`,
-    `=ArrayFormula(IFERROR(FILTER(J3:J, LEN(A3:A)) / SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A3:A&B3:B, LEN(A3:A)), '${referenceSheetName}'!N3:N),))`
+    `SORT(UNIQUE({'${referenceSheetName}'!J3:J,'${referenceSheetName}'!G3:G}))`, ,
+    `ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"SHORT", LEN(A3:A)), '${referenceSheetName}'!K3:K))`,
+    `ArrayFormula(IF(C3:C=0,,SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"SHORT", LEN(A3:A)), '${referenceSheetName}'!P3:P)))`,
+    `ArrayFormula(IFERROR(FILTER(D3:D, LEN(A3:A)) / SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"SHORT", LEN(A3:A)), '${referenceSheetName}'!N3:N),))`,
+    `ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"LONG", LEN(A3:A)), '${referenceSheetName}'!K3:K))`,
+    `ArrayFormula(IF(F3:F=0,,SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"LONG", LEN(A3:A)), '${referenceSheetName}'!P3:P)))`,
+    `ArrayFormula(IFERROR(FILTER(G3:G, LEN(A3:A)) / SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G&'${referenceSheetName}'!R3:R, FILTER(A3:A&B3:B&"LONG", LEN(A3:A)), '${referenceSheetName}'!N3:N),))`,
+    `ArrayFormula(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A3:A&B3:B, LEN(A3:A)), '${referenceSheetName}'!K3:K))`,
+    `ArrayFormula(IF(I3:I=0,,SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A3:A&B3:B, LEN(A3:A)), '${referenceSheetName}'!P3:P)))`,
+    `ArrayFormula(IFERROR(FILTER(J3:J, LEN(A3:A)) / SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A3:A&B3:B, LEN(A3:A)), '${referenceSheetName}'!N3:N),))`
   ]];
 
   sheet.getRange('A3:K3').setFormulas(formulas);
 
+  this.trimColumns(sheet, 11);
+
   SpreadsheetApp.flush();
 
-  this.adjustSheet(sheet);
+  sheet.autoResizeColumns(1, sheet.getMaxColumns());
 
 }

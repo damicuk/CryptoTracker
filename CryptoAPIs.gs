@@ -7,7 +7,12 @@ CryptoTracker.prototype.updateCryptoPrices = function () {
 
   let exRatesTable = [[`Date Time`, `Crypto`, `Fiat`, `Ex Rate`]];
 
-  if (apiKey && cryptos) {
+  if (!apiKey) {
+
+    errorMessage = `CryptoCompare API key needs to be saved in settings.`;
+
+  }
+  else if (cryptos) {
 
     let url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos}&tsyms=${accountingCurrency}&api_key=${apiKey}`;
 
@@ -18,8 +23,8 @@ CryptoTracker.prototype.updateCryptoPrices = function () {
 
     if (data.Response == "Error") {
 
-      errorMessage =  data.Message;
-      
+      errorMessage = data.Message;
+
     }
     else {
 

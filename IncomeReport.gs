@@ -31,7 +31,7 @@ CryptoTracker.prototype.incomeReport = function () {
     sheet.getRange('F2:F').setNumberFormat('#,##0.00;(#,##0.00)');
 
     const formulas = [[
-      `=IFERROR(ArrayFormula(FILTER(D2:D*C2:C, LEN(A2:A))),)`
+      `IFERROR(ArrayFormula(FILTER(D2:D*C2:C, LEN(A2:A))),)`
     ]];
 
     sheet.getRange('F2:F2').setFormulas(formulas);

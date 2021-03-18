@@ -22,7 +22,7 @@ CryptoTracker.prototype.writeReports = function () {
   this.updateLedgerCurrencies();
   this.updateLedgerWallets();
 
-  this.hideEmptyReports();
+  //this.hideEmptyReports();
 
   if(apiErrorMessage) {
 
@@ -59,21 +59,6 @@ CryptoTracker.prototype.hideEmptyReports = function () {
   this.toggleVisibility(this.donationsSummaryReportName, hasDonatedLots);
 
   this.toggleVisibility(this.fiatWalletsReportName, hasFiats);
-
-}
-
-CryptoTracker.prototype.deleteDataSheets = function () {
-
-  let sheetNames = [
-    this.openPositionsSheetName,
-    this.closedPositionsSheetName,
-    this.incomeSheetName,
-    this.donationsSheetName,
-    this.fiatAccountsSheetName,
-    this.exRatesSheetName
-  ];
-
-  this.deleteSheets(sheetNames);
 
 }
 

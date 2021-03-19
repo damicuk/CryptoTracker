@@ -90,7 +90,7 @@ class CryptoTracker {
   getWallet(name) {
 
     for (let wallet of this.wallets) {
-      if (wallet.name == name) {
+      if (wallet.name === name) {
         return wallet;
       }
     }
@@ -195,7 +195,7 @@ class CryptoTracker {
       );
 
       //Stop reading here
-      if (ledgerRecord.action == 'Stop') {
+      if (ledgerRecord.action === 'Stop') {
 
         break;
 
@@ -204,6 +204,11 @@ class CryptoTracker {
       ledgerRecords.push(ledgerRecord);
 
     }
+
+    ledgerRecords.sort(function (a, b) {
+      return a.date - b.date;
+    });
+
     return ledgerRecords;
   }
 }

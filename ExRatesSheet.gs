@@ -71,7 +71,7 @@ CryptoTracker.prototype.getCryptoPriceTable = function () {
     let returnText = httpRequest.getContentText();
     let data = JSON.parse(returnText);
 
-    if (data.Response == "Error") {
+    if (data.Response === "Error") {
 
       throw Error(data.Message);
 

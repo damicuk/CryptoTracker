@@ -90,25 +90,25 @@ class CryptoAccount {
 
   lotComparator(lotMatching) {
 
-    if (lotMatching == 'FIFO') {
+    if (lotMatching === 'FIFO') {
 
       return function (lot1, lot2) {
         lot1.date - lot2.date;
       }
     }
-    else if (lotMatching == 'LIFO') {
+    else if (lotMatching === 'LIFO') {
 
       return function (lot1, lot2) {
         return lot2.date - lot1.date;
       }
     }
-    else if (lotMatching == 'LOFO') {
+    else if (lotMatching === 'LOFO') {
 
       return function (lot1, lot2) {
         return (lot1.costBasisCents / lot1.satoshi) - (lot2.costBasisCents / lot2.satoshi);
       }
     }
-    else if (lotMatching == 'HIFO') {
+    else if (lotMatching === 'HIFO') {
 
       return function (lot1, lot2) {
         return (lot2.costBasisCents / lot2.satoshi) - (lot1.costBasisCents / lot1.satoshi);

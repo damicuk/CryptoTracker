@@ -59,7 +59,7 @@ let apiKey = userProperties.getProperty('apiKey');
 				<label for="accounting-currency">Accounting Currency</label>
 				 <select id="accounting-currency">
            <? for(let fiat of validFiats) {?>
-           <option <? if(fiat == accountingCurrency) {?>selected<?} ?>><?= fiat ?></option>
+           <option <? if(fiat === accountingCurrency) {?>selected<?} ?>><?= fiat ?></option>
            <?}?>
            </select>
 			</div>
@@ -67,7 +67,7 @@ let apiKey = userProperties.getProperty('apiKey');
 				<label for="default-lot-matching">Default Lot Matching</label>
 				<select id="default-lot-matching">
            <? for(let lotMatching of lotMatchings) {?>
-           <option <? if(lotMatching == defaultLotMatching) {?>selected<?} ?>><?=lotMatching?></option>
+           <option <? if(lotMatching === defaultLotMatching) {?>selected<?} ?>><?=lotMatching?></option>
            <?}?>
          </select>
 			</div>

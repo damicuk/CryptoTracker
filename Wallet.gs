@@ -11,7 +11,7 @@ class Wallet {
 
     for (let fiatAccount of this.fiatAccounts) {
 
-      if (fiatAccount.fiat == fiat) {
+      if (fiatAccount.fiat === fiat) {
 
         return fiatAccount;
       }
@@ -28,7 +28,7 @@ class Wallet {
 
     for (let cryptoAccount of this.cryptoAccounts) {
 
-      if (cryptoAccount.crypto == crypto) {
+      if (cryptoAccount.crypto === crypto) {
 
         return cryptoAccount;
       }

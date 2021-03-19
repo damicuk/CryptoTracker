@@ -1,6 +1,12 @@
 CryptoTracker.prototype.writeReports = function () {
 
-  this.processLedger();
+  let ledgerProcessed = this.processLedger();
+
+  if(!ledgerProcessed) {
+
+    return false;
+
+  }
 
   let apiErrorMessage;
   

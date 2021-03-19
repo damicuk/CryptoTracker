@@ -29,5 +29,28 @@ class LedgerRecord {
     this.creditWalletName = creditWalletName;
     this.lotMatching = lotMatching;
 
+  } 
+
+  static getColumnIndex(columnName) {
+
+    let columns = [
+      'date',
+      'action',
+      'debitCurrency',
+      'debitExRate',
+      'debitAmount',
+      'debitFee',
+      'debitWalletName',
+      'creditCurrency',
+      'creditExRate',
+      'creditAmount',
+      'creditFee',
+      'creditWalletName',
+      'lotMatching'
+    ];
+
+    let index = columns.indexOf(columnName);
+    
+    return index === -1 ? index : index + 1;
   }
 }

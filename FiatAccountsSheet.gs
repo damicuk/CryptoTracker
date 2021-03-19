@@ -44,5 +44,13 @@ CryptoTracker.prototype.getFiatTable = function () {
     }
   }
 
-  return this.sortTable(table, 0);
+  table.sort(function (a, b) {
+    return a[0] > b[0] ? 1 : 
+          b[0] > a[0] ? -1 : 
+          a[1] > b[1] ? 1 : 
+          b[1] > a[1] ? -1 : 
+          0;
+  });
+
+  return table;
 }

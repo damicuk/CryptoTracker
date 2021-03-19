@@ -3,8 +3,7 @@ CryptoTracker.prototype.processLedger = function () {
   let ledgerRecords = this.getLedgerRecords();
 
   this.validateLedgerRecords(ledgerRecords);
-
-  //sort by date
+  
   ledgerRecords.sort(function (a, b) {
     return a.date - b.date;
   });

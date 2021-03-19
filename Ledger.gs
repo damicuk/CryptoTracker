@@ -49,7 +49,9 @@ CryptoTracker.prototype.updateLedgerWallets = function () {
     walletNames.push(wallet.name);
   }
   walletNames.sort(function (a, b) {
-    return a > b ? 1 : b > a ? -1 : 0;
+    return a > b ? 1 : 
+          b > a ? -1 :
+          0;
   });
 
   this.addWalletValidation(sheet, 'G3:G', walletNames);

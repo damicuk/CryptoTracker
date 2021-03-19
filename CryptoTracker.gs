@@ -15,7 +15,6 @@ class CryptoTracker {
 
     this.lotMatching = this.defaultLotMatching;
 
-    //sheet names
     this.ledgerSheetName = 'Ledger';
     this.exRatesSheetName = 'Ex Rates Data';
     this.fiatAccountsSheetName = 'Fiat Accounts Data'
@@ -61,6 +60,11 @@ class CryptoTracker {
     return ['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF', 'JPY'];
   }
 
+  static get cryptoRegEx() {
+
+    return /^\w{2,9}$/;
+  }
+
   get fiats() {
 
     let fiats = new Set();
@@ -104,7 +108,8 @@ class CryptoTracker {
 
   isCrypto(currency) {
 
-    return !CryptoTracker.validFiats.includes(currency);
+    return !CryptoTracker.validFiats.includes(currency)
+      && CryptoTracker.cryptoRegEx.test(currency);
   }
 
   closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
@@ -143,7 +148,7 @@ class CryptoTracker {
     this.closedLots.push(closedLot);
 
   }
-  
+
   payLots(lots, date, exRate, amount, fee, walletName) {
 
     //convert amount and fee to accounting currency

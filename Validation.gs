@@ -1,26 +1,3 @@
-CryptoTracker.prototype.validateSettings = function () {
-
-  //cross check fiats and cryptos
-  for (let fiat of this.fiats) {
-    for (let cyrpto of this.cryptos) {
-      if (fiat == cyrpto) {
-        throw Error(`Currency (${fiat}) is listed as both fiat (${this.fiats}) and crypto (${this.cryptos}) in the settings sheet.`);
-      }
-    }
-  }
-
-  //check accounting currency is fiat and not crypto
-  if (!this.accountingCurrency) {
-    throw Error(`Accounting Currency is missing from the settings sheet.`);
-  }
-  else if (!this.isFiat(this.accountingCurrency)) {
-    throw Error(`Accounting Currency (${this.accountingCurrency}) is not listed as fiat (${this.fiats}) in the settings sheet.`);
-  }
-  else if (this.isCrypto(this.accountingCurrency)) { //never called
-    throw Error(`Accounting Currency (${this.accountingCurrency}) is listed as crypto (${this.cryptos}) in the settings sheet.`);
-  }
-}
-
 CryptoTracker.prototype.validateLedger = function () {
 
   let ledgerRecords = this.getLedgerRecords();
@@ -31,21 +8,23 @@ CryptoTracker.prototype.validateLedger = function () {
 
 CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
 
-  try {
+  //try {
 
     for (let i = 0; i < ledgerRecords.length; i++) {
 
-      this.validateLedgerRecord(ledgerRecords[i], i + 3);
+      let row = i + 3; //row numbers start at 1 plus two header rows
+
+      this.validateLedgerRecord(ledgerRecords[i], row);
 
     }
 
-  }
-  catch (err) {
+  // }
+  // catch (err) {
 
-    SpreadsheetApp.getUi().alert(`Ledger validation failed`, err.message, SpreadsheetApp.getUi().ButtonSet.OK);
-    return;
+  //   SpreadsheetApp.getUi().alert(`Ledger validation failed`, err.message, SpreadsheetApp.getUi().ButtonSet.OK);
+  //   return;
 
-  }
+  // }
 }
 
 CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, row) {
@@ -86,245 +65,245 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, row) {
     throw Error(`${action} row ${row}: credit fee is not valid (number or blank).`);
   }
   else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`);
+    throw Error(`${action} row ${row}: debit currency (${debitCurrency}) is not recognized - neither fiat (${CryptoTracker.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`);
   }
   else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is not recognized - neither fiat (${this.fiats}) nor crypto (${this.cryptos}).`);
+    throw Error(`${action} row ${row}: credit currency (${creditCurrency}) is not recognized - neither fiat (${CryptoTracker.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`);
   }
   else if (lotMatching && !CryptoTracker.lotMatchings.includes(lotMatching)) {
-    throw Error(`[${date.toISOString()}] [${action}] Ledger record lot matching (${lotMatching}) is not valid (${CryptoTracker.lotMatchings}) or blank.`);
+    throw Error(`${action} row ${row}: lot matching (${lotMatching}) is not valid (${CryptoTracker.lotMatchings.join(', ')}) or blank.`);
   }
   else if (action == 'Transfer') { //Transfer
     if (!debitCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
+      throw Error(`${action} row ${row}: no debit currency specified.`);
     }
     else if (creditCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank. It is inferred from the debit currency (${debitCurrency}).`);
+      throw Error(`${action} row ${row}: leave credit currency (${creditCurrency}) blank. It is inferred from the debit currency (${debitCurrency}).`);
     }
     else if (debitExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
+      throw Error(`${action} row ${row}: leave debit exchange rate (${debitExRate}) blank.`);
     }
     else if (debitAmount === '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
+      throw Error(`${action} row ${row}: no debit amount specified.`);
     }
     else if (debitAmount <= 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit amount (${debitAmount.toLocaleString()}) must be greater than 0.`);
+      throw Error(`${action} row ${row}: debit amount (${debitAmount.toLocaleString()}) must be greater than 0.`);
     }
     else if (debitFee < 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record transfer debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
+      throw Error(`${action} row ${row}: debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
     else if (creditExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
+      throw Error(`${action} row ${row}: leave credit exchange rate (${creditExRate}) blank.`);
     }
     else if (creditAmount !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave transfer credit amount (${creditAmount.toLocaleString()}) blank. It is inferred from the debit amount (${debitAmount.toLocaleString()}) and debit fee (${debitFee.toLocaleString()}).`);
+      throw Error(`${action} row ${row}: leave credit amount (${creditAmount.toLocaleString()}) blank. It is inferred from the debit amount (${debitAmount.toLocaleString()}) and debit fee (${debitFee.toLocaleString()}).`);
     }
     else if (creditFee !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
+      throw Error(`${action} row ${row}: leave credit fee (${creditFee.toLocaleString()}) blank.`);
     }
     else if (!debitWalletName && !creditWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record has no debit or credit wallet specified.`);
+      throw Error(`${action} row ${row}: no debit or credit wallet specified.`);
     }
     else if (this.isFiat(debitCurrency)) { //Fiat transfer
       if (debitWalletName && creditWalletName) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record fiat transfer leave debit wallet (${debitWalletName}) blank for deposits or credit wallet (${creditWalletName}) blank for withdrawals.`);
+        throw Error(`${action} row ${row}: fiat transfer leave debit wallet (${debitWalletName}) blank for deposits or credit wallet (${creditWalletName}) blank for withdrawals.`);
       }
     }
     else if (this.isCrypto(debitCurrency)) { //Crypto transfer
       if (!debitWalletName) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record has no debit wallet specified.`);
+        throw Error(`${action} row ${row}: no debit wallet specified.`);
       }
       else if (!creditWalletName) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record has no credit wallet specified.`);
+        throw Error(`${action} row ${row}: no credit wallet specified.`);
       }
       else if (debitWalletName == creditWalletName) {
-        throw Error(`[${date.toISOString()}] [${action}] Ledger record debit wallet (${debitWalletName}) and credit wallet (${creditWalletName}) must be different.`);
+        throw Error(`${action} row ${row}: debit wallet (${debitWalletName}) and credit wallet (${creditWalletName}) must be different.`);
       }
     }
   }
   else if (action == 'Trade') { //Trade
     if (!debitCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
+      throw Error(`${action} row ${row}: no debit currency specified.`);
     }
     else if (!creditCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no credit currency specified.`);
+      throw Error(`${action} row ${row}: no credit currency specified.`);
     }
     else if (debitCurrency == creditCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) and credit currency (${creditCurrency}) must be different.`);
+      throw Error(`${action} row ${row}: debit currency (${debitCurrency}) and credit currency (${creditCurrency}) must be different.`);
     }
     else if (this.isFiat(debitCurrency) && this.isFiat(creditCurrency)) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with both fiat debit currency (${debitCurrency}) and fiat credit currency (${creditCurrency}) not supported.`);
+      throw Error(`${action} row ${row}: both debit currency (${debitCurrency}) and credit currency (${creditCurrency}) are fiat, not supported.`);
     }
     else if (!debitWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record has no debit wallet specified.`);
+      throw Error(`${action} row ${row}: no debit wallet specified.`);
     }
     else if (creditWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`);
+      throw Error(`${action} row ${row}: leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`);
     }
     else if (debitAmount === '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
+      throw Error(`${action} row ${row}: no debit amount specified.`);
     }
     else if (debitAmount < 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit amount (${debitAmount.toLocaleString()}) must be greater or equal to 0.`);
+      throw Error(`${action} row ${row}: debit amount (${debitAmount.toLocaleString()}) must be greater or equal to 0.`);
     }
     else if (debitFee < 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
+      throw Error(`${action} row ${row}: debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
     else if (creditAmount === '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no credit amount specified.`);
+      throw Error(`${action} row ${row}: no credit amount specified.`);
     }
     else if (creditAmount < 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit amount (${creditAmount.toLocaleString()}) must be greater or equal to 0.`);
+      throw Error(`${action} row ${row}: credit amount (${creditAmount.toLocaleString()}) must be greater or equal to 0.`);
     }
     else if (creditFee < 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
+      throw Error(`${action} row ${row}: credit fee (${creditFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
     else if (debitCurrency == this.accountingCurrency && debitExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) is the accounting currency (${this.accountingCurrency}). Leave exchange rate (${debitExRate}) blank.`);
+      throw Error(`${action} row ${row}: debit currency (${debitCurrency}) is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate (${debitExRate}) blank.`);
     }
     else if (creditCurrency == this.accountingCurrency && creditExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) is the accounting currency (${this.accountingCurrency}). Leave exchange rate (${creditExRate}) blank.`);
+      throw Error(`${action} row ${row}: credit currency (${creditCurrency}) is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate (${creditExRate}) blank.`);
     }
     else {
       if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '') {
-          throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
+          throw Error(`${action} row ${row}: missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
         }
         else if (debitExRate <= 0) {
-          throw Error(`[${date.toISOString()}] [${action}] Ledger record debit exchange rate must be greater than 0.`);
+          throw Error(`${action} row ${row}: debit exchange rate must be greater than 0.`);
         }
       }
       if (this.isCrypto(debitCurrency) && creditCurrency != this.accountingCurrency) { //sell or exchange crypto
         if (creditExRate === '') {
-          throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
+          throw Error(`${action} row ${row}: missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
         }
         else if (creditExRate <= 0) {
-          throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate must be greater than 0.`);
+          throw Error(`${action} row ${row}: credit exchange rate must be greater than 0.`);
         }
       }
     }
   }
   else if (action == 'Income') { //Income
     if (debitCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit currency (${debitCurrency}) blank.`);
+      throw Error(`${action} row ${row}: leave debit currency (${debitCurrency}) blank.`);
     }
     else if (debitExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
+      throw Error(`${action} row ${row}: leave debit exchange rate (${debitExRate}) blank.`);
     }
     else if (debitAmount !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit amount (${debitAmount.toLocaleString()}) blank.`);
+      throw Error(`${action} row ${row}: leave debit amount (${debitAmount.toLocaleString()}) blank.`);
     }
     else if (debitFee !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit fee (${debitFee.toLocaleString()}) blank.`);
+      throw Error(`${action} row ${row}: leave debit fee (${debitFee.toLocaleString()}) blank.`);
     }
     else if (debitWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit wallet (${debitWalletName}) blank.`);
+      throw Error(`${action} row ${row}: leave debit wallet (${debitWalletName}) blank.`);
     }
     else if (!creditCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record has no credit currency specified.`);
+      throw Error(`${action} row ${row}: no credit currency specified.`);
     }
-    else if (!this.isCrypto(creditCurrency)) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit currency (${creditCurrency}) must be crypto (${this.cryptos}).`);
+    else if (this.isFiat(creditCurrency)) {
+      throw Error(`${action} row ${row}: credit currency (${creditCurrency}) is fiat (${CryptoTracker.validFiats.join(', ')}), not supported.`);
     }
     else if (creditExRate === '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
+      throw Error(`${action} row ${row}: missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
     }
     else if (creditExRate <= 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit exchange rate must be greater than 0.`);
+      throw Error(`${action} row ${row}: credit exchange rate must be greater than 0.`);
     }
     else if (creditAmount === '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no credit amount specified.`);
+      throw Error(`${action} row ${row}: no credit amount specified.`);
     }
     else if (creditAmount <= 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record credit amount (${creditAmount.toLocaleString()}) must be greater than 0.`);
+      throw Error(`${action} row ${row}: credit amount (${creditAmount.toLocaleString()}) must be greater than 0.`);
     }
     else if (creditFee !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
+      throw Error(`${action} row ${row}: leave credit fee (${creditFee.toLocaleString()}) blank.`);
     }
     else if (!creditWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record has no credit wallet specified.`);
+      throw Error(`${action} row ${row}: no credit wallet specified.`);
     }
   }
   else if (action == 'Donation' || action == 'Payment') { //Donation or Payment
     if (!debitCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
+      throw Error(`${action} row ${row}: no debit currency specified.`);
     }
-    else if (!this.isCrypto(debitCurrency)) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) must be crypto (${this.cryptos}).`);
+    else if (this.isFiat(debitCurrency)) {
+      throw Error(`${action} row ${row}: debit currency (${debitCurrency}) is fiat (${CryptoTracker.validFiats.join(', ')}), not supported.`);
     }
     else if (debitExRate === '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
+      throw Error(`${action} row ${row}: missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`);
     }
     else if (debitExRate <= 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit exchange rate must be greater than 0.`);
+      throw Error(`${action} row ${row}: debit exchange rate must be greater than 0.`);
     }
     else if (debitAmount === '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
+      throw Error(`${action} row ${row}: no debit amount specified.`);
     }
     else if (debitAmount <= 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit amount (${debitAmount.toLocaleString()}) must be greater than 0.`);
+      throw Error(`${action} row ${row}: debit amount (${debitAmount.toLocaleString()}) must be greater than 0.`);
     }
     else if (debitFee < 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
+      throw Error(`${action} row ${row}: debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
     else if (!debitWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record has no debit wallet specified.`);
+      throw Error(`${action} row ${row}: no debit wallet specified.`);
     }
     else if (creditCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank.`);
+      throw Error(`${action} row ${row}: leave credit currency (${creditCurrency}) blank.`);
     }
     else if (creditExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
+      throw Error(`${action} row ${row}: leave credit exchange rate (${creditExRate}) blank.`);
     }
     else if (creditAmount !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit amount (${creditAmount.toLocaleString()}) blank.`);
+      throw Error(`${action} row ${row}: leave credit amount (${creditAmount.toLocaleString()}) blank.`);
     }
     else if (creditFee !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
+      throw Error(`${action} row ${row}: leave credit fee (${creditFee.toLocaleString()}) blank.`);
     }
     else if (creditWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank.`);
+      throw Error(`${action} row ${row}: leave credit wallet (${creditWalletName}) blank.`);
     }
   }
   else if (action == 'Gift') { //Gift
     if (!debitCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit currency specified.`);
+      throw Error(`${action} row ${row}: no debit currency specified.`);
     }
-    else if (!this.isCrypto(debitCurrency)) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit currency (${debitCurrency}) must be crypto (${this.cryptos}).`);
+    else if (this.isFiat(debitCurrency)) {
+      throw Error(`${action} row ${row}: debit currency (${debitCurrency}) is fiat (${CryptoTracker.validFiats.join(', ')}), not supported.`);
     }
     else if (debitExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave debit exchange rate (${debitExRate}) blank.`);
+      throw Error(`${action} row ${row}: leave debit exchange rate (${debitExRate}) blank.`);
     }
     else if (debitAmount === '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record with no debit amount specified.`);
+      throw Error(`${action} row ${row}: no debit amount specified.`);
     }
     else if (debitAmount <= 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit amount (${debitAmount.toLocaleString()}) must be greater than 0.`);
+      throw Error(`${action} row ${row}: debit amount (${debitAmount.toLocaleString()}) must be greater than 0.`);
     }
     else if (debitFee < 0) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
+      throw Error(`${action} row ${row}: debit fee (${debitFee.toLocaleString()}) must be greater or equal to 0 (or blank).`);
     }
     else if (!debitWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record has no debit wallet specified.`);
+      throw Error(`${action} row ${row}: no debit wallet specified.`);
     }
     else if (creditCurrency) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit currency (${creditCurrency}) blank.`);
+      throw Error(`${action} row ${row}: leave credit currency (${creditCurrency}) blank.`);
     }
     else if (creditExRate !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit exchange rate (${creditExRate}) blank.`);
+      throw Error(`${action} row ${row}: leave credit exchange rate (${creditExRate}) blank.`);
     }
     else if (creditAmount !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit amount (${creditAmount.toLocaleString()}) blank.`);
+      throw Error(`${action} row ${row}: leave credit amount (${creditAmount.toLocaleString()}) blank.`);
     }
     else if (creditFee !== '') {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit fee (${creditFee.toLocaleString()}) blank.`);
+      throw Error(`${action} row ${row}: leave credit fee (${creditFee.toLocaleString()}) blank.`);
     }
     else if (creditWalletName) {
-      throw Error(`[${date.toISOString()}] [${action}] Ledger record leave credit wallet (${creditWalletName}) blank.`);
+      throw Error(`${action} row ${row}: leave credit wallet (${creditWalletName}) blank.`);
     }
   }
   else {
-    throw Error(`[${date.toISOString()}] Ledger record: action (${action}) is invalid.`);
+    throw Error(`Ledger row ${row}: action (${action}) is invalid.`);
   }
 }

@@ -21,16 +21,16 @@ CryptoTracker.prototype.processLedger = function () {
 
     }
   }
-  catch (err) {
+  catch (error) {
 
-    if (err instanceof CryptoAccountError) {
+    if (error instanceof CryptoAccountError) {
 
-      this.handleError('cryptoAccount', err.message, err.rowIndex, 'debitAmount');
+      this.handleError('cryptoAccount', error.message, error.rowIndex, 'debitAmount');
       return false;
     }
     else {
 
-      throw err;
+      throw error;
     }
   }
   return true;

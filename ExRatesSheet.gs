@@ -37,16 +37,16 @@ CryptoTracker.prototype.exRatesSheet = function () {
     dataTable = this.getCryptoPriceTable();
 
   }
-  catch (err) {
+  catch (error) {
 
-    if(err instanceof ApiError) {
+    if(error instanceof ApiError) {
 
       this.writeTable(sheet, dataTable, 1, 4);
-      return err.message;
+      return error.message;
     }
     else {
 
-      throw err;
+      throw error;
     }
 
   }

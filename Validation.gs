@@ -25,15 +25,16 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
     }
 
   }
-  catch (err) {
-    if (err instanceof ValidationError) {
+  catch (error) {
 
-      this.handleError('validation', err.message, err.rowIndex, err.columnName);
+    if (error instanceof ValidationError) {
+
+      this.handleError('validation', error.message, error.rowIndex, error.columnName);
       return false;
     }
     else {
 
-      throw err;
+      throw error;
     }
   }
   return true;
@@ -57,6 +58,9 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, row) {
 
   if (isNaN(date)) {
     throw new ValidationError(`${action} row ${row}: missing date.`, row, 'date');
+  }
+  if (action === '') {
+    throw new ValidationError(`Ledger row ${row}: no action specified.`, row, 'action');
   }
   else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
     throw new ValidationError(`${action} row ${row}: debit currency (${debitCurrency}) is not recognized - neither fiat (${CryptoTracker.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`, row, 'debitCurrency');

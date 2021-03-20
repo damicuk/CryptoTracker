@@ -31,14 +31,16 @@ class CryptoAccount {
 
   }
 
-  withdraw(amount, fee, lotMatching) {
+  withdraw(amount, fee, lotMatching, row) {
 
     let amountSatoshi = Math.round(amount * 1e8);
     let feeSatoshi = Math.round(fee * 1e8);
     let neededSatoshi = amountSatoshi + feeSatoshi;
 
     if (neededSatoshi > this.satoshi) {
-      throw Error(`Crypto account withdraw ${this.crypto} ${amount} + fee ${fee}, insufficient funds ${this.crypto} ${this.balance}`);
+
+      throw new CryptoAccountError(`Attempted to withdraw ${this.crypto} ${amount} + fee ${fee} from balance of ${this.crypto} ${this.balance}`, row);
+
     }
 
     this.lots.sort(this.lotComparator(lotMatching));

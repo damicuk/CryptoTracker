@@ -27,49 +27,70 @@ CryptoTracker.prototype.exRatesSheet = function () {
 
   //check for recent data
   if (this.exRatesCurrent(sheet, 10)) {
-    return;
+    //return;
   }
 
   let dataTable = [];
+
+  try {
+
+    dataTable = this.getCryptoPriceTable();
+
+  }
+  catch (err) {
+
+    if(err instanceof ApiError) {
+
+      this.writeTable(sheet, dataTable, 1, 4);
+      return err.message;
+    }
+    else {
+
+      throw err;
+    }
+
+  }
+  this.writeTable(sheet, dataTable, 1, 4);
+}
+
+CryptoTracker.prototype.getCryptoPriceTable = function () {
+
+  let table = [];
   let cryptos = Array.from(this.cryptos).toString();
   let apiKey = this.apiKey;
-  let errorMessage;
 
   if (cryptos) {
 
     if (!apiKey) {
 
-      errorMessage = `CryptoCompare API key missing 
+      let errorMessage = `CryptoCompare API key missing 
     
     To get an API key, go to https://www.cryptocompare.com/cryptopian/api-keys register, create a key, and save it in settings.`
+
+      throw new ApiError(errorMessage);
+
+    }
+
+    let accountingCurrency = this.accountingCurrency;
+
+    let timestamp = new Date().toISOString();
+    let data = this.getCryptoPriceData(cryptos, accountingCurrency, apiKey);
+
+    if (data.Response === "Error") {
+
+      throw new ApiError(data.Message);
 
     }
     else {
 
-      let accountingCurrency = this.accountingCurrency;
+      for (let coin in data) {
 
-      let timestamp = new Date().toISOString();
-      let data = this.getCryptoPriceData(cryptos, accountingCurrency, apiKey);
+        table.push([timestamp, coin, accountingCurrency, data[coin][accountingCurrency]]);
 
-      if (data.Response === "Error") {
-
-        errorMessage = data.Message;
-
-      }
-      else {
-
-        for (let coin in data) {
-
-          dataTable.push([timestamp, coin, accountingCurrency, data[coin][accountingCurrency]]);
-
-        }
       }
     }
   }
-
-  this.writeTable(sheet, dataTable, 1, 4);
-
-  return errorMessage;
+  return table;
 }
 
 CryptoTracker.prototype.getCryptoPriceData = function (cryptos, accountingCurrency, apiKey) {

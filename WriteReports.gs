@@ -29,7 +29,6 @@ CryptoTracker.prototype.writeReports = function () {
   this.updateLedgerWallets();
 
   if (errorMessage) {
-
     this.handleError('api', errorMessage);
   }
 }

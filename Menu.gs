@@ -7,7 +7,7 @@ function onOpen() {
     .addSeparator()
     .addItem('Step 2: Validate ledger (optional)', 'validateLedger')
     .addSeparator()
-    .addItem('Step 3: Write reports', 'showSpinner')
+    .addItem('Step 3: Write reports', 'writeReports')
     .addSeparator()
     .addItem('Settings', 'showSettingsDialog')
     .addToUi();
@@ -22,14 +22,6 @@ function validateLedger() {
 
   new CryptoTracker().validateLedger();
 
-}
-
-function showSpinner() {
-
-  var html = HtmlService.createHtmlOutputFromFile('Spinner')
-    .setWidth(250)
-    .setHeight(200);
-  SpreadsheetApp.getUi().showModalDialog(html, 'Loading. Please wait.');
 }
 
 function writeReports() {

@@ -8,18 +8,7 @@ CryptoTracker.prototype.writeReports = function () {
 
   }
 
-  let apiErrorMessage;
-  
-  try {
-
-    this.exRatesSheet();
-
-  }
-  catch(err) {
-
-    apiErrorMessage = err.message;
-
-  }
+  let errorMessage = this.exRatesSheet();
 
   this.fiatAccountsSheet();
   this.openPositionsReport();
@@ -39,10 +28,9 @@ CryptoTracker.prototype.writeReports = function () {
   this.updateLedgerCurrencies();
   this.updateLedgerWallets();
 
-  if (apiErrorMessage) {
+  if (errorMessage) {
 
-    SpreadsheetApp.getUi().alert(`Failed to update crypto prices`, apiErrorMessage, SpreadsheetApp.getUi().ButtonSet.OK);
-
+    this.handleError('api', errorMessage);
   }
 }
 

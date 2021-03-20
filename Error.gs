@@ -17,7 +17,9 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
     
     SpreadsheetApp.getUi().alert(`Ledger validation failed`, message, SpreadsheetApp.getUi().ButtonSet.OK);
   }
+  else if(error === 'api') {
 
+    SpreadsheetApp.getUi().alert(`Failed to update crypto prices`, message, SpreadsheetApp.getUi().ButtonSet.OK);
 
-
+  }
 }

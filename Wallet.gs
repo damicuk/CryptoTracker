@@ -3,28 +3,41 @@ class Wallet {
   constructor(name) {
 
     this.name = name;
-    this.cryptoAccounts = new Map();
-    this.fiatAccounts = new Map();
+    this.fiatAccounts = new Array();
+    this.cryptoAccounts = new Array();
   }
 
-  getCryptoAccount(ticker) {
+  getFiatAccount(fiat) {
 
-    if (!this.cryptoAccounts.has(ticker)) {
+    for (let fiatAccount of this.fiatAccounts) {
 
-      this.cryptoAccounts.set(ticker, new CryptoAccount(ticker));
+      if (fiatAccount.fiat === fiat) {
 
+        return fiatAccount;
+      }
     }
-    return this.cryptoAccounts.get(ticker);
+
+    let fiatAccount = new FiatAccount(fiat);
+
+    this.fiatAccounts.push(fiatAccount);
+
+    return fiatAccount;
   }
 
-  getFiatAccount(ticker) {
+  getCryptoAccount(crypto) {
 
-    if (!this.fiatAccounts.has(ticker)) {
+    for (let cryptoAccount of this.cryptoAccounts) {
 
-      this.fiatAccounts.set(ticker, new FiatAccount(ticker));
+      if (cryptoAccount.crypto === crypto) {
 
+        return cryptoAccount;
+      }
     }
-    return this.fiatAccounts.get(ticker);
+
+    let cryptoAccount = new CryptoAccount(crypto);
+
+    this.cryptoAccounts.push(cryptoAccount);
+    
+    return cryptoAccount;
   }
-  
 }

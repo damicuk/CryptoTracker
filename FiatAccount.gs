@@ -1,9 +1,15 @@
 class FiatAccount {
 
-  constructor(currency) {
+  constructor(fiat) {
 
-    this.currency = currency;
+    this.fiat = fiat;
     this.cents = 0;
+
+  }
+
+   get balance() {
+
+    return this.cents / 100;
 
   }
 
@@ -12,12 +18,6 @@ class FiatAccount {
     this.cents += Math.round(amount * 100); //round because multiplying
 
     return this;
-
-  }
-
-  get balance() {
-
-    return this.cents / 100;
 
   }
 }

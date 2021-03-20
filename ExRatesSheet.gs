@@ -27,7 +27,7 @@ CryptoTracker.prototype.exRatesSheet = function () {
 
   //check for recent data
   if (this.exRatesCurrent(sheet, 10)) {
-    //return;
+    return;
   }
 
   let dataTable = [];

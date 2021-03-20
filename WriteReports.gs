@@ -1,5 +1,7 @@
 CryptoTracker.prototype.writeReports = function () {
 
+  let currentCell = SpreadsheetApp.getCurrentCell();
+
   let ledgerProcessed = this.processLedger();
 
   if(!ledgerProcessed) {
@@ -31,6 +33,8 @@ CryptoTracker.prototype.writeReports = function () {
   if (errorMessage) {
     this.handleError('api', errorMessage);
   }
+
+  SpreadsheetApp.setCurrentCell(currentCell);
 }
 
 CryptoTracker.prototype.deleteReports = function () {

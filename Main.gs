@@ -25,7 +25,7 @@ function validateLedger() {
 }
 
 function writeReports() {
-  
+
   new CryptoTracker().writeReports();
 }
 
@@ -40,8 +40,19 @@ function showSettingsDialog() {
 function saveSettings(settings) {
 
   let userProperties = PropertiesService.getUserProperties();
+  if (settings.apiKey && settings.apiKey !== userProperties.apiKey) {
+
+    let cryptoTracker = new CryptoTracker();
+    let data = cryptoTracker.getCryptoPriceData('BTC', 'USD', settings.apiKey);
+    if (data.Response === 'Error') {
+
+      cryptoTracker.handleError('settings', 'Invalid API key');
+      return;
+    }
+  }
+
   userProperties.setProperties(settings);
-  SpreadsheetApp.getActive().toast("Settings saved");
+  SpreadsheetApp.getActive().toast('Settings saved');
 }
 
 function deleteReports() {

@@ -12,6 +12,11 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
     SpreadsheetApp.getUi().alert(`Failed to update crypto prices`, message, SpreadsheetApp.getUi().ButtonSet.OK);
 
   }
+  else if (error === 'settings') {
+
+    SpreadsheetApp.getUi().alert(`Failed to save settings`, message, SpreadsheetApp.getUi().ButtonSet.OK);
+
+  }
   else if (error === 'cryptoAccount') {
 
     this.setCurrentCell(rowIndex, columnName);

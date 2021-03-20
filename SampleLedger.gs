@@ -111,6 +111,8 @@ CryptoTracker.prototype.sampleLedger = function () {
   sheet.autoResizeColumns(10, 1);
   sheet.autoResizeColumns(14, 1);
 
+  SpreadsheetApp.flush();
 
+  return sheet;
 }
 

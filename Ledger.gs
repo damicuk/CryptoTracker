@@ -4,7 +4,8 @@ CryptoTracker.prototype.getLedgerRange = function () {
   let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
 
   if (!ledgerSheet) {
-    throw Error(`${this.ledgerSheetName} Sheet not found.`);
+    
+    ledgerSheet = this.sampleLedger();
   }
 
   let ledgerRange = ledgerSheet.getDataRange();

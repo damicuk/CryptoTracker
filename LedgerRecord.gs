@@ -54,3 +54,46 @@ class LedgerRecord {
     return index === -1 ? index : index + 1;
   }
 }
+
+  CryptoTracker.prototype.getLedgerRecords = function() {
+
+    let ledgerRange = this.getLedgerRange();
+    let ledgerData = ledgerRange.getValues();
+
+    //convert raw data to object array
+    let ledgerRecords = [];
+    for (let row of ledgerData) {
+
+      let ledgerRecord = new LedgerRecord(
+        row[0],
+        row[1],
+        row[2],
+        row[3],
+        row[4],
+        row[5],
+        row[6],
+        row[7],
+        row[8],
+        row[9],
+        row[10],
+        row[11],
+        row[12]
+      );
+
+      //Stop reading here
+      if (ledgerRecord.action === 'Stop') {
+
+        break;
+
+      }
+
+      ledgerRecords.push(ledgerRecord);
+
+    }
+
+    ledgerRecords.sort(function (a, b) {
+      return a.date - b.date;
+    });
+
+    return ledgerRecords;
+  }

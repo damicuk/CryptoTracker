@@ -81,4 +81,5 @@ CryptoTracker.prototype.openPLReport = function () {
 
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
 
+  SpreadsheetApp.flush();
 }

@@ -30,5 +30,4 @@ CryptoTracker.prototype.exRatesTable = function () {
   sheet.getRange(2, 2, sheet.getMaxRows() - 1, sheet.getMaxColumns() - 1).setNumberFormat('#,##0.000000;(#,##0.000000)');
 
   SpreadsheetApp.flush();
-
 }

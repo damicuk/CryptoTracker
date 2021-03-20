@@ -45,4 +45,5 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
 
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
 
+  SpreadsheetApp.flush();
 }

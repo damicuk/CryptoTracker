@@ -51,6 +51,8 @@ CryptoTracker.prototype.writeTable = function (sheet, dataTable, headerRows, dat
   SpreadsheetApp.flush();
 
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
+
+  SpreadsheetApp.flush();
 }
 
 CryptoTracker.prototype.sortTable = function (table, index) {

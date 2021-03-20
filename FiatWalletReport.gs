@@ -34,4 +34,6 @@ CryptoTracker.prototype.fiatWalletsReport = function () {
   SpreadsheetApp.flush();
 
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
+
+  SpreadsheetApp.flush();
 }

@@ -87,9 +87,6 @@ CryptoTracker.prototype.getCryptoPriceTable = function () {
       table.push([timestamp, coin, accountingCurrency, data[coin][accountingCurrency]]);
 
     }
-
   }
-
   return table;
-
 }

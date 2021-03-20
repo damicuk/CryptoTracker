@@ -69,4 +69,5 @@ CryptoTracker.prototype.closedSummaryReport = function () {
   
   sheet.autoResizeColumns(1, 8);
 
+  SpreadsheetApp.flush();
 }

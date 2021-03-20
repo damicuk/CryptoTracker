@@ -4,7 +4,7 @@ CryptoTracker.prototype.writeReports = function () {
 
   let ledgerProcessed = this.processLedger();
 
-  if(!ledgerProcessed) {
+  if (!ledgerProcessed) {
 
     return false;
 
@@ -33,8 +33,12 @@ CryptoTracker.prototype.writeReports = function () {
   if (errorMessage) {
     this.handleError('api', errorMessage);
   }
+  else {
+    SpreadsheetApp.getActive().toast('Reports complete', 'Finished', 10);
+  }
 
   SpreadsheetApp.setCurrentCell(currentCell);
+
 }
 
 CryptoTracker.prototype.deleteReports = function () {
@@ -52,7 +56,9 @@ CryptoTracker.prototype.deleteReports = function () {
     this.fiatWalletsReportName,
     this.openPLReportName,
     this.closedPLReportName,
-    this.exRatesTableSheetName
+    this.exRatesTableSheetName,
+    this.exRatesSheetName,
+    this.fiatAccountsSheetName
   ];
 
   this.deleteSheets(sheetNames);

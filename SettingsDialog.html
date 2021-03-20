@@ -37,7 +37,7 @@
 
     let div = document.getElementById('output');
      div.innerHTML = error.message;
- } 
+ }
 
 </script>
 
@@ -57,7 +57,7 @@ let apiKey = userProperties.getProperty('apiKey');
 		<form id="settingsForm">
 			<div class="block form-group">
 				<label for="accounting-currency">Accounting Currency</label>
-				 <select id="accounting-currency">
+				<select id="accounting-currency">
            <? for(let fiat of validFiats) {?>
            <option <? if(fiat === accountingCurrency) {?>selected<?} ?>><?= fiat ?></option>
            <?}?>
@@ -75,9 +75,9 @@ let apiKey = userProperties.getProperty('apiKey');
 				<label for="api-key">CryptoCompare API key</label>
 				<input type="text" id="api-key" style="width: 460px;" value="<?=apiKey?>" placeholder="< -- paste API key here -- >">
 			</div>
-			<div class="block form-group">
-				<input type="button" class="action" value="Save" onclick="saveSettings();" />
-				<input type="button" value="Cancel" onclick="google.script.host.close();" />
+				<div class="block form-group">
+					<input type="button" class="action" value="Save" onclick="saveSettings();" />
+					<input type="button" value="Cancel" onclick="google.script.host.close();" />
 			</div>
 		</form>
 		<div id="output"></div>

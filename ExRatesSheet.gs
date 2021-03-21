@@ -102,3 +102,14 @@ CryptoTracker.prototype.getCryptoPriceData = function (cryptos, accountingCurren
   return JSON.parse(returnText);
 
 }
+
+CryptoTracker.prototype.validateApiKey = function (apiKey) {
+
+  let data = this.getCryptoPriceData('BTC', 'USD', apiKey);
+
+  if (data.Response === 'Error') {
+    
+    return false;
+  }
+  return true;
+}

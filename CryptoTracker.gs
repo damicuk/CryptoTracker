@@ -1,5 +1,12 @@
+/**
+* @classdesc The main class that processes the Ledger sheet fetches the current crypto prices and writes the reports
+* @class
+*/
 class CryptoTracker {
 
+  /**
+  * @constructor Initializes class with empty arrays of wallets, income, closed, and donated lots, user properties, and input and output sheet names
+  */
   constructor() {
 
     this.wallets = new Array();
@@ -33,6 +40,14 @@ class CryptoTracker {
     this.exRatesTableSheetName = 'Ex Rates Table';
   }
 
+
+  /**
+ * Gets the value of a user property from a Properties object or sets and returns a default
+ * @param {Properties} userProperties - Properties object from PropertiesService.getUserProperties()
+ * @param {string} key - The key of the user property to search
+ * @param {string} defaultValue - The default value to set the user property to if no value is set
+ * @return {string} The value of the user property or the default if not set
+ */
   getUserProperty(userProperties, key, defaultValue) {
 
     let value = userProperties.getProperty(key);
@@ -50,21 +65,43 @@ class CryptoTracker {
     }
   }
 
+  /**
+   * Array of lot matching options used to determine the cost basis
+   * FIFO First in first out
+   * LIFO Last in first out
+   * HIFO Highest cost first out
+   * LOFO Lowest cost first out
+   * @type {string[]}
+   */
   static get lotMatchings() {
 
     return ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
   }
 
+  /**
+   * Array of supported fiat currency tickers
+   * Limited to those supported by CryptoCompare
+   * @type {string[]}
+   */
   static get validFiats() {
 
     return ['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF', 'JPY'];
   }
 
-  static get cryptoRegEx() {
+  /**
+   * Regular expression to loosly validate cryptocurrency format
+   * @type {RegExp}
+   */
+  static get cryptoRegExp() {
 
     return /^\w{2,9}$/;
   }
 
+  /**
+   * Set of fiat currency tickers used by this instance
+   * Only filled once processLedger has completed
+   * @type {Set}
+   */
   get fiats() {
 
     let fiats = new Set();
@@ -76,6 +113,11 @@ class CryptoTracker {
     return fiats;
   }
 
+  /**
+   * Set of cryptocurrency tickers used by this instance
+   * Only filled once processLedger has completed
+   * @type {Set}
+   */
   get cryptos() {
 
     let cryptos = new Set();
@@ -87,6 +129,11 @@ class CryptoTracker {
     return cryptos;
   }
 
+  /**
+   * Gets the wallet with thw given name or creates adds and returns a new wallet with that name
+   * @param {string} name - The name of the wallet to search for
+   * @return {Wallet} The wallet with that name found or created   
+   */
   getWallet(name) {
 
     for (let wallet of this.wallets) {
@@ -101,17 +148,40 @@ class CryptoTracker {
 
   }
 
+  /**
+   * Determines whether the currency ticker is a valid fiat
+   * Only fiat currencies in the valid fiats list those supported by CryptoComapre will return true
+   * @param {string} currency - The currency ticker in question
+   * @return {boolean} Whether the currency is a valid fiat currency
+   */
   isFiat(currency) {
 
     return CryptoTracker.validFiats.includes(currency);
   }
 
+  /**
+   * Determines whether the currency ticker is a valid cryptocurrency
+   * All currencies that are not valid fiats and pass the loose regular expresion validation will return true
+   * @param {string} currency - The currency ticker in question
+   * @return {boolean} Whether the currency is a valid cryptocurrency
+   */
   isCrypto(currency) {
 
     return !CryptoTracker.validFiats.includes(currency)
-      && CryptoTracker.cryptoRegEx.test(currency);
+      && CryptoTracker.cryptoRegExp.test(currency);
   }
 
+  /**
+   * Wraps the lots that have been sold or exchanged in a ClosedLot objects and adds it to the closedLots collection
+   * The credited amount and fees are assigned to the closed lots in proportion to the size of the lots 
+   * @param {lots} lots - The lots that have been sold or exchanged
+   * @param {date} date - The date of the sale or exchange
+   * @param {string} creditCurrency - The ticker of the fiat or cryptocurrency credited for the lots sold or exchanged
+   * @param {number} exRate - The exchange rate of the currency of the lots to the accounting currency at the time of the sale or exchange
+   * @param {number} creditAmount - The amount of the fiat or cryptocurrency credited for the lots sold or exchanged
+   * @param {number} creditFee - The fee in the credited currency for transaction
+   * @param {string} walletName - The name of the wallet (or exchange) where transaction takes place
+   */
   closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
 
     let creditAmountSatoshi = Math.round(creditAmount * 1e8);
@@ -149,6 +219,16 @@ class CryptoTracker {
 
   }
 
+  /**
+   * Wraps the lots that have been exchanged for goods or services in ClosedLot objects and adds it to the closedLots collection
+   * The transaction is treated the same as a sale or exchange for the current fair value of the lots in the accounting currency
+   * @param {lots} lots - The lots that have been exchanged
+   * @param {date} date - The date of the exchange
+   * @param {number} exRate - The exchange rate of the currency of the lots to the accounting currency at the time of the exchange
+   * @param {number} creditAmount - The amount of cryptocurrency exchanged for the goods or services
+   * @param {number} creditFee - The cryptocurrency fee for transaction
+   * @param {string} walletName - The name of the wallet (or exchange) from which the lots are debited
+   */
   payLots(lots, date, exRate, amount, fee, walletName) {
 
     //convert amount and fee to accounting currency
@@ -159,6 +239,13 @@ class CryptoTracker {
 
   }
 
+  /**
+   * Wraps the donated lots in a DonatedLot object and adds it to the donatedLots collection
+   * @param {lots} lots - The lots being donated
+   * @param {date} date - The date of the donation
+   * @param {number} exRate - The exchange rate of the currency of the lots to the accounting currency at the time of the donation
+   * @param {string} walletName - The name of the wallet from which the lots have been donated
+   */
   donateLots(lots, date, exRate, walletName) {
 
     for (let lot of lots) {
@@ -167,5 +254,31 @@ class CryptoTracker {
       this.donatedLots.push(donatedLot);
 
     }
+  }
+
+  /**
+   * Saves a set of key value pairs as user properties
+   * Validates apiKey setting if attempting to change the existing value
+   * Sends message to the error handler if the api key validation fails
+   * Displays toast on success
+   * @param {Object.<string, string>} settings - The key value pairs to save as user properties 
+   */
+  saveSettings(settings) {
+
+    let userProperties = PropertiesService.getUserProperties();
+
+    if (settings.apiKey && settings.apiKey !== userProperties.apiKey) {
+
+      let apiKeyValid = this.validateApiKey(settings.apiKey);
+
+      if (!apiKeyValid) {
+
+        this.handleError('settings', 'Invalid API key');
+        return;
+      }
+    }
+
+    userProperties.setProperties(settings);
+    SpreadsheetApp.getActive().toast('Settings saved');
   }
 }

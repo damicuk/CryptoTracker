@@ -92,24 +92,3 @@ CryptoTracker.prototype.getCryptoPriceTable = function () {
   }
   return table;
 }
-
-CryptoTracker.prototype.getCryptoPriceData = function (cryptos, accountingCurrency, apiKey) {
-
-  let url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos}&tsyms=${accountingCurrency}&api_key=${apiKey}`;
-
-  let httpRequest = UrlFetchApp.fetch(url);
-  let returnText = httpRequest.getContentText();
-  return JSON.parse(returnText);
-
-}
-
-CryptoTracker.prototype.validateApiKey = function (apiKey) {
-
-  let data = this.getCryptoPriceData('BTC', 'USD', apiKey);
-
-  if (data.Response === 'Error') {
-    
-    return false;
-  }
-  return true;
-}

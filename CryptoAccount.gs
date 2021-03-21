@@ -1,12 +1,12 @@
 /**
- * Represents a cryptocurrency account
+ * Cryptocurrency account
  * Calculation are done in satoshi (1/100,000,000) to avoid computational rounding errors
  * @class
  */
 class CryptoAccount {
 
   /**
-   * @constructor Sets the cryptocurrency currency and initializes and empto array to contain the crytocurrency lots
+   * @constructor Sets the cryptocurrency currency and initializes an empty array to contain the crytocurrency lots
    * @param {string} crypto - the cryptocurrency currency ticker
    */
   constructor(crypto) {

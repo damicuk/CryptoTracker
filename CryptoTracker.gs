@@ -133,9 +133,9 @@ class CryptoTracker {
   }
 
   /**
-   * Gets the wallet with thw given name or creates adds and returns a new wallet with that name
+   * Returns the wallet with the given name or creates adds and returns a new wallet with that name
    * @param {string} name - The name of the wallet to search for
-   * @return {Wallet} The wallet with that name found or created   
+   * @return {Wallet} The wallet found or created   
    */
   getWallet(name) {
 

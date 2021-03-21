@@ -1,5 +1,5 @@
 /**
- * Represents a fiat account
+ * Fiat currency account
  * Calculation are done in cents to avoid computational rounding errors
  * @class
  */

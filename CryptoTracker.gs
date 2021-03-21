@@ -1,12 +1,12 @@
 /**
-* @classdesc The main class that processes the Ledger sheet fetches the current crypto prices and writes the reports
-* @class
-*/
+ * The main class that processes the Ledger sheet fetches the current crypto prices and writes the reports
+ * @class
+ */
 class CryptoTracker {
 
   /**
-  * @constructor Initializes class with empty arrays of wallets, income, closed, and donated lots, user properties, and input and output sheet names
-  */
+   * @constructor Initializes class with empty arrays of wallets, income, closed, and donated lots, user properties, and input and output sheet names
+   */
   constructor() {
 
     this.wallets = new Array();
@@ -42,12 +42,12 @@ class CryptoTracker {
 
 
   /**
- * Gets the value of a user property from a Properties object or sets and returns a default
- * @param {Properties} userProperties - Properties object from PropertiesService.getUserProperties()
- * @param {string} key - The key of the user property to search
- * @param {string} defaultValue - The default value to set the user property to if no value is set
- * @return {string} The value of the user property or the default if not set
- */
+   * Gets the value of a user property from a Properties object or sets and returns a default
+   * @param {Properties} userProperties - Properties object from PropertiesService.getUserProperties()
+   * @param {string} key - The key of the user property to search
+   * @param {string} defaultValue - The default value to set the user property to if no value is set
+   * @return {string} The value of the user property or the default if not set
+   */
   getUserProperty(userProperties, key, defaultValue) {
 
     let value = userProperties.getProperty(key);

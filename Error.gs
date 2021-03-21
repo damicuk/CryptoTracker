@@ -1,5 +1,14 @@
-CryptoTracker.prototype.handleError = function (error, message, rowIndex, columnName) {
 
+/**
+ * Central error handling displays alert and sets the currenct cell when appropriate
+ * @param {string} error - The type of error
+ * @param {string} message - The message to display to the user
+ * @param {number} [rowIndex] - The row index of the cell in the ledger sheet
+ * @param {string} [columnName] - the name assigned to the column in the ledger sheet
+ * Used to get the index from LedgerRecord.getColumnIndex(columnName)
+ * Avoids hard coding column numbers
+ */
+CryptoTracker.prototype.handleError = function (error, message, rowIndex, columnName) {
 
   if (error === 'validation') {
 
@@ -26,6 +35,13 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
   }
 }
 
+/**
+ * Sets the currenct cell i the ledger sheet
+ * @param {number} rowIndex - The row index of the cell in the ledger sheet
+ * @param {string} columnName - the name assigned to the column in the ledger sheet
+ * Used to get the index from LedgerRecord.getColumnIndex(columnName)
+ * Avoids hard coding column numbers
+ */
 CryptoTracker.prototype.setCurrentCell = function (rowIndex, columnName) {
 
   let ss = SpreadsheetApp.getActive();
@@ -41,8 +57,17 @@ CryptoTracker.prototype.setCurrentCell = function (rowIndex, columnName) {
   }
 }
 
+/**
+ * General custom error from which to inherit
+ * Assigns the name of the class to the name property and passes the message to super
+ * @class
+ */
 class CustomError extends Error {
 
+  /**
+   * @constructor
+   * @param {string} message - description of the error and suggested solution
+   */
   constructor(message) {
 
     super(message);
@@ -51,8 +76,20 @@ class CustomError extends Error {
   }
 }
 
+/**
+ * Error in the validation of the ledger
+ * @class
+ */
 class ValidationError extends CustomError {
 
+  /**
+   * @constructor
+   * @param {string} message - description of the error and suggested solution
+   * @param {number} rowIndex - the row numer in the ledger sheet that requires atention
+   * @param {string} columnName - the name assigned to the column in the ledger sheet
+   * Used to get the index from LedgerRecord.getColumnIndex(columnName)
+   * Avoids hard coding column numbers
+   */
   constructor(message, rowIndex, columnName) {
 
     super(message);
@@ -63,8 +100,16 @@ class ValidationError extends CustomError {
   }
 }
 
+/**
+ * Error when attempting to retrieve crypto prices from an API
+ * @class
+ */
 class ApiError extends CustomError {
 
+  /**
+   * @constructor
+   * @param {string} message - description of the error and suggested solution
+   */
   constructor(message) {
 
     super(message);
@@ -72,8 +117,18 @@ class ApiError extends CustomError {
   }
 }
 
+
+/**
+ * Error when attempting to withdraw from a cryptocurrency account
+ * @class
+ */
 class CryptoAccountError extends CustomError {
 
+  /**
+   * @constructor
+   * @param {string} message - description of the error and suggested solution
+   * @param {number} rowIndex - the row numer in the ledger sheet that requires atention
+   */
   constructor(message, rowIndex) {
 
     super(message);

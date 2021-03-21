@@ -15,7 +15,7 @@ class Lot {
    * @param {string} creditCurrency - The ticker of the cryptocurrency credited
    * @param {number} creditAmount - The amount of fiat or cryptocurrency credited
    * @param {number} creditFee - The fee in the fiat or cryptocurrency credited
-   * @param {string} walletName - The wallet (or exchange) in which the transaction took place
+   * @param {string} walletName - The name of the wallet (or exchange) in which the transaction took place
    */
   constructor(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee, walletName) {
 

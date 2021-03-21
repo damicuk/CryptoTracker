@@ -13,7 +13,7 @@ class ClosedLot {
    * @param {number} creditExRate - The credit currency to accounting currency exchange rate, 0 if the credit currency is the accounting currency
    * @param {number} creditAmount - The amount of fiat or cryptocurrency credited
    * @param {number} creditFee - The fee in the fiat or cryptocurrency credited
-   * @param {string} walletName - The wallet (or exchange) in which the transaction took place
+   * @param {string} walletName - The name of the wallet (or exchange) in which the transaction took place
    */
   constructor(lot, date, creditCurrency, creditExRate, creditAmount, creditFee, walletName) {
 

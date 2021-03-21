@@ -12,12 +12,12 @@ class LedgerRecord {
    * @param {number} debitExRate - The debit currency to accounting currency exchange rate, 0 if the debit currency is the accounting currency
    * @param {number} debitAmount - The amount of fiat or cryptocurrency debited from the account
    * @param {number} debitFee - The fee in the fiat or cryptocurrency debited from the account
-   * @param {string} debitWalletName - The wallet (or exchange) from which the fiat or cryptocurrency is debited
+   * @param {string} debitWalletName - The name of the wallet (or exchange) from which the fiat or cryptocurrency is debited
    * @param {string} creditCurrency - The ticker of the fiat or cryptocurrency credited to the account
    * @param {number} creditExRate - The credit currency to accounting currency exchange rate, 0 if the credit currency is the accounting currency
    * @param {number} creditAmount - The amount of fiat or cryptocurrency credited to the account
    * @param {number} creditFee - The fee in the fiat or cryptocurrency credited to the account
-   * @param {string} creditWalletName - The wallet (or exchange) to which the fiat or cryptocurrency is credited
+   * @param {string} creditWalletName - The name of the wallet (or exchange) to which the fiat or cryptocurrency is credited
    * @param {string} lotMatching - Sets the lot matching method to use from this point onwards - FIFO, LIFO, HIFO, LOFO
    */
   constructor(

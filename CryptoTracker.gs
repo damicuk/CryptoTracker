@@ -66,12 +66,13 @@ class CryptoTracker {
   }
 
   /**
-   * Array of lot matching options used to determine the cost basis
+   * Array of lot matching options used to determine the order in which lots are withdrawn
    * FIFO First in first out
    * LIFO Last in first out
    * HIFO Highest cost first out
    * LOFO Lowest cost first out
    * @type {string[]}
+   * @static
    */
   static get lotMatchings() {
 
@@ -82,6 +83,7 @@ class CryptoTracker {
    * Array of supported fiat currency tickers
    * Limited to those supported by CryptoCompare
    * @type {string[]}
+   * @static
    */
   static get validFiats() {
 
@@ -91,6 +93,7 @@ class CryptoTracker {
   /**
    * Regular expression to loosly validate cryptocurrency format
    * @type {RegExp}
+   * @static
    */
   static get cryptoRegExp() {
 

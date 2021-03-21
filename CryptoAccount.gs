@@ -1,5 +1,14 @@
+/**
+ * Represents a cryptocurrency account
+ * Calculation are done in satoshi (1/100,000,000) to avoid computational rounding errors
+ * @class
+ */
 class CryptoAccount {
 
+  /**
+   * @constructor Sets the cryptocurrency currency and initializes and empto array to contain the crytocurrency lots
+   * @param {string} crypto - the cryptocurrency currency ticker
+   */
   constructor(crypto) {
 
     this.crypto = crypto;
@@ -7,6 +16,10 @@ class CryptoAccount {
 
   }
 
+  /**
+   * The balance in the account in satoshi (1/100,000,000)
+   * @type {number}
+   */
   get satoshi() {
 
     let satoshi = 0
@@ -18,11 +31,19 @@ class CryptoAccount {
     return satoshi;
   }
 
+  /**
+   * The balance in the account
+   * @type {number}
+   */
   get balance() {
 
     return this.satoshi / 1e8;
   }
 
+  /**
+   * Deposits a single or multiple lots of cryptocurrency into the account
+   * @param {(Lot|Lot[])} lots - The single lot or array of lots to deposit into the account
+   */
   deposit(lots) {
 
     Array.isArray(lots) ?
@@ -31,6 +52,20 @@ class CryptoAccount {
 
   }
 
+  /**
+   * Withdraws an amount of cryptocurrency from the account
+   * If necessary the last lot to be withdrawn is split
+   * The fee is assigned to the withdrawn lots in proportion to their size
+   * Throws an error if the amount requested is greater than the balance in the account
+   * @param {number} amount - The amount of cryptocurrency to withdraw
+   * @param {number} fee - The fee which is also withdrawn from the account
+   * @param {string} lotMatching - The lot matching method used to determine the order in which lots are withdrawn
+   * FIFO First in first out
+   * LIFO Last in first out
+   * HIFO Highest cost first out
+   * LOFO Lowest cost first out
+   * @return {Lot[]} The collection if lots withdrawn
+   */
   withdraw(amount, fee, lotMatching, row) {
 
     let amountSatoshi = Math.round(amount * 1e8);
@@ -90,6 +125,16 @@ class CryptoAccount {
     return withdrawLots;
   }
 
+  /**
+   * Withdraws an amount of cryptocurrency from the account
+   * @param {string} lotMatching - The lot matching method used to determine the order in which lots are withdrawn
+   * FIFO First in first out
+   * LIFO Last in first out
+   * HIFO Highest cost first out
+   * LOFO Lowest cost first out
+   * Throw an error with any other input
+   * @return {function} The comparator function used to sort the lots
+   */
   lotComparator(lotMatching) {
 
     if (lotMatching === 'FIFO') {

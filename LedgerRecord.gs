@@ -56,6 +56,7 @@ class LedgerRecord {
    * Avoids hard coding column numbers
    * @param {string} columnName - the name assigned to the column in the ledger sheet
    * @return {number} The index of the named column or -1 if column name not found
+   * @static
    */
   static getColumnIndex(columnName) {
 

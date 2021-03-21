@@ -1,3 +1,11 @@
+/**
+ * The method that does most of the work
+ * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports
+ * Updates the data validation on the ledger currency and wallet columns
+ * Displays alert in case of API error
+ * Otherwise displays toast on success
+ * Returns the currenct cell to its original location
+ */
 CryptoTracker.prototype.writeReports = function () {
 
   let currentCell = SpreadsheetApp.getCurrentCell();
@@ -6,7 +14,7 @@ CryptoTracker.prototype.writeReports = function () {
 
   if (!ledgerProcessed) {
 
-    return false;
+    return;
 
   }
 
@@ -41,6 +49,11 @@ CryptoTracker.prototype.writeReports = function () {
 
 }
 
+/**
+ * Deletes all the output sheets
+ * Not intended for use by the end user
+ * Useful in development and testing
+ */
 CryptoTracker.prototype.deleteReports = function () {
 
   let sheetNames = [

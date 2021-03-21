@@ -24,11 +24,11 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
   try {
 
     //row numbers start at 1 plus two header rows
-    let row = 3;
+    let rowIndex = 3;
 
     for (let ledgerRecord of ledgerRecords) {
 
-      this.validateLedgerRecord(ledgerRecord, row++);
+      this.validateLedgerRecord(ledgerRecord, rowIndex++);
 
     }
 
@@ -52,7 +52,7 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
  * Validates a ledger record and throws a validation error on failure
  * @param {LedgerRecord} ledgerRecord - The ledger record to validate
  */
-CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, row) {
+CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex) {
 
   let date = ledgerRecord.date;
   let action = ledgerRecord.action;
@@ -69,269 +69,269 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, row) {
   let lotMatching = ledgerRecord.lotMatching;
 
   if (isNaN(date)) {
-    throw new ValidationError(`${action} row ${row}: missing date.`, row, 'date');
+    throw new ValidationError(`${action} row ${rowIndex}: missing date.`, rowIndex, 'date');
   }
   if (action === '') {
-    throw new ValidationError(`Ledger row ${row}: no action specified.`, row, 'action');
+    throw new ValidationError(`Ledger row ${rowIndex}: no action specified.`, rowIndex, 'action');
   }
   else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {
-    throw new ValidationError(`${action} row ${row}: debit currency (${debitCurrency}) is not recognized - neither fiat (${CryptoTracker.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`, row, 'debitCurrency');
+    throw new ValidationError(`${action} row ${rowIndex}: debit currency (${debitCurrency}) is not recognized - neither fiat (${CryptoTracker.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`, rowIndex, 'debitCurrency');
   }
   else if (isNaN(debitExRate)) {
-    throw new ValidationError(`${action} row ${row}: debit exchange rate is not valid (number or blank).`, row, 'debitExRate');
+    throw new ValidationError(`${action} row ${rowIndex}: debit exchange rate is not valid (number or blank).`, rowIndex, 'debitExRate');
   }
   else if (isNaN(debitAmount)) {
-    throw new ValidationError(`${action} row ${row}: debit amount is not valid (number or blank).`, row, 'debitAmount');
+    throw new ValidationError(`${action} row ${rowIndex}: debit amount is not valid (number or blank).`, rowIndex, 'debitAmount');
   }
   else if (isNaN(debitFee)) {
-    throw new ValidationError(`${action} row ${row}: debit fee is not valid (number or blank).`, row, 'debitFee');
+    throw new ValidationError(`${action} row ${rowIndex}: debit fee is not valid (number or blank).`, rowIndex, 'debitFee');
   }
   else if (creditCurrency && !this.isFiat(creditCurrency) && !this.isCrypto(creditCurrency)) {
-    throw new ValidationError(`${action} row ${row}: credit currency (${creditCurrency}) is not recognized - neither fiat (${CryptoTracker.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`, row, 'creditCurrency');
+    throw new ValidationError(`${action} row ${rowIndex}: credit currency (${creditCurrency}) is not recognized - neither fiat (${CryptoTracker.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`, rowIndex, 'creditCurrency');
   }
   else if (isNaN(creditExRate)) {
-    throw new ValidationError(`${action} row ${row}: credit exchange rate is not valid (number or blank).`, row, 'creditExRate');
+    throw new ValidationError(`${action} row ${rowIndex}: credit exchange rate is not valid (number or blank).`, rowIndex, 'creditExRate');
   }
   else if (isNaN(creditAmount)) {
-    throw new ValidationError(`${action} row ${row}: credit amount is not valid (number or blank).`, row, 'creditAmount');
+    throw new ValidationError(`${action} row ${rowIndex}: credit amount is not valid (number or blank).`, rowIndex, 'creditAmount');
   }
   else if (isNaN(creditFee)) {
-    throw new ValidationError(`${action} row ${row}: credit fee is not valid (number or blank).`, row, 'creditFee');
+    throw new ValidationError(`${action} row ${rowIndex}: credit fee is not valid (number or blank).`, rowIndex, 'creditFee');
   }
   else if (lotMatching && !CryptoTracker.lotMatchings.includes(lotMatching)) {
-    throw new ValidationError(`${action} row ${row}: lot matching (${lotMatching}) is not valid (${CryptoTracker.lotMatchings.join(', ')}) or blank.`, row, 'lotMatching');
+    throw new ValidationError(`${action} row ${rowIndex}: lot matching (${lotMatching}) is not valid (${CryptoTracker.lotMatchings.join(', ')}) or blank.`, rowIndex, 'lotMatching');
   }
   else if (action === 'Transfer') { //Transfer
     if (!debitCurrency) {
-      throw new ValidationError(`${action} row ${row}: no debit currency specified.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit currency specified.`, rowIndex, 'debitCurrency');
     }
     else if (debitExRate !== '') {
-      throw new ValidationError(`${action} row ${row}: leave debit exchange rate blank.`, row, 'debitExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: leave debit exchange rate blank.`, rowIndex, 'debitExRate');
     }
     else if (debitAmount === '') {
-      throw new ValidationError(`${action} row ${row}: no debit amount specified.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit amount specified.`, rowIndex, 'debitAmount');
     }
     else if (debitAmount <= 0) {
-      throw new ValidationError(`${action} row ${row}: debit amount must be greater than 0.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: debit amount must be greater than 0.`, rowIndex, 'debitAmount');
     }
     else if (debitFee < 0) {
-      throw new ValidationError(`${action} row ${row}: debit fee must be greater or equal to 0 (or blank).`, row, 'debitFee');
+      throw new ValidationError(`${action} row ${rowIndex}: debit fee must be greater or equal to 0 (or blank).`, rowIndex, 'debitFee');
     }
     else if (creditCurrency) {
-      throw new ValidationError(`${action} row ${row}: leave credit currency (${creditCurrency}) blank. It is inferred from the debit currency (${debitCurrency}).`, row, 'creditCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit currency (${creditCurrency}) blank. It is inferred from the debit currency (${debitCurrency}).`, rowIndex, 'creditCurrency');
     }
     else if (creditExRate !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit exchange rate blank.`, row, 'creditExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit exchange rate blank.`, rowIndex, 'creditExRate');
     }
     else if (creditAmount !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit amount blank. It is inferred from the debit amount and debit fee.`, row, 'creditAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit amount blank. It is inferred from the debit amount and debit fee.`, rowIndex, 'creditAmount');
     }
     else if (creditFee !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit fee blank.`, row, 'creditFee');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit fee blank.`, rowIndex, 'creditFee');
     }
     else if (!debitWalletName && !creditWalletName) {
-      throw new ValidationError(`${action} row ${row}: no debit or credit wallet specified.`, row, 'debitWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit or credit wallet specified.`, rowIndex, 'debitWalletName');
     }
     else if (this.isFiat(debitCurrency)) { //Fiat transfer
       if (debitWalletName && creditWalletName) {
-        throw new ValidationError(`${action} row ${row}: fiat transfer leave debit wallet (${debitWalletName}) blank for deposits or credit wallet (${creditWalletName}) blank for withdrawals.`, row, 'debitWalletName');
+        throw new ValidationError(`${action} row ${rowIndex}: fiat transfer leave debit wallet (${debitWalletName}) blank for deposits or credit wallet (${creditWalletName}) blank for withdrawals.`, rowIndex, 'debitWalletName');
       }
     }
     else if (this.isCrypto(debitCurrency)) { //Crypto transfer
       if (!debitWalletName) {
-        throw new ValidationError(`${action} row ${row}: no debit wallet specified.`, row, 'debitWalletName');
+        throw new ValidationError(`${action} row ${rowIndex}: no debit wallet specified.`, rowIndex, 'debitWalletName');
       }
       else if (!creditWalletName) {
-        throw new ValidationError(`${action} row ${row}: no credit wallet specified.`, row, 'creditWalletName');
+        throw new ValidationError(`${action} row ${rowIndex}: no credit wallet specified.`, rowIndex, 'creditWalletName');
       }
       else if (debitWalletName === creditWalletName) {
-        throw new ValidationError(`${action} row ${row}: debit wallet (${debitWalletName}) and credit wallet (${creditWalletName}) must be different.`, row, 'debitWalletName');
+        throw new ValidationError(`${action} row ${rowIndex}: debit wallet (${debitWalletName}) and credit wallet (${creditWalletName}) must be different.`, rowIndex, 'debitWalletName');
       }
     }
   }
   else if (action === 'Trade') { //Trade
     if (!debitCurrency) {
-      throw new ValidationError(`${action} row ${row}: no debit currency specified.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit currency specified.`, rowIndex, 'debitCurrency');
     }
     else if (!creditCurrency) {
-      throw new ValidationError(`${action} row ${row}: no credit currency specified.`, row, 'creditCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: no credit currency specified.`, rowIndex, 'creditCurrency');
     }
     else if (debitCurrency === creditCurrency) {
-      throw new ValidationError(`${action} row ${row}: debit currency (${debitCurrency}) and credit currency (${creditCurrency}) must be different.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: debit currency (${debitCurrency}) and credit currency (${creditCurrency}) must be different.`, rowIndex, 'debitCurrency');
     }
     else if (this.isFiat(debitCurrency) && this.isFiat(creditCurrency)) {
-      throw new ValidationError(`${action} row ${row}: both debit currency (${debitCurrency}) and credit currency (${creditCurrency}) are fiat, not supported.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: both debit currency (${debitCurrency}) and credit currency (${creditCurrency}) are fiat, not supported.`, rowIndex, 'debitCurrency');
     }
     else if (!debitWalletName) {
-      throw new ValidationError(`${action} row ${row}: no debit wallet specified.`, row, 'debitWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit wallet specified.`, rowIndex, 'debitWalletName');
     }
     else if (debitAmount === '') {
-      throw new ValidationError(`${action} row ${row}: no debit amount specified.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit amount specified.`, rowIndex, 'debitAmount');
     }
     else if (debitAmount < 0) {
-      throw new ValidationError(`${action} row ${row}: debit amount must be greater or equal to 0.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: debit amount must be greater or equal to 0.`, rowIndex, 'debitAmount');
     }
     else if (debitFee < 0) {
-      throw new ValidationError(`${action} row ${row}: debit fee must be greater or equal to 0 (or blank).`, row, 'debitFee');
+      throw new ValidationError(`${action} row ${rowIndex}: debit fee must be greater or equal to 0 (or blank).`, rowIndex, 'debitFee');
     }
     else if (creditAmount === '') {
-      throw new ValidationError(`${action} row ${row}: no credit amount specified.`, row, 'creditAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: no credit amount specified.`, rowIndex, 'creditAmount');
     }
     else if (creditAmount < 0) {
-      throw new ValidationError(`${action} row ${row}: credit amount must be greater or equal to 0.`, row, 'creditAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: credit amount must be greater or equal to 0.`, rowIndex, 'creditAmount');
     }
     else if (creditFee < 0) {
-      throw new ValidationError(`${action} row ${row}: credit fee must be greater or equal to 0 (or blank).`, row, 'creditFee');
+      throw new ValidationError(`${action} row ${rowIndex}: credit fee must be greater or equal to 0 (or blank).`, rowIndex, 'creditFee');
     }
     else if (creditWalletName) {
-      throw new ValidationError(`${action} row ${row}: leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`, row, 'creditWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`, rowIndex, 'creditWalletName');
     }
     else if (debitCurrency === this.accountingCurrency && debitExRate !== '') {
-      throw new ValidationError(`${action} row ${row}: debit currency (${debitCurrency}) is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate blank.`, row, 'debitExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: debit currency (${debitCurrency}) is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate blank.`, rowIndex, 'debitExRate');
     }
     else if (creditCurrency === this.accountingCurrency && creditExRate !== '') {
-      throw new ValidationError(`${action} row ${row}: credit currency (${creditCurrency}) is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, row, 'creditExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: credit currency (${creditCurrency}) is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
     }
     else {
       if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '') {
-          throw new ValidationError(`${action} row ${row}: missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, row, 'debitExRate');
+          throw new ValidationError(`${action} row ${rowIndex}: missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'debitExRate');
         }
         else if (debitExRate <= 0) {
-          throw new ValidationError(`${action} row ${row}: debit exchange rate must be greater than 0.`, row, 'debitExRate');
+          throw new ValidationError(`${action} row ${rowIndex}: debit exchange rate must be greater than 0.`, rowIndex, 'debitExRate');
         }
       }
       if (this.isCrypto(debitCurrency) && creditCurrency != this.accountingCurrency) { //sell or exchange crypto
         if (creditExRate === '') {
-          throw new ValidationError(`${action} row ${row}: missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, row, 'creditExRate');
+          throw new ValidationError(`${action} row ${rowIndex}: missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'creditExRate');
         }
         else if (creditExRate <= 0) {
-          throw new ValidationError(`${action} row ${row}: credit exchange rate must be greater than 0.`, row, 'creditExRate');
+          throw new ValidationError(`${action} row ${rowIndex}: credit exchange rate must be greater than 0.`, rowIndex, 'creditExRate');
         }
       }
     }
   }
   else if (action === 'Income') { //Income
     if (debitCurrency) {
-      throw new ValidationError(`${action} row ${row}: leave debit currency (${debitCurrency}) blank.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: leave debit currency (${debitCurrency}) blank.`, rowIndex, 'debitCurrency');
     }
     else if (debitExRate !== '') {
-      throw new ValidationError(`${action} row ${row}: leave debit exchange rate blank.`, row, 'debitExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: leave debit exchange rate blank.`, rowIndex, 'debitExRate');
     }
     else if (debitAmount !== '') {
-      throw new ValidationError(`${action} row ${row}: leave debit amount blank.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: leave debit amount blank.`, rowIndex, 'debitAmount');
     }
     else if (debitFee !== '') {
-      throw new ValidationError(`${action} row ${row}: leave debit fee blank.`, row, 'debitFee');
+      throw new ValidationError(`${action} row ${rowIndex}: leave debit fee blank.`, rowIndex, 'debitFee');
     }
     else if (debitWalletName) {
-      throw new ValidationError(`${action} row ${row}: leave debit wallet (${debitWalletName}) blank.`, row, 'debitWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: leave debit wallet (${debitWalletName}) blank.`, rowIndex, 'debitWalletName');
     }
     else if (!creditCurrency) {
-      throw new ValidationError(`${action} row ${row}: no credit currency specified.`, row, 'creditCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: no credit currency specified.`, rowIndex, 'creditCurrency');
     }
     else if (this.isFiat(creditCurrency)) {
-      throw new ValidationError(`${action} row ${row}: credit currency (${creditCurrency}) is fiat, not supported.`, row, 'creditCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: credit currency (${creditCurrency}) is fiat, not supported.`, rowIndex, 'creditCurrency');
     }
     else if (creditExRate === '') {
-      throw new ValidationError(`${action} row ${row}: missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, row, 'creditExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'creditExRate');
     }
     else if (creditExRate <= 0) {
-      throw new ValidationError(`${action} row ${row}: credit exchange rate must be greater than 0.`, row, 'creditExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: credit exchange rate must be greater than 0.`, rowIndex, 'creditExRate');
     }
     else if (creditAmount === '') {
-      throw new ValidationError(`${action} row ${row}: no credit amount specified.`, row, 'creditAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: no credit amount specified.`, rowIndex, 'creditAmount');
     }
     else if (creditAmount <= 0) {
-      throw new ValidationError(`${action} row ${row}: credit amount must be greater than 0.`, row, 'creditAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: credit amount must be greater than 0.`, rowIndex, 'creditAmount');
     }
     else if (creditFee !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit fee blank.`, row, 'creditFee');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit fee blank.`, rowIndex, 'creditFee');
     }
     else if (!creditWalletName) {
-      throw new ValidationError(`${action} row ${row}: no credit wallet specified.`, row, 'creditWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: no credit wallet specified.`, rowIndex, 'creditWalletName');
     }
   }
   else if (action === 'Donation' || action === 'Payment') { //Donation or Payment
     if (!debitCurrency) {
-      throw new ValidationError(`${action} row ${row}: no debit currency specified.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit currency specified.`, rowIndex, 'debitCurrency');
     }
     else if (this.isFiat(debitCurrency)) {
-      throw new ValidationError(`${action} row ${row}: debit currency (${debitCurrency}) is fiat, not supported.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: debit currency (${debitCurrency}) is fiat, not supported.`, rowIndex, 'debitCurrency');
     }
     else if (debitExRate === '') {
-      throw new ValidationError(`${action} row ${row}: missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, row, 'debitExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'debitExRate');
     }
     else if (debitExRate <= 0) {
-      throw new ValidationError(`${action} row ${row}: debit exchange rate must be greater than 0.`, row, 'debitExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: debit exchange rate must be greater than 0.`, rowIndex, 'debitExRate');
     }
     else if (debitAmount === '') {
-      throw new ValidationError(`${action} row ${row}: no debit amount specified.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit amount specified.`, rowIndex, 'debitAmount');
     }
     else if (debitAmount <= 0) {
-      throw new ValidationError(`${action} row ${row}: debit amount must be greater than 0.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: debit amount must be greater than 0.`, rowIndex, 'debitAmount');
     }
     else if (debitFee < 0) {
-      throw new ValidationError(`${action} row ${row}: debit fee must be greater or equal to 0 (or blank).`, row, 'debitFee');
+      throw new ValidationError(`${action} row ${rowIndex}: debit fee must be greater or equal to 0 (or blank).`, rowIndex, 'debitFee');
     }
     else if (!debitWalletName) {
-      throw new ValidationError(`${action} row ${row}: no debit wallet specified.`, row, 'debitWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit wallet specified.`, rowIndex, 'debitWalletName');
     }
     else if (creditCurrency) {
-      throw new ValidationError(`${action} row ${row}: leave credit currency (${creditCurrency}) blank.`, row, 'creditCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit currency (${creditCurrency}) blank.`, rowIndex, 'creditCurrency');
     }
     else if (creditExRate !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit exchange rate blank.`, row, 'creditExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit exchange rate blank.`, rowIndex, 'creditExRate');
     }
     else if (creditAmount !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit amount blank.`, row, 'creditAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit amount blank.`, rowIndex, 'creditAmount');
     }
     else if (creditFee !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit fee blank.`, row, 'creditFee');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit fee blank.`, rowIndex, 'creditFee');
     }
     else if (creditWalletName) {
-      throw new ValidationError(`${action} row ${row}: leave credit wallet (${creditWalletName}) blank.`, row, 'creditWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit wallet (${creditWalletName}) blank.`, rowIndex, 'creditWalletName');
     }
   }
   else if (action === 'Gift') { //Gift
     if (!debitCurrency) {
-      throw new ValidationError(`${action} row ${row}: no debit currency specified.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit currency specified.`, rowIndex, 'debitCurrency');
     }
     else if (this.isFiat(debitCurrency)) {
-      throw new ValidationError(`${action} row ${row}: debit currency (${debitCurrency}) is fiat, not supported.`, row, 'debitCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: debit currency (${debitCurrency}) is fiat, not supported.`, rowIndex, 'debitCurrency');
     }
     else if (debitExRate !== '') {
-      throw new ValidationError(`${action} row ${row}: leave debit exchange rate blank.`, row, 'debitExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: leave debit exchange rate blank.`, rowIndex, 'debitExRate');
     }
     else if (debitAmount === '') {
-      throw new ValidationError(`${action} row ${row}: no debit amount specified.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit amount specified.`, rowIndex, 'debitAmount');
     }
     else if (debitAmount <= 0) {
-      throw new ValidationError(`${action} row ${row}: debit amount must be greater than 0.`, row, 'debitAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: debit amount must be greater than 0.`, rowIndex, 'debitAmount');
     }
     else if (debitFee < 0) {
-      throw new ValidationError(`${action} row ${row}: debit fee must be greater or equal to 0 (or blank).`, row, 'debitFee');
+      throw new ValidationError(`${action} row ${rowIndex}: debit fee must be greater or equal to 0 (or blank).`, rowIndex, 'debitFee');
     }
     else if (!debitWalletName) {
-      throw new ValidationError(`${action} row ${row}: no debit wallet specified.`, row, 'debitWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: no debit wallet specified.`, rowIndex, 'debitWalletName');
     }
     else if (creditCurrency) {
-      throw new ValidationError(`${action} row ${row}: leave credit currency (${creditCurrency}) blank.`, row, 'creditCurrency');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit currency (${creditCurrency}) blank.`, rowIndex, 'creditCurrency');
     }
     else if (creditExRate !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit exchange rate blank.`, row, 'creditExRate');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit exchange rate blank.`, rowIndex, 'creditExRate');
     }
     else if (creditAmount !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit amount blank.`, row, 'creditAmount');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit amount blank.`, rowIndex, 'creditAmount');
     }
     else if (creditFee !== '') {
-      throw new ValidationError(`${action} row ${row}: leave credit fee blank.`, row, 'creditFee');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit fee blank.`, rowIndex, 'creditFee');
     }
     else if (creditWalletName) {
-      throw new ValidationError(`${action} row ${row}: leave credit wallet (${creditWalletName}) blank.`, row, 'creditWalletName');
+      throw new ValidationError(`${action} row ${rowIndex}: leave credit wallet (${creditWalletName}) blank.`, rowIndex, 'creditWalletName');
     }
   }
   else {
-    throw new ValidationError(`Ledger row ${row}: action (${action}) is invalid.`, row, 'action');
+    throw new ValidationError(`Ledger row ${rowIndex}: action (${action}) is invalid.`, rowIndex, 'action');
   }
 }

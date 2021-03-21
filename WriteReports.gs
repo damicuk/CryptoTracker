@@ -1,5 +1,4 @@
 /**
- * The method that does most of the work
  * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports
  * Updates the data validation on the ledger currency and wallet columns
  * Displays alert in case of API error

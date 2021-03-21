@@ -1,3 +1,9 @@
+/**
+ * Retrieves and validates and processes the ledger records
+ * It treats the ledger as a set of instuctions and simulates the actions specified
+ * Displays an alert if attempt is made to withdraw cryptocurrency from an account with insufficient funds
+ * @return {boolean} Successful completion
+ */
 CryptoTracker.prototype.processLedger = function () {
 
   let ledgerRecords = this.getLedgerRecords();
@@ -13,11 +19,11 @@ CryptoTracker.prototype.processLedger = function () {
   try {
 
     //row numbers start at 1 plus two header rows
-    let row = 3;
+    let rowIndex = 3;
 
     for (let ledgerRecord of ledgerRecords) {
 
-      this.processLedgerRecord(ledgerRecord, row++);
+      this.processLedgerRecord(ledgerRecord, rowIndex++);
 
     }
   }
@@ -36,7 +42,14 @@ CryptoTracker.prototype.processLedger = function () {
   return true;
 }
 
-CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, row) {
+
+/**
+ * Processes a ledger record
+ * It treats the ledger record an instuction and simulates the action specified
+ * @param {LedgerRecord} ledgerRecord - The ledger record to process
+ * @param {rowIndex} rowIndex - The index of the row in the ledger sheet
+ */
+CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) {
 
   let date = ledgerRecord.date;
   let action = ledgerRecord.action;
@@ -73,7 +86,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, row) {
     }
     else if (this.isCrypto(debitCurrency)) {  //Crypto transfer
 
-      let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, row);
+      let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
       this.getWallet(creditWalletName).getCryptoAccount(debitCurrency).deposit(lots);
 
@@ -92,7 +105,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, row) {
     }
     else if (this.isCrypto(debitCurrency) && this.isFiat(creditCurrency)) { //Sell crypto
 
-      let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, row);
+      let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
       this.closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, debitWalletName);
 
@@ -101,7 +114,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, row) {
     }
     else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos
 
-      let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, row);
+      let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
       this.closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, debitWalletName);
 
@@ -124,19 +137,19 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, row) {
   }
   else if (action === 'Donation') { //Donation
 
-    let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, row);
+    let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
     this.donateLots(lots, date, debitExRate, debitWalletName);
 
   }
   else if (action === 'Gift') { //Gift
 
-    this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, row);
+    this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
   }
   else if (action === 'Payment') { //Payment
 
-    let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, row);
+    let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
     this.payLots(lots, date, debitExRate, debitAmount, debitFee, debitWalletName);
 

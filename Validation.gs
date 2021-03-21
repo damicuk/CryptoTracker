@@ -1,3 +1,6 @@
+/**
+ * Retrieves and validates the ledger records and displays toast on success
+ */
 CryptoTracker.prototype.validateLedger = function () {
 
   let ledgerRecords = this.getLedgerRecords();
@@ -11,6 +14,11 @@ CryptoTracker.prototype.validateLedger = function () {
   }
 }
 
+/**
+ * Validates a set of ledger records and handles validation errors
+ * @param {LedgerRecord[]} ledgerRecords - The colection of ledger records to validate
+ * @return {boolean} Whether the ledger records are valid
+ */
 CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
 
   try {
@@ -40,6 +48,10 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
   return true;
 }
 
+/**
+ * Validates a ledger record and throws a validation error on failure
+ * @param {LedgerRecord} ledgerRecord - The ledger record to validate
+ */
 CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, row) {
 
   let date = ledgerRecord.date;

@@ -1,5 +1,22 @@
+/**
+ * Represents an amount of cryptocurrency purchased together
+ * Calculations are done in satoshi (1/100,000,000) to avoid computational rounding errors
+ * @class
+ */
 class Lot {
 
+  /**
+   * @constructor
+   * @param {date} date - the date of the transaction
+   * @param {string} debitCurrency - The ticker of the fiat or cryptocurrency debited
+   * @param {number} debitExRate - The debit currency to accounting currency exchange rate, 0 if the debit currency is the accounting currency
+   * @param {number} debitAmount - The amount of fiat or cryptocurrency debited
+   * @param {number} debitFee - The fee in the fiat or cryptocurrency debited
+   * @param {string} creditCurrency - The ticker of the cryptocurrency credited
+   * @param {number} creditAmount - The amount of fiat or cryptocurrency credited
+   * @param {number} creditFee - The fee in the fiat or cryptocurrency credited
+   * @param {string} walletName - The wallet (or exchange) in which the transaction took place
+   */
   constructor(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee, walletName) {
 
     this.date = date;
@@ -14,11 +31,19 @@ class Lot {
 
   }
 
+  /**
+   * The balance in the account in satoshi (1/100,000,000)
+   * @type {number}
+   */
   get satoshi() {
 
     return this.creditAmountSatoshi - this.creditFeeSatoshi;
   }
 
+  /**
+   * The cost basis in cents
+   * @type {number}
+   */
   get costBasisCents() {
 
     let exRate = 1;
@@ -31,6 +56,13 @@ class Lot {
     return Math.round(((this.debitAmountSatoshi + this.debitFeeSatoshi) * exRate) / 1e6);
   }
 
+  /**
+   * Splits a lot into two lots
+   * Used when withdrawing an amount from a cryptocurrency account
+   * The costs are assigned in proportion to the balances of the returned lots
+   * @param {number} satoshi - The balance in satoshi requiered in the first lot of the returned lots
+   * @return {Lots[]} Array of two lots, the first having the requested balance, the second with the remainder
+   */
   split(satoshi) {
 
     let splitLots = [];
@@ -70,6 +102,11 @@ class Lot {
 
   }
 
+  /**
+   * Duplicates a lot
+   * Used to keep a separate account of income lots
+   * @return {Lots} A copy of the lot
+   */
   duplicate() {
 
     return new Lot(

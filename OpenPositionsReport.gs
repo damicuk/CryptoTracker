@@ -1,3 +1,8 @@
+/**
+ * Creates the open positions report if it doesn't already exist
+ * Updates the sheet with the current open positions data
+ * Trims the sheet to fit the data
+ */
 CryptoTracker.prototype.openPositionsReport = function () {
 
   const sheetName = this.openPositionsReportName;
@@ -93,6 +98,11 @@ CryptoTracker.prototype.openPositionsReport = function () {
 
 }
 
+/**
+ * Returns a table of the current open positions data
+ * The open positions data is collected when the ledger is processed
+ * @return {*[][]} The current open positions data
+ */
 CryptoTracker.prototype.getOpenPositionsTable = function () {
 
   let table = [];

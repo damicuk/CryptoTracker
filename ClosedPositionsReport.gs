@@ -1,3 +1,8 @@
+/**
+ * Creates the closed positions report if it doesn't already exist
+ * Updates the sheet with the current closed positions data
+ * Trims the sheet to fit the data
+ */
 CryptoTracker.prototype.closedPositionsReport = function () {
 
   const sheetName = this.closedPositionsReportName;
@@ -103,6 +108,11 @@ CryptoTracker.prototype.closedPositionsReport = function () {
 
 }
 
+/**
+ * Returns a table of the current closed positions data
+ * The closed positions data is collected when the ledger is processed
+ * @return {*[][]} The current closed positions data
+ */
 CryptoTracker.prototype.getClosedPositionsTable = function () {
 
   let table = [];

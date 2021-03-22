@@ -1,6 +1,6 @@
 /**
  * Creates the fiat accounts sheet if it doesn't already exist
- * Updates the sheet with the currenct fiat accounts data
+ * Updates the sheet with the current fiat accounts data
  * Trims the sheet to fit the data
  */
 CryptoTracker.prototype.fiatAccountsSheet = function () {

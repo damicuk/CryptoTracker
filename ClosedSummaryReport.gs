@@ -1,3 +1,8 @@
+/**
+ * Creates the closed summary report if it doesn't already exist
+ * No data is writen to this sheet
+ * It contains formulas that pull data from other sheets
+ */
 CryptoTracker.prototype.closedSummaryReport = function () {
 
   const sheetName = this.closedSummaryReportName;

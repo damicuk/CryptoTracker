@@ -1,3 +1,8 @@
+/**
+ * Creates the crypto wallets report if it doesn't already exist
+ * No data is writen to this sheet
+ * It contains formulas that pull data from other sheets
+ */
 CryptoTracker.prototype.cryptoWalletsReport = function () {
 
   const sheetName = this.cryptoWalletsReportName;

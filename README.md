@@ -1,2 +1,2 @@
-# crypto-tracker
+# CryptoTracker
 Tracks cryptocurrencies

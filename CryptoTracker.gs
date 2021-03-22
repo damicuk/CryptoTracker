@@ -101,6 +101,19 @@ class CryptoTracker {
   }
 
   /**
+   * Comparator used to sort items alphabetically
+   * @param {string} a - The first item to be compared
+   * @param {string} b - The second item to be compared
+   * @return {number} - Used to determine the sort order
+   * @static
+   */
+  static abcComparator(a, b) {
+    return a > b ? 1 :
+      b > a ? -1 :
+        0;
+  }
+
+  /**
    * Set of fiat currency tickers used by this instance
    * Only filled once processLedger has completed
    * @type {Set}

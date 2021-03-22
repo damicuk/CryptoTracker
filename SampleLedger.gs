@@ -1,3 +1,7 @@
+/**
+ * Creates a sample ledger sheet
+ * Renames any existing ledger sheet so as not to overwrite it
+ */
 CryptoTracker.prototype.sampleLedger = function () {
 
   const sheetName = this.ledgerSheetName;
@@ -53,7 +57,6 @@ CryptoTracker.prototype.sampleLedger = function () {
 
   sheet.clearConditionalFormatRules();
   this.addActionCondtion(sheet, 'B3:B');
-
 
   let actions = ['Donation', 'Gift', 'Income', 'Payment', 'Stop', 'Trade', 'Transfer'];
 

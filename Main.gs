@@ -22,11 +22,9 @@ function onInstall(e) {
  *     determine which authorization mode (ScriptApp.AuthMode) the trigger is
  *     running in, inspect e.authMode.
  */
-function onOpen() {
-
-  let ui = SpreadsheetApp.getUi();
-
-  ui.createMenu('CryptoTracker')
+function onOpen(e) {
+  SpreadsheetApp.getUi()
+    .createMenu('CryptoTracker')
     .addItem('Step 1: Create sample ledger', 'createSampleLedger')
     .addSeparator()
     .addItem('Step 2: Validate ledger', 'validateLedger')
@@ -37,22 +35,34 @@ function onOpen() {
     .addToUi();
 }
 
+/**
+ * Calls the corresponding method of a new instance of CryptoTracker
+ */
 function createSampleLedger() {
 
   new CryptoTracker().sampleLedger();
 }
 
+/**
+ * Calls the corresponding method of a new instance of CryptoTracker
+ */
 function validateLedger() {
 
   new CryptoTracker().validateLedger();
 
 }
 
+/**
+ * Calls the corresponding method of a new instance of CryptoTracker
+ */
 function writeReports() {
 
   new CryptoTracker().writeReports();
 }
 
+/**
+ * Displays the settings dialog
+ */
 function showSettingsDialog() {
 
   let html = HtmlService.createTemplateFromFile('SettingsDialog').evaluate()
@@ -61,18 +71,31 @@ function showSettingsDialog() {
   SpreadsheetApp.getUi().showModalDialog(html, 'Settings');
 }
 
+/**
+ * Calls the corresponding method of a new instance of CryptoTracker
+ */
 function saveSettings(settings) {
 
   new CryptoTracker().saveSettings(settings);
   
 }
 
+/**
+ * Calls the corresponding method of a new instance of CryptoTracker
+ * Not intended for use by the end user
+ * Useful in development and testing
+ */
 function deleteReports() {
 
   new CryptoTracker().deleteReports();
 
 }
 
+/**
+ * Deletes all the user properties
+ * Not intended for use by the end user
+ * Useful in development and testing
+ */
 function deleteSettings() {
 
   let userProperties = PropertiesService.getUserProperties();

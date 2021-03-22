@@ -33,19 +33,15 @@ CryptoTracker.prototype.exRatesSheet = function () {
   let dataTable = [];
 
   try {
-
     dataTable = this.getCryptoPriceTable();
-
   }
   catch (error) {
-
     if (error instanceof ApiError) {
-
+      //write the empty table to the sheet anyway so as not to break references
       this.writeTable(sheet, dataTable, 1, 4);
-      return error.message;
+      throw error;
     }
     else {
-
       throw error;
     }
 

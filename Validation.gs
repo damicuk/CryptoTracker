@@ -15,33 +15,25 @@ CryptoTracker.prototype.validateLedger = function () {
 }
 
 /**
- * Validates a set of ledger records and handles validation errors
+ * Validates a set of ledger records and uses the error handler to handles validation errors
  * @param {LedgerRecord[]} ledgerRecords - The colection of ledger records to validate
  * @return {boolean} Whether the ledger records are valid
  */
 CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
 
   try {
-
-    //row numbers start at 1 plus two header rows
+    //ledger sheet row numbers start at 1 plus two header rows
     let rowIndex = 3;
-
     for (let ledgerRecord of ledgerRecords) {
-
       this.validateLedgerRecord(ledgerRecord, rowIndex++);
-
     }
-
   }
   catch (error) {
-
     if (error instanceof ValidationError) {
-
       this.handleError('validation', error.message, error.rowIndex, error.columnName);
       return false;
     }
     else {
-
       throw error;
     }
   }

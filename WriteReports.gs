@@ -1,7 +1,7 @@
 /**
  * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports
  * Updates the data validation on the ledger currency and wallet columns
- * Displays alert in case of API error
+ * Uses the error handler to handle API errors
  * Otherwise displays toast on success
  * Returns the currenct cell to its original location
  */
@@ -12,12 +12,21 @@ CryptoTracker.prototype.writeReports = function () {
   let ledgerProcessed = this.processLedger();
 
   if (!ledgerProcessed) {
-
     return;
-
   }
 
-  let errorMessage = this.exRatesSheet();
+  let errorMessage;
+  try {
+    this.exRatesSheet();
+  }
+  catch (error) {
+    if(error instanceof ApiError) {
+      errorMessage = error.message;
+    }
+    else {
+      throw error;
+    }
+  }
 
   this.fiatAccountsSheet();
   this.openPositionsReport();

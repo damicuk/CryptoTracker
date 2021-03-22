@@ -126,14 +126,14 @@ class CryptoAccount {
   }
 
   /**
-   * Withdraws an amount of cryptocurrency from the account
+   * Given a lot matching method string returns a comparator function used to sort lots
    * @param {string} lotMatching - The lot matching method used to determine the order in which lots are withdrawn
    * FIFO First in first out
    * LIFO Last in first out
    * HIFO Highest cost first out
    * LOFO Lowest cost first out
    * Throw an error with any other input
-   * @return {function} The comparator function used to sort the lots
+   * @return {function} The comparator function used to sort lots
    */
   lotComparator(lotMatching) {
 

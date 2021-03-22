@@ -1,3 +1,10 @@
+/**
+ * Creates an exrates sheet if it doesn't already exist
+ * Checks whether the prices for all the cryptocurrencies are current within 10 minutes
+ * If not, attempts to fetch current prices for all the cryptocurrencies and writes them to the sheet
+ * Catches any ApiError, writes an empty table to preserve references, and rethrows the ApiError
+ * Trims the sheet to fit the data
+ */
 CryptoTracker.prototype.exRatesSheet = function () {
 
   const sheetName = this.exRatesSheetName;
@@ -37,18 +44,24 @@ CryptoTracker.prototype.exRatesSheet = function () {
   }
   catch (error) {
     if (error instanceof ApiError) {
-      //write the empty table to the sheet anyway so as not to break references
+      //write the empty table to the sheet anyway preserve references
       this.writeTable(sheet, dataTable, 1, 4);
       throw error;
     }
     else {
       throw error;
     }
-
   }
   this.writeTable(sheet, dataTable, 1, 4);
 }
 
+/**
+ * Returns a table of price data for the current set of cryptocurrencies in the accounting currency obtained from the CryptoCompare API
+ * The list of cryptocurrencies is collected when the ledger is processed
+ * Throws an ApiError if the API key is not set in settings
+ * Throws an ApiError if the call to the CryptoCompare API returns an error response
+ * @return {*[][]} The table of price data for the current set of cryptocurrencies in the accounting currency
+ */
 CryptoTracker.prototype.getCryptoPriceTable = function () {
 
   let table = [];

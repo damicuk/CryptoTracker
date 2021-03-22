@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<base target="_top">
+	<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+	<!-- The CSS package above applies Google styling to buttons and other elements. -->
+</head>
+
+<script>
+	function saveSettings() {
+
+    let accountingCurrency = document.getElementById('accounting-currency').value;
+    let defaultLotMatching = document.getElementById('default-lot-matching').value;
+    let apiKey = document.getElementById('api-key').value;
+
+    let settings = {
+      accountingCurrency: accountingCurrency,
+      defaultLotMatching: defaultLotMatching,
+      apiKey: apiKey
+    }
+
+    google.script.run
+    .withSuccessHandler(onSuccess)
+    .withFailureHandler(onFailure)
+    .saveSettings(settings);
+  
+ }
+
+ function onSuccess() {
+
+   google.script.host.close();
+
+ }
+
+ function onFailure(error) {
+
+    let div = document.getElementById('output');
+     div.innerHTML = error.message;
+ }
+
+</script>
+
+<? 
+
+let userProperties = PropertiesService.getUserProperties();
+let accountingCurrency = userProperties.getProperty('accountingCurrency');
+let defaultLotMatching = userProperties.getProperty('defaultLotMatching');
+let lotMatchings = CryptoTracker.lotMatchings;
+let validFiats = CryptoTracker.validFiats;
+let apiKey = userProperties.getProperty('apiKey');
+
+?>
+
+<body>
+	<div>
+		<form id="settingsForm">
+			<div class="block form-group">
+				<label for="accounting-currency">Accounting Currency</label>
+				<select id="accounting-currency">
+           <? for(let fiat of validFiats) {?>
+           <option <? if(fiat === accountingCurrency) {?>selected<?} ?>><?= fiat ?></option>
+           <?}?>
+           </select>
+			</div>
+			<div class="block form-group">
+				<label for="default-lot-matching">Default Lot Matching</label>
+				<select id="default-lot-matching">
+           <? for(let lotMatching of lotMatchings) {?>
+           <option <? if(lotMatching === defaultLotMatching) {?>selected<?} ?>><?=lotMatching?></option>
+           <?}?>
+         </select>
+			</div>
+			<div class="block form-group">
+				<label for="api-key">CryptoCompare API key</label>
+				<input type="text" id="api-key" style="width: 460px;" value="<?=apiKey?>" placeholder="< -- paste API key here -- >">
+			</div>
+				<div class="block form-group">
+					<input type="button" class="action" value="Save" onclick="saveSettings();" />
+					<input type="button" value="Cancel" onclick="google.script.host.close();" />
+			</div>
+		</form>
+		<div id="output"></div>
+	</div>
+</body>
+
+</html>

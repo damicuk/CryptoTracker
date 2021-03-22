@@ -1,7 +1,7 @@
 /**
- * Creates an exrates sheet if it doesn't already exist
+ * Creates the exrates sheet if it doesn't already exist
  * Checks whether the prices for all the cryptocurrencies are current within 10 minutes
- * If not, attempts to fetch current prices for all the cryptocurrencies and writes them to the sheet
+ * Updates the sheet with the current prices from the CryptoCompare API if required
  * Catches any ApiError, writes an empty table to preserve references, and rethrows the ApiError
  * Trims the sheet to fit the data
  */

@@ -104,7 +104,7 @@ CryptoTracker.prototype.closedPositionsReport = function () {
 
   let dataTable = this.getClosedPositionsTable();
 
-  this.writeTable(sheet, dataTable, 2, 15, 8);
+  this.writeTable(ss, sheet, dataTable, 'ClosedPositions', 2, 15, 8);
 
 }
 

@@ -52,7 +52,7 @@ CryptoTracker.prototype.exRatesSheet = function () {
       throw error;
     }
   }
-  this.writeTable(sheet, dataTable, 1, 4);
+  this.writeTable(ss, sheet, dataTable, 'ExRates', 1, 4);
 }
 
 /**

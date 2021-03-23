@@ -48,7 +48,7 @@ CryptoTracker.prototype.incomeReport = function () {
 
   let dataTable = this.getIncomeTable();
 
-  this.writeTable(sheet, dataTable, 1, 5, 1);
+  this.writeTable(ss, sheet, dataTable, 'Income', 1, 5, 1);
 
 }
 

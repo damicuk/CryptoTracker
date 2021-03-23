@@ -32,7 +32,7 @@ CryptoTracker.prototype.fiatAccountsSheet = function () {
 
   let dataTable = this.getFiatTable();
 
-  this.writeTable(sheet, dataTable, 1, 3);
+  this.writeTable(ss, sheet, dataTable, 'FiatAccounts', 1, 3);
 
 }
 

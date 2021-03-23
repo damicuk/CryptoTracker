@@ -42,7 +42,7 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
  * @param {number} dataColumns - The number of data columns - needed as the table may be empty
  * @param {number} formulaColumns - The number of columns containing formulas to the right of the data
  */
-CryptoTracker.prototype.writeTable = function (sheet, dataTable, headerRows, dataColumns, formulaColumns = 0) {
+CryptoTracker.prototype.writeTable = function (ss, sheet, dataTable, rangeName, headerRows, dataColumns, formulaColumns = 0) {
 
   const dataRows = dataTable.length;
 
@@ -53,20 +53,24 @@ CryptoTracker.prototype.writeTable = function (sheet, dataTable, headerRows, dat
 
   this.trimSheet(sheet, neededRows, neededColumns);
 
+  let dataRange;
+
   if (dataRows > 0) {
 
-    let dataRange = sheet.getRange(headerRows + 1, 1, dataRows, dataColumns);
+    dataRange = sheet.getRange(headerRows + 1, 1, dataRows, dataColumns);
 
     dataRange.setValues(dataTable);
 
   }
   else {
 
-    let dataRange = sheet.getRange(headerRows + 1, 1, 1, dataColumns);
+    dataRange = sheet.getRange(headerRows + 1, 1, 1, dataColumns);
 
     dataRange.clearContent();
 
   }
+
+  ss.setNamedRange(rangeName, dataRange);
 
   SpreadsheetApp.flush();
 

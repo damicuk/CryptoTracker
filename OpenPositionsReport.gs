@@ -94,7 +94,7 @@ CryptoTracker.prototype.openPositionsReport = function () {
 
   let dataTable = this.getOpenPositionsTable();
 
-  this.writeTable(sheet, dataTable, 2, 10, 8);
+  this.writeTable(ss, sheet, dataTable, 'OpenPositions', 2, 10, 8);
 
 }
 

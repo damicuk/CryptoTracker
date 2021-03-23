@@ -98,7 +98,7 @@ CryptoTracker.prototype.donationsReport = function () {
 
   let dataTable = this.getDonationsTable();
 
-  this.writeTable(sheet, dataTable, 2, 12, 8);
+  this.writeTable(ss, sheet, dataTable, 'Donations', 2, 12, 8);
 
 }
 

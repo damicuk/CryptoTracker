@@ -38,6 +38,13 @@ class CryptoTracker {
     this.openPLReportName = 'Open P/L Report';
     this.closedPLReportName = 'Closed P/L Report';
     this.exRatesTableSheetName = 'Ex Rates Table';
+
+    this.exRatesRangeName = 'ExRates';
+    this.fiatAccountsRangeName = 'FiatAccounts';
+    this.openPositionsRangeName = 'OpenPositions';
+    this.closedPositionsRangeName = 'ClosedPositions';
+    this.donationsRangeName = 'Donations';
+    this.incomeRangeName = 'Income';
   }
 
 

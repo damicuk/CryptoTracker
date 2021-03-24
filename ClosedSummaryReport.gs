@@ -18,7 +18,7 @@ CryptoTracker.prototype.closedSummaryReport = function () {
 
   sheet = ss.insertSheet(sheetName);
 
-  const referenceRange = this.closedPositionsRangeName;
+  const referenceRangeName = this.closedPositionsRangeName;
 
   let headers = [
     [
@@ -47,10 +47,10 @@ CryptoTracker.prototype.closedSummaryReport = function () {
   sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR({QUERY(${referenceRange}, "SELECT G, SUM(P) GROUP BY G LABEL SUM(P) ''", 0);{"TOTAL", ""}},)`, ,
+    `IFERROR({QUERY(${referenceRangeName}, "SELECT G, SUM(P) GROUP BY G LABEL SUM(P) ''", 0);{"TOTAL", ""}},)`, ,
     `IFERROR(QUERY({B2:B,E2:E}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
     `IFERROR(ArrayFormula(FILTER(F2:F/B2:B, LEN(B2:B))),)`,
-    `IFERROR({QUERY(ClosedPositions, "SELECT SUM(S), SUM(T) GROUP BY G LABEL SUM(S) '', SUM(T) ''", 0);{QUERY(ClosedPositions, "SELECT SUM(S), SUM(T) LABEL SUM(S) '', SUM(T) ''")}},)`, ,
+    `IFERROR({QUERY(${referenceRangeName}, "SELECT SUM(S), SUM(T) GROUP BY G LABEL SUM(S) '', SUM(T) ''", 0);{QUERY(${referenceRangeName}, "SELECT SUM(S), SUM(T) LABEL SUM(S) '', SUM(T) ''")}},)`, ,
     `IFERROR(ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))),)`,
     `IFERROR(ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))),)`,
     `IFERROR(ArrayFormula(IF(LEN(B2:B),F2:F,)),)`

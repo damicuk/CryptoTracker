@@ -18,7 +18,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
 
   sheet = ss.insertSheet(sheetName);
 
-  const referenceRange = this.openPositionsRangeName;
+  const referenceRangeName = this.openPositionsRangeName;
   const exRatesSheetName = this.exRatesSheetName;
 
   let headers = [
@@ -47,10 +47,10 @@ CryptoTracker.prototype.openSummaryReport = function () {
   sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR({QUERY(${referenceRange}, "SELECT G, SUM(K) GROUP BY G LABEL SUM(K) ''", 0);{"TOTAL", ""}},)`, ,
+    `IFERROR({QUERY(${referenceRangeName}, "SELECT G, SUM(K) GROUP BY G ORDER BY G LABEL SUM(K) ''", 0);{"TOTAL", ""}},)`, ,
     `IFERROR(QUERY({B2:B,E2:E}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
     `IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, '${exRatesSheetName}'!B2:D, 3, FALSE), LEN(B2:B))),)`,
-    `IFERROR({QUERY(${referenceRange}, "SELECT SUM(N) GROUP BY G LABEL SUM(N) ''", 0);{SUM(QUERY(${referenceRange}, "SELECT SUM(N)"))}},)`,
+    `IFERROR({QUERY(${referenceRangeName}, "SELECT SUM(N) GROUP BY G LABEL SUM(N) ''", 0);{SUM(QUERY(${referenceRangeName}, "SELECT SUM(N)"))}},)`,
     `IFERROR({QUERY({B2:B,D2:D}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL LABEL Col1*Col2 ''", 0);{SUM(QUERY({B2:B,D2:D}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL"))}},)`,
     `IFERROR(ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))),)`,
     `IFERROR(ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))),)`,

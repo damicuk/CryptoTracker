@@ -18,7 +18,7 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
 
   sheet = ss.insertSheet(sheetName);
 
-  const referenceSheetName = this.incomeReportName;
+  const referenceRangeName = this.incomeRangeName;
 
   let headers = [
     [
@@ -37,7 +37,7 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
   sheet.getRange('D2:D').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR({QUERY(Income, "SELECT YEAR(A), B, SUM(D), SUM(F) GROUP BY B, YEAR(A) ORDER BY YEAR(A), B LABEL YEAR(A) '', SUM(D) '', SUM(F) ''");
+    `IFERROR({QUERY(${referenceRangeName}, "SELECT YEAR(A), B, SUM(D), SUM(F) GROUP BY B, YEAR(A) ORDER BY YEAR(A), B LABEL YEAR(A) '', SUM(D) '', SUM(F) ''");
 {QUERY(Income, "SELECT YEAR(A), 'SUBTOTAL', ' ', SUM(F) GROUP BY YEAR(A) ORDER BY YEAR(A) LABEL YEAR(A) '', 'SUBTOTAL' '', ' ' '', SUM(F) ''")};
 {"","TOTAL","",QUERY(Income, "SELECT SUM(F) LABEL SUM(F) ''")}},)`, , , ,
   ]];

@@ -24,10 +24,10 @@ CryptoTracker.prototype.closedSummaryReport = function () {
     [
       'Crypto',
       'Balance',
-      'Av. Buy Price',
-      'Av. Sell Price',
       'Cost Basis',
       'Proceeds',
+      'Av. Buy Price',
+      'Av. Sell Price',
       'Realized P/L',
       'Realized P/L %',
       'Proceeds (for Chart)'
@@ -40,20 +40,20 @@ CryptoTracker.prototype.closedSummaryReport = function () {
 
   sheet.getRange('A2:A').setNumberFormat('@');
   sheet.getRange('B2:B').setNumberFormat('#,##0.00000000;(#,##0.00000000)');
-  sheet.getRange('C2:D').setNumberFormat('#,##0.0000;(#,##0.0000)');
-  sheet.getRange('E2:F').setNumberFormat('#,##0.00;(#,##0.00)');
+  sheet.getRange('C2:D').setNumberFormat('#,##0.00;(#,##0.00)');
+  sheet.getRange('E2:F').setNumberFormat('#,##0.0000;(#,##0.0000)');
   sheet.getRange('G2:G').setNumberFormat('[color50]#,##0.00_);[color3](#,##0.00);[blue]#,##0.00_)');
   sheet.getRange('H2:H').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
   sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR({QUERY(${referenceRangeName}, "SELECT G, SUM(P) GROUP BY G LABEL SUM(P) ''", 0);{"TOTAL", ""}},)`, ,
-    `IFERROR(QUERY({B2:B,E2:E}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
-    `IFERROR(ArrayFormula(FILTER(F2:F/B2:B, LEN(B2:B))),)`,
-    `IFERROR({QUERY(${referenceRangeName}, "SELECT SUM(S), SUM(T) GROUP BY G LABEL SUM(S) '', SUM(T) ''", 0);{QUERY(${referenceRangeName}, "SELECT SUM(S), SUM(T) LABEL SUM(S) '', SUM(T) ''")}},)`, ,
-    `IFERROR(ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))),)`,
-    `IFERROR(ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))),)`,
-    `IFERROR(ArrayFormula(IF(LEN(B2:B),F2:F,)),)`
+    `IFERROR({QUERY(${referenceRangeName}, "SELECT G, SUM(P), SUM(S), SUM(T) GROUP BY G ORDER BY G LABEL SUM(P) '', SUM(S) '', SUM(T) ''", 0);
+{"TOTAL", "", QUERY(${referenceRangeName}, "SELECT SUM(S), SUM(T) LABEL SUM(S) '', SUM(T) ''")}},)`, , , ,
+    `IFERROR(QUERY({B2:B,C2:C}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
+    `IFERROR(ArrayFormula(FILTER(D2:D/B2:B, LEN(B2:B))),)`,
+    `IFERROR(ArrayFormula(FILTER(D2:D-C2:C, LEN(A2:A))),)`,
+    `IFERROR(ArrayFormula(FILTER(G2:G/C2:C, LEN(A2:A))),)`,
+    `IFERROR(ArrayFormula(IF(LEN(B2:B),D2:D,)),)`
   ]];
 
   sheet.getRange('A2:I2').setFormulas(formulas);

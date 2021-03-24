@@ -40,8 +40,8 @@ CryptoTracker.prototype.donationsSummaryReport = function () {
 
   const formulas = [[
     `IFERROR({QUERY(${referenceRangeName}, "SELECT YEAR(J), G, SUM(M), SUM(P), SUM(Q) GROUP BY YEAR(J), G ORDER BY YEAR(J), G LABEL YEAR(J) '', SUM(M) '', SUM(P) '', SUM(Q) ''");
-{QUERY(Donations, "SELECT YEAR(J), 'SUBTOTAL', ' ', SUM(P), SUM(Q) GROUP BY YEAR(J) ORDER BY YEAR(J) LABEL YEAR(J) '', 'SUBTOTAL' '', ' ' '', SUM(P) '', SUM(Q) ''")};
-{QUERY(Donations, "SELECT ' ', 'TOTAL', '  ', SUM(P), SUM(Q) LABEL ' ' '', 'TOTAL' '', '  ' '', SUM(P) '', SUM(Q) ''")}},)`, , , , ,
+{QUERY(${referenceRangeName}, "SELECT YEAR(J), 'SUBTOTAL', ' ', SUM(P), SUM(Q) GROUP BY YEAR(J) ORDER BY YEAR(J) LABEL YEAR(J) '', 'SUBTOTAL' '', ' ' '', SUM(P) '', SUM(Q) ''")};
+{"","TOTAL","",QUERY(${referenceRangeName}, "SELECT SUM(P), SUM(Q) LABEL SUM(P) '', SUM(Q) ''")}},)`, , , , ,
   ]];
 
   sheet.getRange('A2:E2').setFormulas(formulas);

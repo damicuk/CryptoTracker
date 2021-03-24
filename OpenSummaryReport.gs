@@ -18,7 +18,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
 
   sheet = ss.insertSheet(sheetName);
 
-  const referenceSheetName = this.openPositionsReportName;
+  const referenceRange = this.openPositionsRangeName;
   const exRatesSheetName = this.exRatesSheetName;
 
   let headers = [
@@ -30,11 +30,12 @@ CryptoTracker.prototype.openSummaryReport = function () {
       'Cost Basis',
       'Value',
       'Unrealized P/L',
-      'Unrealized P/L %'
+      'Unrealized P/L %',
+      'Value (for Chart)'
     ]
   ];
 
-  sheet.getRange('A1:H1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
+  sheet.getRange('A1:I1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
 
   sheet.getRange('A2:A').setNumberFormat('@');
@@ -43,29 +44,31 @@ CryptoTracker.prototype.openSummaryReport = function () {
   sheet.getRange('E2:F').setNumberFormat('#,##0.00;(#,##0.00)');
   sheet.getRange('G2:G').setNumberFormat('[color50]#,##0.00_);[color3](#,##0.00);[blue]#,##0.00_)');
   sheet.getRange('H2:H').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
-
+  sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `SORT(UNIQUE('${referenceSheetName}'!G3:G))`,
-    `ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!K3:K))`,
-    `IFERROR(ArrayFormula(FILTER(E2:E/B2:B, LEN(A2:A))),)`,
-    `IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, '${exRatesSheetName}'!B2:D, 3, FALSE), LEN(A2:A))),)`,
-    `ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!N3:N))`,
-    `ArrayFormula(IF(NOT(LEN(D2:D)),,FILTER(B2:B*D2:D, LEN(A2:A))))`,
-    `ArrayFormula(IF(NOT(LEN(D2:D)),,FILTER(F2:F-E2:E, LEN(A2:A))))`,
-    `ArrayFormula(IF(NOT(LEN(D2:D)),,FILTER(G2:G/E2:E, LEN(A2:A))))`
+    `IFERROR({QUERY(${referenceRange}, "SELECT G, SUM(K) GROUP BY G LABEL SUM(K) ''", 0);{"TOTAL", ""}},)`,,
+    `IFERROR(QUERY({B2:B,E2:E}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
+    `IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, '${exRatesSheetName}'!B2:D, 3, FALSE), LEN(B2:B))),)`,
+    `IFERROR({QUERY(${referenceRange}, "SELECT SUM(N) GROUP BY G LABEL SUM(N) ''", 0);{SUM(QUERY(${referenceRange}, "SELECT SUM(N)"))}},)`,
+    `IFERROR({QUERY({B2:B,D2:D}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL LABEL Col1*Col2 ''", 0);{SUM(QUERY({B2:B,D2:D}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL"))}},)`,
+    `IFERROR(QUERY({E2:E,F2:F}, "SELECT Col2-Col1 LABEL Col2-Col1 ''", 0),)`,
+    `IFERROR(QUERY({E2:E,G2:G}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
+    `ArrayFormula(IF(NOT(LEN(D2:D)),,FILTER(B2:B*D2:D, LEN(A2:A))))`
   ]];
 
-  sheet.getRange('A2:H2').setFormulas(formulas);
+  sheet.getRange('A2:I2').setFormulas(formulas);
+
+  sheet.hideColumns(9);
 
   SpreadsheetApp.flush();
 
-  this.trimColumns(sheet, 15);
+  this.trimColumns(sheet, 16);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder
     .addRange(sheet.getRange('A1:A1000'))
-    .addRange(sheet.getRange('F1:F1000'))
+    .addRange(sheet.getRange('I1:I1000'))
     .setNumHeaders(1)
     .setTitle('Value')
     .setPosition(1, 9, 30, 30)

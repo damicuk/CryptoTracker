@@ -39,6 +39,7 @@ class CryptoTracker {
     this.closedPLReportName = 'Closed P/L Report';
     this.exRatesTableSheetName = 'Ex Rates Table';
 
+    //named ranges aren't used but perhaps useful for user custom reports
     this.exRatesRangeName = 'ExRates';
     this.fiatAccountsRangeName = 'FiatAccounts';
     this.openPositionsRangeName = 'OpenPositions';

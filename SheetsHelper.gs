@@ -53,24 +53,28 @@ CryptoTracker.prototype.writeTable = function (ss, sheet, dataTable, rangeName, 
 
   this.trimSheet(sheet, neededRows, neededColumns);
 
-  let dataRange;
-
   if (dataRows > 0) {
 
-    dataRange = sheet.getRange(headerRows + 1, 1, dataRows, dataColumns);
+    let dataRange = sheet.getRange(headerRows + 1, 1, dataRows, dataColumns);
 
     dataRange.setValues(dataTable);
+
+    let namedRange = sheet.getRange(headerRows + 1, 1, dataRows, dataColumns + formulaColumns);
+
+    ss.setNamedRange(rangeName, namedRange);
 
   }
   else {
 
-    dataRange = sheet.getRange(headerRows + 1, 1, 1, dataColumns);
+    let dataRange = sheet.getRange(headerRows + 1, 1, 1, dataColumns);
 
     dataRange.clearContent();
 
-  }
+    let namedRange = sheet.getRange(headerRows + 1, 1, 1, dataColumns + formulaColumns);
 
-  ss.setNamedRange(rangeName, dataRange);
+    ss.setNamedRange(rangeName, namedRange);
+
+  }
 
   SpreadsheetApp.flush();
 

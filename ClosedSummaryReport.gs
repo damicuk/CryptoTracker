@@ -13,13 +13,13 @@ CryptoTracker.prototype.closedSummaryReport = function () {
   if (sheet) {
 
     return;
-    
+
   }
 
   sheet = ss.insertSheet(sheetName);
-  
-  const referenceSheetName = this.closedPositionsReportName;
-  
+
+  const referenceRange = this.closedPositionsRangeName;
+
   let headers = [
     [
       'Crypto',
@@ -29,11 +29,13 @@ CryptoTracker.prototype.closedSummaryReport = function () {
       'Cost Basis',
       'Proceeds',
       'Realized P/L',
-      'Realized P/L %'
+      'Realized P/L %',
+      'Proceeds (for Chart)'
+
     ]
   ];
 
-  sheet.getRange('A1:H1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
+  sheet.getRange('A1:I1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
 
   sheet.getRange('A2:A').setNumberFormat('@');
@@ -42,36 +44,37 @@ CryptoTracker.prototype.closedSummaryReport = function () {
   sheet.getRange('E2:F').setNumberFormat('#,##0.00;(#,##0.00)');
   sheet.getRange('G2:G').setNumberFormat('[color50]#,##0.00_);[color3](#,##0.00);[blue]#,##0.00_)');
   sheet.getRange('H2:H').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
-
+  sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `=SORT(UNIQUE('${referenceSheetName}'!G3:G))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!P3:P))`,
-    `=IFERROR(ArrayFormula(FILTER(E2:E/B2:B, LEN(A2:A))),)`,
-    `=IFERROR(ArrayFormula(FILTER(F2:F/B2:B, LEN(A2:A))),)`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!S3:S))`,
-    `=ArrayFormula(SUMIF('${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A)),'${referenceSheetName}'!T3:T))`,
-    `=IFERROR(ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))),)`,
-    `=IFERROR(ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))),)`
+    `IFERROR({QUERY(${referenceRange}, "SELECT G, SUM(P) GROUP BY G LABEL SUM(P) ''", 0);{"TOTAL", ""}},)`, ,
+    `IFERROR(QUERY({B2:B,E2:E}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
+    `IFERROR(ArrayFormula(FILTER(F2:F/B2:B, LEN(B2:B))),)`,
+    `IFERROR({QUERY(ClosedPositions, "SELECT SUM(S), SUM(T) GROUP BY G LABEL SUM(S) '', SUM(T) ''", 0);{QUERY(ClosedPositions, "SELECT SUM(S), SUM(T) LABEL SUM(S) '', SUM(T) ''")}},)`, ,
+    `IFERROR(ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))),)`,
+    `IFERROR(ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))),)`,
+    `IFERROR(ArrayFormula(IF(LEN(B2:B),F2:F,)),)`
   ]];
 
-  sheet.getRange('A2:H2').setFormulas(formulas);
+  sheet.getRange('A2:I2').setFormulas(formulas);
+
+  sheet.hideColumns(9);
 
   SpreadsheetApp.flush();
 
-  this.trimColumns(sheet, 15);
+  this.trimColumns(sheet, 16);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder
     .addRange(sheet.getRange('A1:A1000'))
-    .addRange(sheet.getRange('F1:F1000'))
+    .addRange(sheet.getRange('I1:I1000'))
     .setNumHeaders(1)
     .setTitle('Proceeds')
     .setPosition(1, 9, 30, 30)
     .build();
 
   sheet.insertChart(chart);
-  
+
   sheet.autoResizeColumns(1, 8);
 
   SpreadsheetApp.flush();

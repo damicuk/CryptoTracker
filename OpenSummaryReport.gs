@@ -13,7 +13,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
   if (sheet) {
 
     return;
-    
+
   }
 
   sheet = ss.insertSheet(sheetName);
@@ -47,14 +47,14 @@ CryptoTracker.prototype.openSummaryReport = function () {
   sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR({QUERY(${referenceRange}, "SELECT G, SUM(K) GROUP BY G LABEL SUM(K) ''", 0);{"TOTAL", ""}},)`,,
+    `IFERROR({QUERY(${referenceRange}, "SELECT G, SUM(K) GROUP BY G LABEL SUM(K) ''", 0);{"TOTAL", ""}},)`, ,
     `IFERROR(QUERY({B2:B,E2:E}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
     `IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, '${exRatesSheetName}'!B2:D, 3, FALSE), LEN(B2:B))),)`,
     `IFERROR({QUERY(${referenceRange}, "SELECT SUM(N) GROUP BY G LABEL SUM(N) ''", 0);{SUM(QUERY(${referenceRange}, "SELECT SUM(N)"))}},)`,
     `IFERROR({QUERY({B2:B,D2:D}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL LABEL Col1*Col2 ''", 0);{SUM(QUERY({B2:B,D2:D}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL"))}},)`,
-    `IFERROR(QUERY({E2:E,F2:F}, "SELECT Col2-Col1 LABEL Col2-Col1 ''", 0),)`,
-    `IFERROR(QUERY({E2:E,G2:G}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
-    `ArrayFormula(IF(NOT(LEN(D2:D)),,FILTER(B2:B*D2:D, LEN(A2:A))))`
+    `IFERROR(ArrayFormula(FILTER(F2:F-E2:E, LEN(A2:A))),)`,
+    `IFERROR(ArrayFormula(FILTER(G2:G/E2:E, LEN(A2:A))),)`,
+    `IFERROR(ArrayFormula(IF(LEN(B2:B),F2:F,)),)`
   ]];
 
   sheet.getRange('A2:I2').setFormulas(formulas);
@@ -75,7 +75,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
     .build();
 
   sheet.insertChart(chart);
-  
+
   sheet.autoResizeColumns(1, 8);
 
   SpreadsheetApp.flush();

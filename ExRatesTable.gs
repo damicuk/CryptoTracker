@@ -17,13 +17,13 @@ CryptoTracker.prototype.exRatesTable = function () {
 
   sheet = ss.insertSheet(sheetName);
 
-  const referenceSheetName = this.exRatesSheetName;
+  const referenceRangeName = this.exRatesRangeName;
 
-  sheet.getRange('B1').setFormula(`TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!C2:C)))`);
-  sheet.getRange('A2').setFormula(`SORT(UNIQUE('${referenceSheetName}'!C2:C))`);
-  sheet.getRange('A3').setFormula(`SORT(UNIQUE('${referenceSheetName}'!B2:B))`);
-  sheet.getRange('B3').setFormula(`IF(NOT(LEN(A3)),,ArrayFormula(VLOOKUP(FILTER(A3:A, LEN(A3:A))&$B$1 ,{'${referenceSheetName}'!B2:B&'${referenceSheetName}'!C2:C,'${referenceSheetName}'!D2:D}, 2, FALSE)))`);
-  sheet.getRange('C1').setFormula(`TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!B2:B)))`);
+  sheet.getRange('B1').setFormula(`TRANSPOSE(SORT(UNIQUE(Filter(${referenceRangeName}, {false, false, true, false}))))`);
+  sheet.getRange('A2').setFormula(`SORT(UNIQUE(Filter(${referenceRangeName}, {false, false, true, false})))`);
+  sheet.getRange('A3').setFormula(`SORT(UNIQUE(Filter(${referenceRangeName}, {false, true, false, false})))`);
+  sheet.getRange('B3').setFormula(`IF(NOT(LEN(A3)),,ArrayFormula(VLOOKUP(FILTER(A3:A, LEN(A3:A))&B$1 ,{Filter(${referenceRangeName}, {false, true, false, false})&Filter(${referenceRangeName}, {false, false, true, false}),Filter(${referenceRangeName}, {false, false, false, true})}, 2, FALSE)))`);
+  sheet.getRange('C1').setFormula(`TRANSPOSE(SORT(UNIQUE(Filter(${referenceRangeName}, {false, true, false, false}))))`);
   sheet.getRange('C2').setFormula(`IF(NOT(LEN(A3)),,TRANSPOSE(ArrayFormula(FILTER(1/B3:B, LEN(B3:B)))))`);
   sheet.getRange('C3').setFormula(`IF(NOT(LEN(A3)),,ArrayFormula(FILTER(FILTER(IF(A3:A=C1:1,,B3:B*C2:2), LEN(B3:B)), LEN(C2:2))))`);
 

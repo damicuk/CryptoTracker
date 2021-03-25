@@ -47,15 +47,15 @@ CryptoTracker.prototype.openSummaryReport = function () {
   sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR({QUERY(${referenceRangeName}, "SELECT G, SUM(K), SUM(N) GROUP BY G ORDER BY G LABEL SUM(K) '', SUM(N) ''", 0);
-{"TOTAL", "", QUERY(${referenceRangeName}, "SELECT SUM(N) LABEL SUM(N) ''")}},)`, , ,
-    `IFERROR({QUERY({B2:B,F2:F}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL LABEL Col1*Col2 ''", 0);
-{SUM(QUERY({B2:B,F2:F}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL"))}},)`,
-    `IFERROR(QUERY({B2:B,C2:C}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
-    `IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, Filter(${exRatesRangeName}, {false, true, false, true}), 2, FALSE), LEN(B2:B))),)`,
-    `IFERROR(ArrayFormula(FILTER(D2:D-C2:C, LEN(A2:A))),)`,
-    `IFERROR(ArrayFormula(FILTER(G2:G/C2:C, LEN(A2:A))),)`,
-    `IFERROR(ArrayFormula(IF(LEN(B2:B),D2:D,)),)`
+    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{QUERY(${referenceRangeName}, "SELECT G, SUM(K), SUM(N) GROUP BY G ORDER BY G LABEL SUM(K) '', SUM(N) ''", 0);
+{"TOTAL", "", QUERY(${referenceRangeName}, "SELECT SUM(N) LABEL SUM(N) ''")}})`, , ,
+    `IF(COUNT({F2:F})=0,,{QUERY({B2:B,F2:F}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL LABEL Col1*Col2 ''", 0);
+{SUM(QUERY({B2:B,F2:F}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL"))}})`,
+    `IF(ISBLANK(A2),,QUERY({B2:B,C2:C}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0))`,
+    `IF(ISBLANK(A2),,ArrayFormula(FILTER(IFNA(VLOOKUP(A2:A, QUERY(${exRatesRangeName}, "SELECT B, D"), 2, FALSE),), LEN(B2:B))))`,
+    `IF(ISBLANK(A2),,ArrayFormula(FILTER(IF(ISBLANK(D2:D),,D2:D-C2:C), LEN(A2:A))))`,
+    `IF(ISBLANK(A2),,ArrayFormula(FILTER(IF(ISBLANK(G2:G),,G2:G/C2:C), LEN(A2:A))))`,
+    `ArrayFormula(IF(LEN(B2:B),D2:D,))`
   ]];
 
   sheet.getRange('A2:I2').setFormulas(formulas);

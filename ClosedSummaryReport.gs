@@ -47,13 +47,13 @@ CryptoTracker.prototype.closedSummaryReport = function () {
   sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR({QUERY(${referenceRangeName}, "SELECT G, SUM(P), SUM(S), SUM(T) GROUP BY G ORDER BY G LABEL SUM(P) '', SUM(S) '', SUM(T) ''", 0);
-{"TOTAL", "", QUERY(${referenceRangeName}, "SELECT SUM(S), SUM(T) LABEL SUM(S) '', SUM(T) ''")}},)`, , , ,
-    `IFERROR(QUERY({B2:B,C2:C}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
-    `IFERROR(ArrayFormula(FILTER(D2:D/B2:B, LEN(B2:B))),)`,
-    `IFERROR(ArrayFormula(FILTER(D2:D-C2:C, LEN(A2:A))),)`,
-    `IFERROR(ArrayFormula(FILTER(G2:G/C2:C, LEN(A2:A))),)`,
-    `IFERROR(ArrayFormula(IF(LEN(B2:B),D2:D,)),)`
+    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{QUERY(${referenceRangeName}, "SELECT G, SUM(P), SUM(S), SUM(T) GROUP BY G ORDER BY G LABEL SUM(P) '', SUM(S) '', SUM(T) ''", 0);
+{"TOTAL", "", QUERY(${referenceRangeName}, "SELECT SUM(S), SUM(T) LABEL SUM(S) '', SUM(T) ''")}})`, , , ,
+    `IF(ISBLANK(A2),,QUERY({B2:B,C2:C}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0))`,
+    `IF(ISBLANK(A2),,ArrayFormula(FILTER(D2:D/B2:B, LEN(B2:B))))`,
+    `IF(ISBLANK(A2),,ArrayFormula(FILTER(D2:D-C2:C, LEN(A2:A))))`,
+    `IF(ISBLANK(A2),,ArrayFormula(FILTER(G2:G/C2:C, LEN(A2:A))))`,
+    `ArrayFormula(IF(LEN(B2:B),D2:D,))`
   ]];
 
   sheet.getRange('A2:I2').setFormulas(formulas);

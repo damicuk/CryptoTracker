@@ -21,7 +21,7 @@ CryptoTracker.prototype.fiatWalletsReport = function () {
   const referenceRangeName = this.fiatAccountsRangeName;
 
   sheet.getRange('A1').setValue('Wallet');
-  sheet.getRange('B1').setFormula(`TRANSPOSE(SORT(UNIQUE(FILTER(${referenceRangeName}, {false, true, false}))))`);
+  sheet.getRange('B1').setFormula(`TRANSPOSE(SORT(UNIQUE(QUERY(${referenceRangeName}, "SELECT B"))))`);
 
   sheet.getRange('A1:1').setFontWeight('bold').setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
@@ -30,8 +30,8 @@ CryptoTracker.prototype.fiatWalletsReport = function () {
   sheet.getRange(2, 2, sheet.getMaxRows(), sheet.getMaxColumns()).setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `SORT(UNIQUE(FILTER(${referenceRangeName}, {true, false, false})))`,
-    `ArrayFormula(IFNA(VLOOKUP(FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), {FILTER(${referenceRangeName}, {true, false, false})&FILTER(${referenceRangeName}, {false, true, false}), FILTER(${referenceRangeName}, {false, false, true})}, 2, FALSE),))`
+    `SORT(UNIQUE(QUERY(${referenceRangeName}, "SELECT A")))`,
+    `ArrayFormula(IFNA(VLOOKUP(FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), {QUERY(${referenceRangeName}, "SELECT A")&QUERY(${referenceRangeName}, "SELECT B"), QUERY(${referenceRangeName}, "SELECT C")}, 2, FALSE),))`
   ]];
 
   sheet.getRange('A2:B2').setFormulas(formulas);

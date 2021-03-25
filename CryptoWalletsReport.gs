@@ -18,10 +18,10 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
 
   sheet = ss.insertSheet(sheetName);
 
-  const referenceSheetName = this.openPositionsReportName;
+  const referenceRangeName = this.openPositionsRangeName;
 
   sheet.getRange('A1').setValue('Wallet');
-  sheet.getRange('B1').setFormula(`=TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!G3:G)))`);
+  sheet.getRange('B1').setFormula(`TRANSPOSE(SORT(UNIQUE(QUERY(${referenceRangeName}, "SELECT G"))))`);
 
   sheet.getRange('A1:1').setFontWeight('bold').setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
@@ -30,8 +30,8 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
   sheet.getRange(2, 2, sheet.getMaxRows(), sheet.getMaxColumns()).setNumberFormat('#,##0.00000000;(#,##0.00000000);');
 
   const formulas = [[
-    `SORT(UNIQUE('${referenceSheetName}'!J3:J))`,
-    `ARRAYFORMULA(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), '${referenceSheetName}'!K3:K))`
+    `SORT(UNIQUE(QUERY(${referenceRangeName}, "SELECT J")))`,
+    `ARRAYFORMULA(SUMIF({QUERY(${referenceRangeName}, "SELECT J")&QUERY(${referenceRangeName}, "SELECT G")}, FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), OFFSET(${referenceRangeName}, 0, 10, 1, 1)))`
   ]];
 
   sheet.getRange('A2:B2').setFormulas(formulas);

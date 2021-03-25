@@ -19,7 +19,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
   sheet = ss.insertSheet(sheetName);
 
   const referenceRangeName = this.openPositionsRangeName;
-  const exRatesSheetName = this.exRatesSheetName;
+  const exRatesRangeName = this.exRatesRangeName;
 
   let headers = [
     [
@@ -52,7 +52,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
     `IFERROR({QUERY({B2:B,F2:F}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL LABEL Col1*Col2 ''", 0);
 {SUM(QUERY({B2:B,F2:F}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL"))}},)`,
     `IFERROR(QUERY({B2:B,C2:C}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0),)`,
-    `IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, 'Ex Rates Data'!B2:D, 3, FALSE), LEN(B2:B))),)`,
+    `IFERROR(ArrayFormula(FILTER(VLOOKUP(A2:A, Filter(${exRatesRangeName}, {false, true, false, true}), 2, FALSE), LEN(B2:B))),)`,
     `IFERROR(ArrayFormula(FILTER(D2:D-C2:C, LEN(A2:A))),)`,
     `IFERROR(ArrayFormula(FILTER(G2:G/C2:C, LEN(A2:A))),)`,
     `IFERROR(ArrayFormula(IF(LEN(B2:B),D2:D,)),)`

@@ -35,9 +35,11 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
 }
 
 /**
- * Writes a table of data values to a given sheet, trims the sheet to the correct size and resizes the columns
- * @param {Sheet} sheet - The sheet to wich the data values should be written
+ * Writes a table of data values to a given sheet, adds a named range, trims the sheet to the correct size and resizes the columns
+ * @param {Spreadsheet} ss - Spreadsheet object e.g. from SpreadsheetApp.getActive()
+ * @param {Sheet} sheet - The sheet to which the data values should be written
  * @param {*[][]]} dataTable - The table of values to write to the sheet
+ * @param {string} rangeName - The named range name to apply to the data range
  * @param {number} headerRows - The number of header rows
  * @param {number} dataColumns - The number of data columns - needed as the table may be empty
  * @param {number} formulaColumns - The number of columns containing formulas to the right of the data

@@ -39,9 +39,9 @@ CryptoTracker.prototype.donationsSummaryReport = function () {
   sheet.getRange('E2:E').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR({QUERY(${referenceRangeName}, "SELECT YEAR(J), G, SUM(M), SUM(P), SUM(Q) GROUP BY YEAR(J), G ORDER BY YEAR(J), G LABEL YEAR(J) '', SUM(M) '', SUM(P) '', SUM(Q) ''");
+    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{QUERY(${referenceRangeName}, "SELECT YEAR(J), G, SUM(M), SUM(P), SUM(Q) GROUP BY YEAR(J), G ORDER BY YEAR(J), G LABEL YEAR(J) '', SUM(M) '', SUM(P) '', SUM(Q) ''");
 {QUERY(${referenceRangeName}, "SELECT YEAR(J), 'SUBTOTAL', ' ', SUM(P), SUM(Q) GROUP BY YEAR(J) ORDER BY YEAR(J) LABEL YEAR(J) '', 'SUBTOTAL' '', ' ' '', SUM(P) '', SUM(Q) ''")};
-{"","TOTAL","",QUERY(${referenceRangeName}, "SELECT SUM(P), SUM(Q) LABEL SUM(P) '', SUM(Q) ''")}},)`, , , , ,
+{"","TOTAL","",QUERY(${referenceRangeName}, "SELECT SUM(P), SUM(Q) LABEL SUM(P) '', SUM(Q) ''")}})`, , , , ,
   ]];
 
   sheet.getRange('A2:E2').setFormulas(formulas);

@@ -126,7 +126,7 @@ class CryptoTracker {
    */
   static decimalDigits(number) {
     let charArray = number.toString().split('');
-    let lastIndex = charArray.lastIndexOf('.');;
+    let lastIndex = charArray.lastIndexOf('.');
     return (lastIndex < 0) ? 0 : charArray.length - lastIndex - 1;
   }
 

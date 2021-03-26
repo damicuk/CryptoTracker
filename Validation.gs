@@ -63,7 +63,10 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
   if (isNaN(date)) {
     throw new ValidationError(`${action} row ${rowIndex}: missing date.`, rowIndex, 'date');
   }
-  if (action === '') {
+  else if (date > new Date()) {
+    throw new ValidationError(`${action} row ${rowIndex}: date must be in the past.`, rowIndex, 'date');
+  }
+  else if (action === '') {
     throw new ValidationError(`Ledger row ${rowIndex}: no action specified.`, rowIndex, 'action');
   }
   else if (debitCurrency && !this.isFiat(debitCurrency) && !this.isCrypto(debitCurrency)) {

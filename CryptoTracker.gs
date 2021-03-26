@@ -36,7 +36,7 @@ class CryptoTracker {
     this.cryptoWalletsReportName = 'Crypto Wallets Report';
     this.fiatWalletsReportName = 'Fiat Wallets Report';
     this.exRatesTableSheetName = 'Ex Rates Table';
-    
+
     this.exRatesRangeName = 'ExRates';
     this.fiatAccountsRangeName = 'FiatAccounts';
     this.openPositionsRangeName = 'OpenPositions';
@@ -116,6 +116,18 @@ class CryptoTracker {
     return a > b ? 1 :
       b > a ? -1 :
         0;
+  }
+
+  /**
+   * Finds the number of decimal digits of a given number
+   * @param {number} number - The number to test
+   * @return {number} - The number of decimal digits found
+   * @static
+   */
+  static decimalDigits(number) {
+    let charArray = number.toString().split('');
+    let lastIndex = charArray.lastIndexOf('.');;
+    return (lastIndex < 0) ? 0 : charArray.length - lastIndex - 1;
   }
 
   /**

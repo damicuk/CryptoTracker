@@ -44,7 +44,7 @@ CryptoTracker.prototype.closedPositionsReport = function () {
         'Sell Value',
         'Realized P/L',
         'Realized P/L %',
-        'Long / Short Term'
+        'Holding Period'
       ]
     ];
 

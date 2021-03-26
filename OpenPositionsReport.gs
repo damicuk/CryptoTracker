@@ -40,7 +40,7 @@ CryptoTracker.prototype.openPositionsReport = function () {
         'Current Value',
         'Unrealized P/L',
         'Unrealized P/L %',
-        'Long / Short Term'
+        'Holding Period'
       ]
     ];
 

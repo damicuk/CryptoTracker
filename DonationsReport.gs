@@ -41,7 +41,7 @@ CryptoTracker.prototype.donationsReport = function () {
         'Donation Value',
         'Notional P/L',
         'Notional P/L %',
-        'Long / Short Term'
+        'Holding Period'
       ]
     ];
 

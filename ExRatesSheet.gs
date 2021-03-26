@@ -3,6 +3,7 @@
  * Checks whether the prices for all the cryptocurrencies are current within 10 minutes
  * Updates the sheet with the current prices from the CryptoCompare API if required
  * Catches any ApiError, writes an empty table to preserve references, and rethrows the ApiError
+ * If any crypto prices are missing, writes whatever data it has, then throws an ApiError
  * Trims the sheet to fit the data
  */
 CryptoTracker.prototype.exRatesSheet = function () {
@@ -44,14 +45,30 @@ CryptoTracker.prototype.exRatesSheet = function () {
   }
   catch (error) {
     if (error instanceof ApiError) {
-      //write the empty table to the sheet anyway preserve references
-      this.writeTable(sheet, dataTable, 1, 4);
+      //write the empty table to the sheet anyway to preserve references
+      this.writeTable(ss, sheet, dataTable, this.exRatesRangeName, 1, 4);
       throw error;
     }
     else {
       throw error;
     }
   }
+
+  //check for any missing crypto prices
+  let missingCryptos = new Set(this.cryptos);
+  for (let crypto of this.cryptos) {
+    for (let row of dataTable) {
+      if (crypto === row[1]) {
+        missingCryptos.delete(crypto);
+      }
+    }
+  }
+  if (missingCryptos.size > 0) {
+    //write the empty table to the sheet anyway to preserve references - it may also contain some valid data
+    this.writeTable(ss, sheet, dataTable, this.exRatesRangeName, 1, 4);
+    throw new ApiError(`Failed to update crypto price for ${Array.from(missingCryptos).sort(this.abcComparator).toString()}`);
+  }
+
   this.writeTable(ss, sheet, dataTable, this.exRatesRangeName, 1, 4);
 }
 

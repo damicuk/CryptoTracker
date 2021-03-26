@@ -18,7 +18,7 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
   }
   else if (error === 'api') {
 
-    SpreadsheetApp.getUi().alert(`Failed to update crypto prices`, message, SpreadsheetApp.getUi().ButtonSet.OK);
+    SpreadsheetApp.getUi().alert(`Error updating crypto prices`, message, SpreadsheetApp.getUi().ButtonSet.OK);
 
   }
   else if (error === 'settings') {

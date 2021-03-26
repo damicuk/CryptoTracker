@@ -19,65 +19,87 @@ CryptoTracker.prototype.openSummaryReport = function () {
   sheet = ss.insertSheet(sheetName);
 
   const referenceRangeName = this.openPositionsRangeName;
-  const exRatesRangeName = this.exRatesRangeName;
 
   let headers = [
     [
+      'Wallet',
       'Crypto',
+      'Holding Period',
       'Balance',
-      'Cost Basis',
-      'Value',
       'Av. Buy Price',
       'Current Price',
+      'Cost Basis',
+      'Value',
       'Unrealized P/L',
       'Unrealized P/L %',
-      'Value (for Chart)'
+      'Crypto (chart)',
+      'Value (chart)'
+
     ]
   ];
 
-  sheet.getRange('A1:I1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
+  sheet.getRange('A1:L1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
 
-  sheet.getRange('A2:A').setNumberFormat('@');
-  sheet.getRange('B2:B').setNumberFormat('#,##0.00000000;(#,##0.00000000)');
-  sheet.getRange('C2:D').setNumberFormat('#,##0.00;(#,##0.00)');
+  sheet.getRange('A2:C').setNumberFormat('@');
+  sheet.getRange('D2:D').setNumberFormat('#,##0.00000000;(#,##0.00000000)');
   sheet.getRange('E2:F').setNumberFormat('#,##0.0000;(#,##0.0000)');
-  sheet.getRange('G2:G').setNumberFormat('[color50]#,##0.00_);[color3](#,##0.00);[blue]#,##0.00_)');
-  sheet.getRange('H2:H').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
-  sheet.getRange('I2:I').setNumberFormat('#,##0.00;(#,##0.00)');
+  sheet.getRange('G2:H').setNumberFormat('#,##0.00;(#,##0.00)');
+  sheet.getRange('I2:I').setNumberFormat('[color50]#,##0.00_);[color3](#,##0.00);[blue]#,##0.00_)');
+  sheet.getRange('J2:J').setNumberFormat('[color50]0% ▲;[color3]-0% ▼;[blue]0% ▬');
+  sheet.getRange('K2:K').setNumberFormat('@');
+  sheet.getRange('L2:L').setNumberFormat('#,##0.00;(#,##0.00)');
+
+  sheet.clearConditionalFormatRules();
+  this.addLongShortCondition(sheet, 'C3:C');
 
   const formulas = [[
-    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{QUERY(${referenceRangeName}, "SELECT G, SUM(K), SUM(N) GROUP BY G ORDER BY G LABEL SUM(K) '', SUM(N) ''", 0);
-{"TOTAL", "", QUERY(${referenceRangeName}, "SELECT SUM(N) LABEL SUM(N) ''")}})`, , ,
-    `IF(COUNT({F2:F})=0,,{QUERY({B2:B,F2:F}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL LABEL Col1*Col2 ''", 0);
-{SUM(QUERY({B2:B,F2:F}, "SELECT Col1*Col2 WHERE Col1 IS NOT NULL"))}})`,
-    `IF(ISBLANK(A2),,QUERY({B2:B,C2:C}, "SELECT Col2/Col1 LABEL Col2/Col1 ''", 0))`,
-    `IF(ISBLANK(A2),,ArrayFormula(FILTER(IFNA(VLOOKUP(A2:A, QUERY(${exRatesRangeName}, "SELECT B, D"), 2, FALSE),), LEN(B2:B))))`,
-    `IF(ISBLANK(A2),,ArrayFormula(FILTER(IF(ISBLANK(D2:D),,D2:D-C2:C), LEN(A2:A))))`,
-    `IF(ISBLANK(A2),,ArrayFormula(FILTER(IF(ISBLANK(G2:G),,G2:G/C2:C), LEN(A2:A))))`,
-    `ArrayFormula(IF(LEN(B2:B),D2:D,))`
+    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{
+QUERY(${referenceRangeName}, "SELECT 'TOTAL', ' ', '  ', '   ', '    ', '     ', SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) LABEL 'TOTAL' '', ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+{"", "", "", "", "", "", "", "", "", ""};
+{"BY WALLET", "", "", "", "", "", "", "", "", ""};
+QUERY(${referenceRangeName}, "SELECT J, ' ', '  ', '   ', '    ', '     ', SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY J ORDER BY J LABEL ' ' '', '  ' '', '   ' '',  '    ' '', '     ' '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+{"", "", "", "", "", "", "", "", "", ""};
+{"BY HOLDING PERIOD", "", "", "", "", "", "", "", "", ""};
+QUERY(${referenceRangeName}, "SELECT ' ', '  ', R, '   ', '    ', '     ', SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY R ORDER BY R LABEL ' ' '', '  ' '', '   ' '',  '    ' '', '     ' '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+{"", "", "", "", "", "", "", "", "", ""};
+{"BY WALLET AND HOLDING PERIOD", "", "", "", "", "", "", "", "", ""};
+QUERY(${referenceRangeName}, "SELECT J, ' ', R, '  ', '   ', '    ', SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY J, R ORDER BY J, R LABEL ' ' '', '  ' '',  '   ' '', '    ' '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+{"", "", "", "", "", "", "", "", "", ""};
+{"BY CRYPTO", "", "", "", "", "", "", "", "", ""};
+{QUERY(${referenceRangeName}, "SELECT ' ', G, '  ', SUM(K), SUM(N) / SUM(K), SUM(O) / SUM(K), SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY G ORDER BY G LABEL ' ' '', '  ' '', SUM(K) '',  SUM(N) / SUM(K) '', SUM(O) / SUM(K) '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''")};
+{"", "", "", "", "", "", "", "", "", ""};
+{"BY WALLET AND CRYPTO", "", "", "", "", "", "", "", "", ""};
+{QUERY(${referenceRangeName}, "SELECT J, G, ' ', SUM(K), SUM(N) / SUM(K), SUM(O) / SUM(K), SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY J, G ORDER BY J, G LABEL ' ' '', SUM(K) '',  SUM(N) / SUM(K) '', SUM(O) / SUM(K) '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''")};
+{"", "", "", "", "", "", "", "", "", ""};
+{"BY CRYPTO AND HOLDING PERIOD", "", "", "", "", "", "", "", "", ""};
+QUERY(${referenceRangeName}, "SELECT ' ', G, R, SUM(K), SUM(N) / SUM(K), SUM(O) / SUM(K), SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY G, R ORDER BY G, R LABEL ' ' '', SUM(K) '',  SUM(N) / SUM(K) '', SUM(O) / SUM(K) '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+{"", "", "", "", "", "", "", "", "", ""};
+{"BY WALLET CRYPTO AND HOLDING PERIOD", "", "", "", "", "", "", "", "", ""};
+QUERY(${referenceRangeName}, "SELECT J, G, R, SUM(K), SUM(N) / SUM(K), SUM(O) / SUM(K), SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY J, G, R ORDER BY J, G, R LABEL J '', SUM(K) '',  SUM(N) / SUM(K) '', SUM(O) / SUM(K) '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''")
+})`, , , , , , , , , ,
+    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,QUERY(${referenceRangeName}, "SELECT G, SUM(O) GROUP BY G ORDER BY G LABEL SUM(O) ''"))`
   ]];
 
-  sheet.getRange('A2:I2').setFormulas(formulas);
+  sheet.getRange('A2:K2').setFormulas(formulas);
 
-  sheet.hideColumns(9);
+  sheet.hideColumns(11, 2);
 
   SpreadsheetApp.flush();
 
-  this.trimColumns(sheet, 16);
+  this.trimColumns(sheet, 19);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
   let chart = pieChartBuilder
-    .addRange(sheet.getRange('A1:A1000'))
-    .addRange(sheet.getRange('I1:I1000'))
-    .setNumHeaders(1)
+    .addRange(sheet.getRange('K2:L1000'))
+    .setNumHeaders(0)
     .setTitle('Value')
-    .setPosition(1, 9, 30, 30)
+    .setPosition(1, 13, 30, 30)
     .build();
 
   sheet.insertChart(chart);
 
-  sheet.autoResizeColumns(1, 8);
+  sheet.autoResizeColumns(1, 14);
 
   SpreadsheetApp.flush();
 }

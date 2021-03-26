@@ -35,8 +35,6 @@ class CryptoTracker {
     this.donationsSummaryReportName = 'Donations Summary Report';
     this.cryptoWalletsReportName = 'Crypto Wallets Report';
     this.fiatWalletsReportName = 'Fiat Wallets Report';
-    this.openPLReportName = 'Open P/L Report';
-    this.closedPLReportName = 'Closed P/L Report';
     this.exRatesTableSheetName = 'Ex Rates Table';
     
     this.exRatesRangeName = 'ExRates';

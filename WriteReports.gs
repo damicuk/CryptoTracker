@@ -39,8 +39,6 @@ CryptoTracker.prototype.writeReports = function () {
   this.donationsSummaryReport();
   this.cryptoWalletsReport();
   this.fiatWalletsReport();
-  this.openPLReport();
-  this.closedPLReport();
   this.exRatesTable();
 
   this.updateLedgerCurrencies();
@@ -75,8 +73,6 @@ CryptoTracker.prototype.deleteReports = function () {
     this.donationsSummaryReportName,
     this.cryptoWalletsReportName,
     this.fiatWalletsReportName,
-    this.openPLReportName,
-    this.closedPLReportName,
     this.exRatesTableSheetName,
     this.exRatesSheetName,
     this.fiatAccountsSheetName

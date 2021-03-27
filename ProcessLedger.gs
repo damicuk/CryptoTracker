@@ -4,33 +4,13 @@
  * Uses the error handler to handle CryptoAccountError thrown on withdraw from an account with insufficient funds
  * @return {boolean} Successful completion
  */
-CryptoTracker.prototype.processLedger = function () {
+CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 
-  let ledgerRecords = this.getLedgerRecords();
-
-  let ledgerValid = this.validateLedgerRecords(ledgerRecords);
-
-  if (!ledgerValid) {
-    return false;
+  //ledger sheet row numbers start at 1 plus two header rows
+  let rowIndex = 3;
+  for (let ledgerRecord of ledgerRecords) {
+    this.processLedgerRecord(ledgerRecord, rowIndex++);
   }
-
-  try {
-    //ledger sheet row numbers start at 1 plus two header rows
-    let rowIndex = 3;
-    for (let ledgerRecord of ledgerRecords) {
-      this.processLedgerRecord(ledgerRecord, rowIndex++);
-    }
-  }
-  catch (error) {
-    if (error instanceof CryptoAccountError) {
-      this.handleError('cryptoAccount', error.message, error.rowIndex, 'debitAmount');
-      return false;
-    }
-    else {
-      throw error;
-    }
-  }
-  return true;
 }
 
 /**

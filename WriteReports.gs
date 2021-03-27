@@ -1,27 +1,49 @@
 /**
  * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports
+ * Uses the error handler to handles validation, crypto account, and api errors 
  * Updates the data validation on the ledger currency and wallet columns
- * Uses the error handler to handle API errors
- * Otherwise displays toast on success
+ * Displays toast on success
  * Returns the currenct cell to its original location
  */
 CryptoTracker.prototype.writeReports = function () {
 
   let currentCell = SpreadsheetApp.getCurrentCell();
 
-  let ledgerProcessed = this.processLedger();
+  let ledgerRecords = this.getLedgerRecords();
 
-  if (!ledgerProcessed) {
-    return;
+  try {
+    this.validateLedgerRecords(ledgerRecords);
+  }
+  catch (error) {
+    if (error instanceof ValidationError) {
+      this.handleError('validation', error.message, error.rowIndex, error.columnName);
+      return;
+    }
+    else {
+      throw error;
+    }
   }
 
-  let errorMessage;
+  try {
+    this.processLedger(ledgerRecords);
+  }
+  catch (error) {
+    if (error instanceof CryptoAccountError) {
+      this.handleError('cryptoAccount', error.message, error.rowIndex, 'debitAmount');
+      return;
+    }
+    else {
+      throw error;
+    }
+  }
+
+  let apiError;
   try {
     this.exRatesSheet();
   }
   catch (error) {
-    if(error instanceof ApiError) {
-      errorMessage = error.message;
+    if (error instanceof ApiError) {
+      apiError = error;
     }
     else {
       throw error;
@@ -44,8 +66,8 @@ CryptoTracker.prototype.writeReports = function () {
   this.updateLedgerCurrencies();
   this.updateLedgerWallets();
 
-  if (errorMessage) {
-    this.handleError('api', errorMessage);
+  if (apiError) {
+    this.handleError('api', apiError.message);
   }
   else {
     SpreadsheetApp.getActive().toast('Reports complete', 'Finished', 10);

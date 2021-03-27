@@ -55,30 +55,30 @@ CryptoTracker.prototype.openSummaryReport = function () {
 
   const formulas = [[
     `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{
-QUERY(${referenceRangeName}, "SELECT 'TOTAL', ' ', '  ', '   ', '    ', '     ', SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) LABEL 'TOTAL' '', ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT 'TOTAL', ' ', '  ', '   ', '    ', '     ', SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) LABEL 'TOTAL' '', ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");
 {"", "", "", "", "", "", "", "", "", ""};
 {"BY WALLET", "", "", "", "", "", "", "", "", ""};
-QUERY(${referenceRangeName}, "SELECT J, ' ', '  ', '   ', '    ', '     ', SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY J ORDER BY J LABEL ' ' '', '  ' '', '   ' '',  '    ' '', '     ' '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT Col2, ' ', '  ', '   ', '    ', '     ', SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) GROUP BY Col2 ORDER BY Col2 OFFSET 1 LABEL ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");
 {"", "", "", "", "", "", "", "", "", ""};
 {"BY HOLDING PERIOD", "", "", "", "", "", "", "", "", ""};
-QUERY(${referenceRangeName}, "SELECT ' ', '  ', R, '   ', '    ', '     ', SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY R ORDER BY R LABEL ' ' '', '  ' '', '   ' '',  '    ' '', '     ' '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT ' ', '  ', Col7, '   ', '    ', '     ', SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) GROUP BY Col7 ORDER BY Col7 OFFSET 1 LABEL ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");
 {"", "", "", "", "", "", "", "", "", ""};
 {"BY WALLET AND HOLDING PERIOD", "", "", "", "", "", "", "", "", ""};
-QUERY(${referenceRangeName}, "SELECT J, ' ', R, '  ', '   ', '    ', SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY J, R ORDER BY J, R LABEL ' ' '', '  ' '',  '   ' '', '    ' '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT Col2, ' ', Col7, '  ', '   ', '    ', SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) GROUP BY Col2, Col7 ORDER BY Col2, Col7 OFFSET 1 LABEL ' ' '', '  ' '', '   ' '', '    ' '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");
 {"", "", "", "", "", "", "", "", "", ""};
 {"BY CRYPTO", "", "", "", "", "", "", "", "", ""};
-{QUERY(${referenceRangeName}, "SELECT ' ', G, '  ', SUM(K), SUM(N) / SUM(K), SUM(O) / SUM(K), SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY G ORDER BY G LABEL ' ' '', '  ' '', SUM(K) '',  SUM(N) / SUM(K) '', SUM(O) / SUM(K) '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''")};
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT ' ', Col1, '  ', SUM(Col3), SUM(Col4) / SUM(Col3), SUM(Col5) / SUM(Col3), SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) GROUP BY Col1 ORDER BY Col1 OFFSET 1 LABEL ' ' '', '  ' '', SUM(Col3) '', SUM(Col4) / SUM(Col3) '', SUM(Col5) / SUM(Col3) '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");
 {"", "", "", "", "", "", "", "", "", ""};
 {"BY WALLET AND CRYPTO", "", "", "", "", "", "", "", "", ""};
-{QUERY(${referenceRangeName}, "SELECT J, G, ' ', SUM(K), SUM(N) / SUM(K), SUM(O) / SUM(K), SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY J, G ORDER BY J, G LABEL ' ' '', SUM(K) '',  SUM(N) / SUM(K) '', SUM(O) / SUM(K) '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''")};
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT Col2, Col1, ' ', SUM(Col3), SUM(Col4) / SUM(Col3), SUM(Col5) / SUM(Col3), SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) GROUP BY Col2, Col1 ORDER BY Col2, Col1 OFFSET 1 LABEL ' ' '', SUM(Col3) '', SUM(Col4) / SUM(Col3) '', SUM(Col5) / SUM(Col3) '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");
 {"", "", "", "", "", "", "", "", "", ""};
 {"BY CRYPTO AND HOLDING PERIOD", "", "", "", "", "", "", "", "", ""};
-QUERY(${referenceRangeName}, "SELECT ' ', G, R, SUM(K), SUM(N) / SUM(K), SUM(O) / SUM(K), SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY G, R ORDER BY G, R LABEL ' ' '', SUM(K) '',  SUM(N) / SUM(K) '', SUM(O) / SUM(K) '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''");
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT ' ', Col1, Col7, SUM(Col3), SUM(Col4) / SUM(Col3), SUM(Col5) / SUM(Col3), SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) GROUP BY Col1, Col7 ORDER BY Col1, Col7 OFFSET 1 LABEL ' ' '', SUM(Col3) '', SUM(Col4) / SUM(Col3) '', SUM(Col5) / SUM(Col3) '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");
 {"", "", "", "", "", "", "", "", "", ""};
 {"BY WALLET CRYPTO AND HOLDING PERIOD", "", "", "", "", "", "", "", "", ""};
-QUERY(${referenceRangeName}, "SELECT J, G, R, SUM(K), SUM(N) / SUM(K), SUM(O) / SUM(K), SUM(N), SUM(O), SUM(P), SUM(P) / SUM(N) GROUP BY J, G, R ORDER BY J, G, R LABEL J '', SUM(K) '',  SUM(N) / SUM(K) '', SUM(O) / SUM(K) '', SUM(N) '', SUM(O) '', SUM(P) '', SUM(P) / SUM(N) ''")
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT Col2, Col1, Col7, SUM(Col3), SUM(Col4) / SUM(Col3), SUM(Col5) / SUM(Col3), SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) GROUP BY Col2, Col1, Col7 ORDER BY Col2, Col1, Col7 OFFSET 1 LABEL SUM(Col3) '', SUM(Col4) / SUM(Col3) '', SUM(Col5) / SUM(Col3) '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''")
 })`, , , , , , , , , ,
-    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,QUERY(${referenceRangeName}, "SELECT G, SUM(O) GROUP BY G ORDER BY G LABEL SUM(O) ''"))`
+    `IF(COUNT(QUERY(${referenceRangeName}, "SELECT M"))=0,,QUERY(${referenceRangeName}, "SELECT G, SUM(O) GROUP BY G ORDER BY G LABEL SUM(O) ''"))`
   ]];
 
   sheet.getRange('A2:K2').setFormulas(formulas);

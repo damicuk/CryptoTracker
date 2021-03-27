@@ -1,43 +1,39 @@
 /**
- * Retrieves and validates the ledger records and displays toast on success
+ * Retrieves and validates the ledger records
+ * Uses the error handler to handles validation errors
+ * Displays toast on success
  */
 CryptoTracker.prototype.validateLedger = function () {
 
   let ledgerRecords = this.getLedgerRecords();
 
-  let ledgerValid = this.validateLedgerRecords(ledgerRecords);
-
-  if (ledgerValid) {
-
-    SpreadsheetApp.getActive().toast('All looks good', 'Ledger Valid', 10);
-
-  }
-}
-
-/**
- * Validates a set of ledger records and uses the error handler to handles validation errors
- * @param {LedgerRecord[]} ledgerRecords - The colection of ledger records to validate
- * @return {boolean} Whether the ledger records are valid
- */
-CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
-
   try {
-    //ledger sheet row numbers start at 1 plus two header rows
-    let rowIndex = 3;
-    for (let ledgerRecord of ledgerRecords) {
-      this.validateLedgerRecord(ledgerRecord, rowIndex++);
-    }
+    this.validateLedgerRecords(ledgerRecords);
   }
   catch (error) {
     if (error instanceof ValidationError) {
       this.handleError('validation', error.message, error.rowIndex, error.columnName);
-      return false;
+      return;
     }
     else {
       throw error;
     }
   }
-  return true;
+
+  SpreadsheetApp.getActive().toast('All looks good', 'Ledger Valid', 10);
+}
+
+/**
+ * Validates a set of ledger records and throws a validation error on failure
+ * @param {LedgerRecord[]} ledgerRecords - The colection of ledger records to validate
+ */
+CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
+
+  //ledger sheet row numbers start at 1 plus two header rows
+  let rowIndex = 3;
+  for (let ledgerRecord of ledgerRecords) {
+    this.validateLedgerRecord(ledgerRecord, rowIndex++);
+  }
 }
 
 /**

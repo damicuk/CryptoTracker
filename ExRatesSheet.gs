@@ -1,9 +1,10 @@
 /**
  * Creates the exrates sheet if it doesn't already exist
  * Checks whether the prices for all the cryptocurrencies are current within 10 minutes
+ * Throws an ApiError if the API key is not set in settings
+ * Throws an ApiError if the call to the CryptoCompare API returns an error response
  * Updates the sheet with the current prices from the CryptoCompare API if required
- * Catches any ApiError, writes an empty table to preserve references, and rethrows the ApiError
- * If any crypto prices are missing, writes whatever data it has, then throws an ApiError
+ * Throws an ApiError if any crypto prices are missing
  * Trims the sheet to fit the data
  */
 CryptoTracker.prototype.exRatesSheet = function () {
@@ -31,28 +32,18 @@ CryptoTracker.prototype.exRatesSheet = function () {
     let protection = sheet.protect().setDescription('Essential Data Sheet');
     protection.setWarningOnly(true);
 
-  }
+    //write the empty table to the sheet for references in case api error before the next write below
+    this.writeTable(ss, sheet, [], this.exRatesRangeName, 1, 4);
 
-  //check for recent data
-  if (this.exRatesCurrent(sheet, 10)) {
+  }
+  else if (this.exRatesCurrent(sheet, 10)) { //check for recent data
+
     return;
   }
 
-  let dataTable = [];
+  let dataTable = this.getCryptoPriceTable();
 
-  try {
-    dataTable = this.getCryptoPriceTable();
-  }
-  catch (error) {
-    if (error instanceof ApiError) {
-      //write the empty table to the sheet anyway to preserve references
-      this.writeTable(ss, sheet, dataTable, this.exRatesRangeName, 1, 4);
-      throw error;
-    }
-    else {
-      throw error;
-    }
-  }
+  this.writeTable(ss, sheet, dataTable, this.exRatesRangeName, 1, 4);
 
   //check for any missing crypto prices
   let missingCryptos = new Set(this.cryptos);
@@ -64,12 +55,8 @@ CryptoTracker.prototype.exRatesSheet = function () {
     }
   }
   if (missingCryptos.size > 0) {
-    //write the empty table to the sheet anyway to preserve references - it may also contain some valid data
-    this.writeTable(ss, sheet, dataTable, this.exRatesRangeName, 1, 4);
     throw new ApiError(`Failed to update crypto price for ${Array.from(missingCryptos).sort(this.abcComparator).toString()}`);
   }
-
-  this.writeTable(ss, sheet, dataTable, this.exRatesRangeName, 1, 4);
 }
 
 /**

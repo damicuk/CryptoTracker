@@ -16,6 +16,13 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
 
     SpreadsheetApp.getUi().alert(`Ledger validation failed`, message, SpreadsheetApp.getUi().ButtonSet.OK);
   }
+  else if (error === 'cryptoAccount') {
+
+    this.setCurrentCell(rowIndex, columnName);
+
+    SpreadsheetApp.getUi().alert(`Insufficient funds`, message, SpreadsheetApp.getUi().ButtonSet.OK);
+
+  }
   else if (error === 'api') {
 
     SpreadsheetApp.getUi().alert(`Error updating crypto prices`, message, SpreadsheetApp.getUi().ButtonSet.OK);
@@ -24,13 +31,6 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
   else if (error === 'settings') {
 
     SpreadsheetApp.getUi().alert(`Failed to save settings`, message, SpreadsheetApp.getUi().ButtonSet.OK);
-
-  }
-  else if (error === 'cryptoAccount') {
-
-    this.setCurrentCell(rowIndex, columnName);
-
-    SpreadsheetApp.getUi().alert(`Insufficient funds`, message, SpreadsheetApp.getUi().ButtonSet.OK);
 
   }
 }
@@ -101,24 +101,6 @@ class ValidationError extends CustomError {
 }
 
 /**
- * Error when attempting to retrieve crypto prices from an API
- * @class
- */
-class ApiError extends CustomError {
-
-  /**
-   * @constructor
-   * @param {string} message - description of the error and suggested solution
-   */
-  constructor(message) {
-
-    super(message);
-
-  }
-}
-
-
-/**
  * Error when attempting to withdraw from a cryptocurrency account
  * @class
  */
@@ -134,5 +116,22 @@ class CryptoAccountError extends CustomError {
     super(message);
 
     this.rowIndex = rowIndex;
+  }
+}
+
+/**
+ * Error when attempting to retrieve crypto prices from an API
+ * @class
+ */
+class ApiError extends CustomError {
+
+  /**
+   * @constructor
+   * @param {string} message - description of the error and suggested solution
+   */
+  constructor(message) {
+
+    super(message);
+
   }
 }

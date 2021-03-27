@@ -1,6 +1,6 @@
 /**
  * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports
- * Uses the error handler to handles validation, crypto account, and api errors 
+ * Uses the error handler to handle any ValidatioError, CryptoAccountError, or ApiError 
  * Updates the data validation on the ledger currency and wallet columns
  * Displays toast on success
  * Returns the currenct cell to its original location
@@ -43,6 +43,7 @@ CryptoTracker.prototype.writeReports = function () {
   }
   catch (error) {
     if (error instanceof ApiError) {
+      //handle the error later
       apiError = error;
     }
     else {

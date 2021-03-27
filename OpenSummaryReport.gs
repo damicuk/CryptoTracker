@@ -55,7 +55,9 @@ CryptoTracker.prototype.openSummaryReport = function () {
 
   const formulas = [[
     `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{
-QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT 'TOTAL', ' ', '  ', '   ', '    ', '     ', SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) LABEL 'TOTAL' '', ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");
+IF(COUNT(QUERY(${referenceRangeName}, "SELECT M"))=0,
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT 'TOTAL', ' ', '  ', '   ', '    ', '     ', SUM(Col4), '      ', '       ', '        ' LABEL 'TOTAL' '', ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(Col4) '', '      ' '', '       ' '', '        ' ''"),
+QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT 'TOTAL', ' ', '  ', '   ', '    ', '     ', SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) LABEL 'TOTAL' '', ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''"));
 {"", "", "", "", "", "", "", "", "", ""};
 {"BY WALLET", "", "", "", "", "", "", "", "", ""};
 QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, J, K, N, O, P, R")}, "SELECT Col2, ' ', '  ', '   ', '    ', '     ', SUM(Col4), SUM(Col5), SUM(Col6), SUM(Col6) / SUM(Col4) GROUP BY Col2 ORDER BY Col2 OFFSET 1 LABEL ' ' '', '  ' '', '   ' '', '    ' '', '     ' '', SUM(Col4) '', SUM(Col5) '', SUM(Col6) '', SUM(Col6) / SUM(Col4) ''");

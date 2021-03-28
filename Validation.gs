@@ -204,6 +204,9 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
     else if (creditFee < 0) {
       throw new ValidationError(`${action} row ${rowIndex}: credit fee must be greater or equal to 0 (or blank).`, rowIndex, 'creditFee');
     }
+    else if (creditFee > creditAmount) {
+      throw new ValidationError(`${action} row ${rowIndex}: credit fee must be less than or equal to credit amount (or blank).`, rowIndex, 'creditFee');
+    }
     else if (creditWalletName) {
       throw new ValidationError(`${action} row ${rowIndex}: leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`, rowIndex, 'creditWalletName');
     }

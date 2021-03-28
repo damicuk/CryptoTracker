@@ -140,7 +140,7 @@ class CryptoAccount {
     if (lotMatching === 'FIFO') {
 
       return function (lot1, lot2) {
-        lot1.date - lot2.date;
+        return lot1.date - lot2.date;
       }
     }
     else if (lotMatching === 'LIFO') {

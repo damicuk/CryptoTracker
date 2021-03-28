@@ -77,11 +77,17 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
   else if (isNaN(debitAmount)) {
     throw new ValidationError(`${action} row ${rowIndex}: debit amount is not valid (number or blank).`, rowIndex, 'debitAmount');
   }
+  else if (this.isFiat(debitCurrency) && CryptoTracker.decimalDigits(debitAmount) > 2) {
+    throw new ValidationError(`${action} row ${rowIndex}: fiat currency debit amount has more than 2 decimal places.`, rowIndex, 'debitAmount');
+  }
   else if (CryptoTracker.decimalDigits(debitAmount) > 8) {
     throw new ValidationError(`${action} row ${rowIndex}: debit amount has more than 8 decimal places.`, rowIndex, 'debitAmount');
   }
   else if (isNaN(debitFee)) {
     throw new ValidationError(`${action} row ${rowIndex}: debit fee is not valid (number or blank).`, rowIndex, 'debitFee');
+  }
+  else if (this.isFiat(debitCurrency) && CryptoTracker.decimalDigits(debitFee) > 2) {
+    throw new ValidationError(`${action} row ${rowIndex}: fiat currency debit fee has more than 2 decimal places.`, rowIndex, 'debitFee');
   }
   else if (CryptoTracker.decimalDigits(debitFee) > 8) {
     throw new ValidationError(`${action} row ${rowIndex}: debit fee has more than 8 decimal places.`, rowIndex, 'debitFee');
@@ -98,11 +104,17 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
   else if (isNaN(creditAmount)) {
     throw new ValidationError(`${action} row ${rowIndex}: credit amount is not valid (number or blank).`, rowIndex, 'creditAmount');
   }
+  else if (this.isFiat(creditCurrency) && CryptoTracker.decimalDigits(creditAmount) > 2) {
+    throw new ValidationError(`${action} row ${rowIndex}: fiat currency credit amount has more than 2 decimal places.`, rowIndex, 'creditAmount');
+  }
   else if (CryptoTracker.decimalDigits(creditAmount) > 8) {
     throw new ValidationError(`${action} row ${rowIndex}: credit amount has more than 8 decimal places.`, rowIndex, 'creditAmount');
   }
   else if (isNaN(creditFee)) {
     throw new ValidationError(`${action} row ${rowIndex}: credit fee is not valid (number or blank).`, rowIndex, 'creditFee');
+  }
+  else if (this.isFiat(creditCurrency) && CryptoTracker.decimalDigits(creditFee) > 2) {
+    throw new ValidationError(`${action} row ${rowIndex}: fiat currency credit fee has more than 2 decimal places.`, rowIndex, 'creditFee');
   }
   else if (CryptoTracker.decimalDigits(creditFee) > 8) {
     throw new ValidationError(`${action} row ${rowIndex}: credit fee has more than 8 decimal places.`, rowIndex, 'creditFee');
@@ -144,12 +156,6 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
     else if (this.isFiat(debitCurrency)) { //Fiat transfer
       if (debitWalletName && creditWalletName) {
         throw new ValidationError(`${action} row ${rowIndex}: fiat transfer leave debit wallet (${debitWalletName}) blank for deposits or credit wallet (${creditWalletName}) blank for withdrawals.`, rowIndex, 'debitWalletName');
-      }
-      else if (CryptoTracker.decimalDigits(debitAmount) > 2) {
-        throw new ValidationError(`${action} row ${rowIndex}: fiat currency debit amount has more than 2 decimal places.`, rowIndex, 'debitAmount');
-      }
-      else if (CryptoTracker.decimalDigits(debitFee) > 2) {
-        throw new ValidationError(`${action} row ${rowIndex}: fiat currency debit fee has more than 2 decimal places.`, rowIndex, 'debitFee');
       }
     }
     else if (this.isCrypto(debitCurrency)) { //Crypto transfer
@@ -206,18 +212,6 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
     }
     else if (creditCurrency === this.accountingCurrency && creditExRate !== '') {
       throw new ValidationError(`${action} row ${rowIndex}: credit currency (${creditCurrency}) is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
-    }
-    else if (this.isFiat(debitCurrency) && CryptoTracker.decimalDigits(debitAmount) > 2) {
-      throw new ValidationError(`${action} row ${rowIndex}: fiat currency debit amount has more than 2 decimal places.`, rowIndex, 'debitAmount');
-    }
-    else if (this.isFiat(debitCurrency) && CryptoTracker.decimalDigits(debitFee) > 2) {
-      throw new ValidationError(`${action} row ${rowIndex}: fiat currency debit fee has more than 2 decimal places.`, rowIndex, 'debitFee');
-    }
-    else if (this.isFiat(creditCurrency) && CryptoTracker.decimalDigits(creditAmount) > 2) {
-      throw new ValidationError(`${action} row ${rowIndex}: fiat currency credit amount has more than 2 decimal places.`, rowIndex, 'creditAmount');
-    }
-    else if (this.isFiat(creditCurrency) && CryptoTracker.decimalDigits(creditFee) > 2) {
-      throw new ValidationError(`${action} row ${rowIndex}: fiat currency credit fee has more than 2 decimal places.`, rowIndex, 'creditFee');
     }
     else {
       if (this.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto

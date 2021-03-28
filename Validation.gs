@@ -78,7 +78,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
     throw new ValidationError(`${action} row ${rowIndex}: debit amount is not valid (number or blank).`, rowIndex, 'debitAmount');
   }
   else if (this.isFiat(debitCurrency) && CryptoTracker.decimalDigits(debitAmount) > 2) {
-    throw new ValidationError(`${action} row ${rowIndex}: fiat currency debit amount has more than 2 decimal places.`, rowIndex, 'debitAmount');
+    throw new ValidationError(`${action} row ${rowIndex}: fiat debit amount has more than 2 decimal places.`, rowIndex, 'debitAmount');
   }
   else if (CryptoTracker.decimalDigits(debitAmount) > 8) {
     throw new ValidationError(`${action} row ${rowIndex}: debit amount has more than 8 decimal places.`, rowIndex, 'debitAmount');
@@ -87,7 +87,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
     throw new ValidationError(`${action} row ${rowIndex}: debit fee is not valid (number or blank).`, rowIndex, 'debitFee');
   }
   else if (this.isFiat(debitCurrency) && CryptoTracker.decimalDigits(debitFee) > 2) {
-    throw new ValidationError(`${action} row ${rowIndex}: fiat currency debit fee has more than 2 decimal places.`, rowIndex, 'debitFee');
+    throw new ValidationError(`${action} row ${rowIndex}: fiat debit fee has more than 2 decimal places.`, rowIndex, 'debitFee');
   }
   else if (CryptoTracker.decimalDigits(debitFee) > 8) {
     throw new ValidationError(`${action} row ${rowIndex}: debit fee has more than 8 decimal places.`, rowIndex, 'debitFee');
@@ -105,7 +105,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
     throw new ValidationError(`${action} row ${rowIndex}: credit amount is not valid (number or blank).`, rowIndex, 'creditAmount');
   }
   else if (this.isFiat(creditCurrency) && CryptoTracker.decimalDigits(creditAmount) > 2) {
-    throw new ValidationError(`${action} row ${rowIndex}: fiat currency credit amount has more than 2 decimal places.`, rowIndex, 'creditAmount');
+    throw new ValidationError(`${action} row ${rowIndex}: fiat credit amount has more than 2 decimal places.`, rowIndex, 'creditAmount');
   }
   else if (CryptoTracker.decimalDigits(creditAmount) > 8) {
     throw new ValidationError(`${action} row ${rowIndex}: credit amount has more than 8 decimal places.`, rowIndex, 'creditAmount');
@@ -114,7 +114,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
     throw new ValidationError(`${action} row ${rowIndex}: credit fee is not valid (number or blank).`, rowIndex, 'creditFee');
   }
   else if (this.isFiat(creditCurrency) && CryptoTracker.decimalDigits(creditFee) > 2) {
-    throw new ValidationError(`${action} row ${rowIndex}: fiat currency credit fee has more than 2 decimal places.`, rowIndex, 'creditFee');
+    throw new ValidationError(`${action} row ${rowIndex}: fiat credit fee has more than 2 decimal places.`, rowIndex, 'creditFee');
   }
   else if (CryptoTracker.decimalDigits(creditFee) > 8) {
     throw new ValidationError(`${action} row ${rowIndex}: credit fee has more than 8 decimal places.`, rowIndex, 'creditFee');
@@ -204,8 +204,11 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
     else if (creditFee < 0) {
       throw new ValidationError(`${action} row ${rowIndex}: credit fee must be greater or equal to 0 (or blank).`, rowIndex, 'creditFee');
     }
+    else if (this.isCrypto(creditCurrency) && creditFee >= creditAmount) {
+      throw new ValidationError(`${action} row ${rowIndex}: crypto credit fee must be less than the credit amount (or blank).`, rowIndex, 'creditFee');
+    }
     else if (creditFee > creditAmount) {
-      throw new ValidationError(`${action} row ${rowIndex}: credit fee must be less than or equal to credit amount (or blank).`, rowIndex, 'creditFee');
+      throw new ValidationError(`${action} row ${rowIndex}: fiat credit fee must be less than or equal to credit amount (or blank).`, rowIndex, 'creditFee');
     }
     else if (creditWalletName) {
       throw new ValidationError(`${action} row ${rowIndex}: leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`, rowIndex, 'creditWalletName');

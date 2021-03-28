@@ -253,26 +253,6 @@ class CryptoTracker {
   }
 
   /**
-   * Wraps the lots that have been exchanged for goods or services in ClosedLot objects and adds it to the closedLots collection
-   * The transaction is treated the same as a sale or exchange for the current fair value of the lots in the accounting currency
-   * @param {lots} lots - The lots that have been exchanged
-   * @param {date} date - The date of the exchange
-   * @param {number} exRate - The exchange rate of the currency of the lots to the accounting currency at the time of the exchange
-   * @param {number} creditAmount - The amount of cryptocurrency exchanged for the goods or services
-   * @param {number} creditFee - The cryptocurrency fee for transaction
-   * @param {string} walletName - The name of the wallet (or exchange) from which the lots are debited
-   */
-  payLots(lots, date, exRate, amount, fee, walletName) {
-
-    //convert amount and fee to accounting currency
-    let creditAmountCents = Math.round(exRate * amount * 100);
-    let creditFeeCents = Math.round(exRate * fee * 100);
-
-    this.closeLots(lots, date, this.accountingCurrency, 0, (creditAmountCents / 100), (creditFeeCents / 100), walletName);
-
-  }
-
-  /**
    * Wraps the donated lots in a DonatedLot object and adds it to the donatedLots collection
    * @param {lots} lots - The lots being donated
    * @param {date} date - The date of the donation

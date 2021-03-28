@@ -181,11 +181,26 @@ function testCryptoTracker() {
     assert.equal(cryptoTracker.donatedLots[0].walletName, 'Ledger', 'donateLots donatedLots[0].walletName');
     assert.equal(cryptoTracker.donatedLots.length, 2, 'donateLots donatedLots.length');
 
+    cryptoTracker = new CryptoTracker();
+
     lots = [];
     lots.push(new Lot(new Date(2020, 0, 1), 'USD', 0, 50000, 0, 'BTC', 1, 0, 'Kraken'));
     lots.push(new Lot(new Date(2020, 0, 2), 'USD', 0, 50000, 0, 'BTC', 1, 0, 'Kraken'));
 
-    // cryptoTracker.payLots(lots, new Date(2020, 0, 3), 2, 3, 'Ledger');
+    cryptoTracker.closeLots(lots, new Date(2020, 0, 3), 'EUR', 1.2, 140000, 100, 'Binance');
 
+    assert.equal(QUnit.equiv(cryptoTracker.closedLots[0].date, new Date(2020, 0, 3)), true, 'closeLots closedLots[0].date');
+    assert.equal(cryptoTracker.closedLots[0].creditCurrency, 'EUR', 'closeLots closedLots[0].creditCurrency');
+    assert.equal(cryptoTracker.closedLots[0].creditExRate, 1.2, 'closeLots closedLots[0].creditExRate');
+    assert.equal(cryptoTracker.closedLots[0].creditAmountSatoshi, 70000 * 1e8, 'closeLots closedLots[0].creditAmountSatoshi');
+    assert.equal(cryptoTracker.closedLots[0].creditFeeSatoshi, 50 * 1e8, 'closeLots closedLots[0].creditFeeSatoshi');
+    assert.equal(cryptoTracker.closedLots[0].walletName, 'Binance', 'closeLots walletName');
+
+    assert.equal(QUnit.equiv(cryptoTracker.closedLots[1].date, new Date(2020, 0, 3)), true, 'closeLots closedLots[1].date');
+    assert.equal(cryptoTracker.closedLots[1].creditCurrency, 'EUR', 'closeLots closedLots[1].creditCurrency');
+    assert.equal(cryptoTracker.closedLots[1].creditExRate, 1.2, 'closeLots closedLots[1].creditExRate');
+    assert.equal(cryptoTracker.closedLots[1].creditAmountSatoshi, 70000 * 1e8, 'closeLots closedLots[1].creditAmountSatoshi');
+    assert.equal(cryptoTracker.closedLots[1].creditFeeSatoshi, 50 * 1e8, 'closeLots closedLots[1].creditFeeSatoshi');
+    assert.equal(cryptoTracker.closedLots[1].walletName, 'Binance', 'closeLots walletName');
   });
 }

@@ -128,4 +128,4 @@ CryptoTracker.prototype.getLedgerRecords = function () {
   });
 
   return ledgerRecords;
-}
+};

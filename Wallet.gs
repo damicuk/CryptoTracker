@@ -11,8 +11,8 @@ class Wallet {
   constructor(name) {
 
     this.name = name;
-    this.fiatAccounts = new Array();
-    this.cryptoAccounts = new Array();
+    this.fiatAccounts = [];
+    this.cryptoAccounts = [];
   }
 
   /**

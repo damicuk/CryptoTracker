@@ -12,7 +12,7 @@ class CryptoAccount {
   constructor(crypto) {
 
     this.crypto = crypto;
-    this.lots = new Array();
+    this.lots = [];
 
   }
 
@@ -22,7 +22,7 @@ class CryptoAccount {
    */
   get satoshi() {
 
-    let satoshi = 0
+    let satoshi = 0;
     for (let lot of this.lots) {
 
       satoshi += lot.satoshi; //adding two integers - no need to round
@@ -46,10 +46,16 @@ class CryptoAccount {
    */
   deposit(lots) {
 
-    Array.isArray(lots) ?
-      this.lots = this.lots.concat(lots) :
+    if (Array.isArray(lots)) {
+
+      this.lots = this.lots.concat(lots);
+
+    }
+    else {
+
       this.lots.push(lots);
 
+    }
   }
 
   /**
@@ -141,25 +147,25 @@ class CryptoAccount {
 
       return function (lot1, lot2) {
         return lot1.date - lot2.date;
-      }
+      };
     }
     else if (lotMatching === 'LIFO') {
 
       return function (lot1, lot2) {
         return lot2.date - lot1.date;
-      }
+      };
     }
     else if (lotMatching === 'LOFO') {
 
       return function (lot1, lot2) {
         return (lot1.costBasisCents / lot1.satoshi) - (lot2.costBasisCents / lot2.satoshi);
-      }
+      };
     }
     else if (lotMatching === 'HIFO') {
 
       return function (lot1, lot2) {
         return (lot2.costBasisCents / lot2.satoshi) - (lot1.costBasisCents / lot1.satoshi);
-      }
+      };
     }
     else {
       throw Error(`Lot Matching Method (${lotMatching}) not recognized.`);

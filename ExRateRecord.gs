@@ -34,7 +34,7 @@ CryptoTracker.prototype.exRatesCurrent = function (sheet, minuteMargin) {
 
   let date = new Date();
 
-  for (crypto of this.cryptos) {
+  for (let crypto of this.cryptos) {
 
     if (!this.lookupExRate(exRateRecords, date, crypto, minuteMargin)) {
 
@@ -58,7 +58,7 @@ CryptoTracker.prototype.lookupExRate = function (exRateRecords, date, crypto, mi
   let bestRecord;
   let bestDiff = -(new Date(0, 0, 0)).valueOf();
   let currDiff;
-  let marginMs = minuteMargin * 60000
+  let marginMs = minuteMargin * 60000;
 
   for (let record of exRateRecords) {
     if (record.crypto == crypto && record.fiat == this.accountingCurrency) {

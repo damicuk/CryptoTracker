@@ -17,7 +17,7 @@ CryptoTracker.prototype.getLedgerRange = function () {
   ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 13);
 
   return ledgerRange;
-}
+};
 
 /**
  * Sets data validation on the currency columns in the ledger sheet 
@@ -43,7 +43,7 @@ CryptoTracker.prototype.updateLedgerCurrencies = function () {
   this.addCurrencyValidation(sheet, 'C3:C', currencies);
   this.addCurrencyValidation(sheet, 'H3:H', currencies);
 
-}
+};
 
 /**
  * Sets data validation on the wallets columns in the ledger sheet 
@@ -70,4 +70,4 @@ CryptoTracker.prototype.updateLedgerWallets = function () {
   this.addWalletValidation(sheet, 'G3:G', walletNames);
   this.addWalletValidation(sheet, 'L3:L', walletNames);
 
-}
+};

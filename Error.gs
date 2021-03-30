@@ -49,7 +49,7 @@ CryptoTracker.prototype.setCurrentCell = function (rowIndex, columnName) {
 
   if (ledgerSheet) {
 
-    let columnIndex = LedgerRecord.getColumnIndex(columnName)
+    let columnIndex = LedgerRecord.getColumnIndex(columnName);
     let range = ledgerSheet.getRange(rowIndex, columnIndex, 1, 1);
     ss.setCurrentCell(range);
     SpreadsheetApp.flush();

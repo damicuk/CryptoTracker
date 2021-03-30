@@ -24,7 +24,7 @@ CryptoTracker.prototype.deleteSheet = function (sheetName) {
  */
 CryptoTracker.prototype.deleteSheets = function (sheetNames) {
 
-  for (sheetName of sheetNames) {
+  for (let sheetName of sheetNames) {
 
     if (sheetName) {
 
@@ -148,7 +148,7 @@ CryptoTracker.prototype.trimRows = function (sheet, neededRows) {
 
     neededRows = Math.max(dataRange.getHeight(), sheet.getFrozenRows() + 1);
 
-  };
+  }
 
   const totalRows = sheet.getMaxRows();
 
@@ -179,7 +179,7 @@ CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
 
     neededColumns = Math.max(dataRange.getWidth(), sheet.getFrozenColumns() + 1);
 
-  };
+  }
 
   const totalColumns = sheet.getMaxColumns();
 

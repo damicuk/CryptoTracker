@@ -9,10 +9,10 @@ class CryptoTracker {
    */
   constructor() {
 
-    this.wallets = new Array();
-    this.incomeLots = new Array();
-    this.closedLots = new Array();
-    this.donatedLots = new Array();
+    this.wallets = [];
+    this.incomeLots = [];
+    this.closedLots = [];
+    this.donatedLots = [];
 
     //get user properties or set defaults
     let userProperties = PropertiesService.getUserProperties();
@@ -24,11 +24,11 @@ class CryptoTracker {
 
     this.ledgerSheetName = 'Ledger';
     this.exRatesSheetName = 'Ex Rates Data';
-    this.fiatAccountsSheetName = 'Fiat Accounts Data'
+    this.fiatAccountsSheetName = 'Fiat Accounts Data';
     this.openPositionsReportName = 'Open Positions Report';
     this.closedPositionsReportName = 'Closed Positions Report';
     this.donationsReportName = 'Donations Report';
-    this.incomeReportName = 'Income Report'
+    this.incomeReportName = 'Income Report';
     this.openSummaryReportName = 'Open Summary Report';
     this.closedSummaryReportName = 'Closed Summary Report';
     this.incomeSummaryReportName = 'Income Summary Report';
@@ -200,8 +200,8 @@ class CryptoTracker {
    */
   isCrypto(currency) {
 
-    return !CryptoTracker.validFiats.includes(currency)
-      && CryptoTracker.cryptoRegExp.test(currency);
+    return !CryptoTracker.validFiats.includes(currency) &&
+      CryptoTracker.cryptoRegExp.test(currency);
   }
 
   /**

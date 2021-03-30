@@ -100,7 +100,7 @@ CryptoTracker.prototype.donationsReport = function () {
 
   this.writeTable(ss, sheet, dataTable, this.donationsRangeName, 2, 12, 8);
 
-}
+};
 
 /**
  * Returns a table of the current donations data
@@ -150,5 +150,5 @@ CryptoTracker.prototype.getDonationsTable = function () {
   }
 
   return this.sortTable(table, 9);
-}
+};
 

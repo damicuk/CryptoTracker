@@ -96,7 +96,7 @@ CryptoTracker.prototype.openPositionsReport = function () {
 
   this.writeTable(ss, sheet, dataTable, this.openPositionsRangeName, 2, 10, 8);
 
-}
+};
 
 /**
  * Returns a table of the current open positions data
@@ -145,4 +145,4 @@ CryptoTracker.prototype.getOpenPositionsTable = function () {
   }
 
   return this.sortTable(table, 0);
-}
+};

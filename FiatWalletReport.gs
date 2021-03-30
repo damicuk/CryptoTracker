@@ -28,9 +28,5 @@ CryptoTracker.prototype.fiatWalletsReport = function () {
 
   sheet.getRange('A1').setFormula(`IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,QUERY(${referenceRangeName}, "SELECT A, SUM(C) GROUP BY A PIVOT B ORDER BY A LABEL A 'Wallets', SUM(C) ''"))`);
 
-  SpreadsheetApp.flush();
-
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
-
-  SpreadsheetApp.flush();
-}
+};

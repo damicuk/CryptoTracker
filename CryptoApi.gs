@@ -14,7 +14,7 @@ CryptoTracker.prototype.getCryptoPriceData = function (cryptos, accountingCurren
   let httpRequest = UrlFetchApp.fetch(url);
   let returnText = httpRequest.getContentText();
   return JSON.parse(returnText);
-}
+};
 
 /**
  * Tests the validaty of an API by attempting a simple request and checking for the error response
@@ -30,4 +30,4 @@ CryptoTracker.prototype.validateApiKey = function (apiKey) {
     return false;
   }
   return true;
-}
+};

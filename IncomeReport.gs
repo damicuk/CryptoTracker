@@ -50,7 +50,7 @@ CryptoTracker.prototype.incomeReport = function () {
 
   this.writeTable(ss, sheet, dataTable, this.incomeRangeName, 1, 5, 1);
 
-}
+};
 
 
 /**
@@ -81,4 +81,4 @@ CryptoTracker.prototype.getIncomeTable = function () {
   }
 
   return this.sortTable(table, 0);
-}
+};

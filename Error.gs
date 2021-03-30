@@ -33,7 +33,7 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
     SpreadsheetApp.getUi().alert(`Failed to save settings`, message, SpreadsheetApp.getUi().ButtonSet.OK);
 
   }
-}
+};
 
 /**
  * Sets the currenct cell i the ledger sheet
@@ -55,7 +55,7 @@ CryptoTracker.prototype.setCurrentCell = function (rowIndex, columnName) {
     SpreadsheetApp.flush();
 
   }
-}
+};
 
 /**
  * General custom error from which to inherit

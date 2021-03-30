@@ -106,7 +106,7 @@ CryptoTracker.prototype.closedPositionsReport = function () {
 
   this.writeTable(ss, sheet, dataTable, this.closedPositionsRangeName, 2, 15, 8);
 
-}
+};
 
 /**
  * Returns a table of the current closed positions data
@@ -162,5 +162,5 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
   }
 
   return this.sortTable(table, 9);
-}
+};
 

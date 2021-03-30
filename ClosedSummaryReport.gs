@@ -85,8 +85,6 @@ QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, Year(J),
 
   sheet.hideColumns(11, 2);
 
-  SpreadsheetApp.flush();
-
   this.trimColumns(sheet, 19);
 
   let pieChartBuilder = sheet.newChart().asPieChart();
@@ -100,6 +98,4 @@ QUERY({{"", "", 0, 0, 0, 0, ""};QUERY(${referenceRangeName}, "SELECT G, Year(J),
   sheet.insertChart(chart);
 
   sheet.autoResizeColumns(1, 14);
-
-  SpreadsheetApp.flush();
-}
+};

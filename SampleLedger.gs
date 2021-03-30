@@ -105,8 +105,6 @@ CryptoTracker.prototype.sampleLedger = function () {
 
   sheet.getRange('A3:N20').setValues(sampleData);
 
-  SpreadsheetApp.flush();
-
   this.trimSheet(sheet, 21, 14);
 
   sheet.autoResizeColumns(1, 1);
@@ -114,8 +112,6 @@ CryptoTracker.prototype.sampleLedger = function () {
   sheet.autoResizeColumns(10, 1);
   sheet.autoResizeColumns(14, 1);
 
-  SpreadsheetApp.flush();
-
   return sheet;
-}
+};
 

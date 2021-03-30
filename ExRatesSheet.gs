@@ -57,7 +57,7 @@ CryptoTracker.prototype.exRatesSheet = function () {
   if (missingCryptos.size > 0) {
     throw new ApiError(`Failed to update crypto price for ${Array.from(missingCryptos).sort(this.abcComparator).toString()}`);
   }
-}
+};
 
 /**
  * Returns a table of price data for the current set of cryptocurrencies in the accounting currency obtained from the CryptoCompare API
@@ -104,4 +104,4 @@ CryptoTracker.prototype.getCryptoPriceTable = function () {
     }
   }
   return table;
-}
+};

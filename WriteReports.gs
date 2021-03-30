@@ -76,7 +76,7 @@ CryptoTracker.prototype.writeReports = function () {
 
   SpreadsheetApp.setCurrentCell(currentCell);
 
-}
+};
 
 /**
  * Deletes all the output sheets
@@ -103,4 +103,4 @@ CryptoTracker.prototype.deleteReports = function () {
 
   this.deleteSheets(sheetNames);
 
-}
+};

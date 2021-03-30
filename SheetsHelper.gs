@@ -14,7 +14,7 @@ CryptoTracker.prototype.deleteSheet = function (sheetName) {
     ss.deleteSheet(sheet);
 
   }
-}
+};
 
 /**
  * Deletes any sheet that exists given an array of sheet names
@@ -32,7 +32,7 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
 
     }
   }
-}
+};
 
 /**
  * Writes a table of data values to a given sheet, adds a named range, trims the sheet to the correct size and resizes the columns
@@ -78,12 +78,8 @@ CryptoTracker.prototype.writeTable = function (ss, sheet, dataTable, rangeName, 
 
   }
 
-  SpreadsheetApp.flush();
-
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
-
-  SpreadsheetApp.flush();
-}
+};
 
 
 /**
@@ -99,7 +95,7 @@ CryptoTracker.prototype.sortTable = function (dataTable, index) {
   });
 
   return dataTable;
-}
+};
 
 /**
  * Renames a sheet by adding a number to the end of its name
@@ -122,7 +118,7 @@ CryptoTracker.prototype.renameSheet = function (sheetName) {
     sheet.setName(`${sheetName} ${i}`);
 
   }
-}
+};
 
 /**
  * Resizes a sheet by inserting or deleting rows and columns
@@ -137,7 +133,7 @@ CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) 
 
   this.trimColumns(sheet, neededColumns);
 
-}
+};
 
 /**
  * Resizes a sheet by inserting or deleting rows
@@ -152,7 +148,7 @@ CryptoTracker.prototype.trimRows = function (sheet, neededRows) {
 
     neededRows = Math.max(dataRange.getHeight(), sheet.getFrozenRows() + 1);
 
-  }
+  };
 
   const totalRows = sheet.getMaxRows();
 
@@ -168,7 +164,7 @@ CryptoTracker.prototype.trimRows = function (sheet, neededRows) {
     sheet.insertRowsAfter(totalRows, -extraRows);
 
   }
-}
+};
 
 /**
  * Resizes a sheet by inserting or deleting columns
@@ -183,7 +179,7 @@ CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
 
     neededColumns = Math.max(dataRange.getWidth(), sheet.getFrozenColumns() + 1);
 
-  }
+  };
 
   const totalColumns = sheet.getMaxColumns();
 
@@ -199,7 +195,7 @@ CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
     sheet.insertColumnsAfter(totalColumns, -extraColumns);
 
   }
-}
+};
 
 /**
  * Adds specific conditional text color formatting to a range of cells in a sheet
@@ -233,8 +229,7 @@ CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
   }
 
   sheet.setConditionalFormatRules(rules);
-
-}
+};
 
 /**
  * Adds specific conditional text color formatting to a range of cells in a sheet
@@ -262,8 +257,7 @@ CryptoTracker.prototype.addLongShortCondition = function (sheet, a1Notation) {
   rules.push(shortRule);
   rules.push(longRule);
   sheet.setConditionalFormatRules(rules);
-
-}
+};
 
 /**
  * Sets data validation from a list on a range of cells in a sheet
@@ -277,7 +271,7 @@ CryptoTracker.prototype.addCurrencyValidation = function (sheet, a1Notation, val
 
   this.addValidation(sheet, a1Notation, values, 'New currencies will be added to the data validation dropdown when write reports is run.');
 
-}
+};
 
 /**
  * Sets data validation from a list on a range of cells in a sheet
@@ -291,7 +285,7 @@ CryptoTracker.prototype.addWalletValidation = function (sheet, a1Notation, value
 
   this.addValidation(sheet, a1Notation, values, 'New wallets will be added to the data validation dropdown when write reports is run.');
 
-}
+};
 
 /**
  * Sets data validation from a list on a range of cells in a sheet
@@ -310,7 +304,6 @@ CryptoTracker.prototype.addValidation = function (sheet, a1Notation, values, hel
     .build();
 
   range.setDataValidation(rule);
-
-}
+};
 
 

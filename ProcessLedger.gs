@@ -11,7 +11,7 @@ CryptoTracker.prototype.processLedger = function (ledgerRecords) {
   for (let ledgerRecord of ledgerRecords) {
     this.processLedgerRecord(ledgerRecord, rowIndex++);
   }
-}
+};
 
 /**
  * Processes a ledger record
@@ -128,4 +128,4 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
     this.closeLots(lots, date, this.accountingCurrency, 0, creditAmount, creditFee, debitWalletName);
 
   }
-}
+};

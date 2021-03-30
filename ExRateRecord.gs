@@ -42,7 +42,7 @@ CryptoTracker.prototype.exRatesCurrent = function (sheet, minuteMargin) {
     }
   }
   return true;
-}
+};
 
 /**
  * Checks whether the prices for all the cryptocurrencies are current within a certain margin of minutes
@@ -75,7 +75,7 @@ CryptoTracker.prototype.lookupExRate = function (exRateRecords, date, crypto, mi
   }
 
   return 0;
-}
+};
 
 /**
  * Retrieves the exrate records from the exrates sheet and sorts them by date
@@ -106,4 +106,4 @@ CryptoTracker.prototype.getExRateRecords = function (sheet) {
   });
 
   return exRateRecords;
-}
+};

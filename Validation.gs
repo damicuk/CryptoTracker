@@ -21,7 +21,7 @@ CryptoTracker.prototype.validateLedger = function () {
   }
 
   SpreadsheetApp.getActive().toast('All looks good', 'Ledger Valid', 10);
-}
+};
 
 /**
  * Validates a set of ledger records and throws a ValidationError on failure
@@ -34,7 +34,7 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
   for (let ledgerRecord of ledgerRecords) {
     this.validateLedgerRecord(ledgerRecord, rowIndex++);
   }
-}
+};
 
 /**
  * Validates a ledger record and throws a ValidationError on failure
@@ -361,4 +361,4 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
   else {
     throw new ValidationError(`Ledger row ${rowIndex}: action (${action}) is invalid.`, rowIndex, 'action');
   }
-}
+};

@@ -34,7 +34,7 @@ CryptoTracker.prototype.fiatAccountsSheet = function () {
 
   this.writeTable(ss, sheet, dataTable, this.fiatAccountsRangeName, 1, 3);
 
-}
+};
 
 /**
  * Returns a table of the current fiat accounts data
@@ -63,4 +63,4 @@ CryptoTracker.prototype.getFiatTable = function () {
   });
 
   return table;
-}
+};

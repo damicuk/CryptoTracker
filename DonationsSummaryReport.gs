@@ -48,9 +48,5 @@ CryptoTracker.prototype.donationsSummaryReport = function () {
 
   this.trimColumns(sheet, 5);
 
-  SpreadsheetApp.flush();
-
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
-
-  SpreadsheetApp.flush();
-}
+};

@@ -1,6 +1,7 @@
 /**
  * Returns the range in the ledger sheet that contains the data excluding header rows.
  * If there is no ledger sheet it creates a sample ledger and returns the range from that.
+ * Throws a ValidationError if the ledger sheet contains insufficient columns or no data rows
  * @return {Range} The range in the ledger sheet that contains the data excluding header rows.
  */
 CryptoTracker.prototype.getLedgerRange = function () {
@@ -13,7 +14,16 @@ CryptoTracker.prototype.getLedgerRange = function () {
     ledgerSheet = this.sampleLedger();
   }
 
+  if(ledgerSheet.getMaxColumns() < 13) {
+    throw new ValidationError('Ledger has insufficient columns.');
+  }
+
   let ledgerRange = ledgerSheet.getDataRange();
+
+  if(ledgerRange.getHeight() < 3) {
+    throw new ValidationError('Ledger contains no data rows.');
+  }
+  
   ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 13);
 
   return ledgerRange;

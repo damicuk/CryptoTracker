@@ -5,9 +5,9 @@
  */
 CryptoTracker.prototype.validateLedger = function () {
 
-  let ledgerRecords = this.getLedgerRecords();
 
   try {
+    let ledgerRecords = this.getLedgerRecords();
     this.validateLedgerRecords(ledgerRecords);
   }
   catch (error) {
@@ -56,8 +56,11 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
   let creditWalletName = ledgerRecord.creditWalletName;
   let lotMatching = ledgerRecord.lotMatching;
 
-  if (isNaN(date)) {
+  if (date === '') {
     throw new ValidationError(`${action} row ${rowIndex}: missing date.`, rowIndex, 'date');
+  }
+  else if (isNaN(date)) {
+    throw new ValidationError(`${action} row ${rowIndex}: invalid date.`, rowIndex, 'date');
   }
   else if (date > new Date()) {
     throw new ValidationError(`${action} row ${rowIndex}: date must be in the past.`, rowIndex, 'date');

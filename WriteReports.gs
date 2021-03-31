@@ -9,9 +9,9 @@ CryptoTracker.prototype.writeReports = function () {
 
   let currentCell = SpreadsheetApp.getCurrentCell();
 
-  let ledgerRecords = this.getLedgerRecords();
-
+  let ledgerRecords;
   try {
+    ledgerRecords = this.getLedgerRecords();
     this.validateLedgerRecords(ledgerRecords);
   }
   catch (error) {

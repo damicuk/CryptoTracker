@@ -12,13 +12,17 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
 
   if (error === 'validation') {
 
-    this.setCurrentCell(rowIndex, columnName);
+    if (rowIndex && columnName) {
+      this.setCurrentCell(rowIndex, columnName);
+    }
 
     SpreadsheetApp.getUi().alert(`Ledger validation failed`, message, SpreadsheetApp.getUi().ButtonSet.OK);
   }
   else if (error === 'cryptoAccount') {
 
-    this.setCurrentCell(rowIndex, columnName);
+     if (rowIndex && columnName) {
+      this.setCurrentCell(rowIndex, columnName);
+    }
 
     SpreadsheetApp.getUi().alert(`Insufficient funds`, message, SpreadsheetApp.getUi().ButtonSet.OK);
 
@@ -85,8 +89,8 @@ class ValidationError extends CustomError {
   /**
    * Initializes class with message, rowIndex and columnName, sets name property to the name of the class.
    * @param {string} message - description of the error and suggested solution.
-   * @param {number} rowIndex - the row numer in the ledger sheet that requires atention.
-   * @param {string} columnName - the name assigned to the column in the ledger sheet.
+   * @param {number} [rowIndex] - the row numer in the ledger sheet that requires atention.
+   * @param {string} [columnName] - the name assigned to the column in the ledger sheet.
    * Used to get the index from LedgerRecord.getColumnIndex(columnName).
    * Avoids hard coding column numbers.
    */

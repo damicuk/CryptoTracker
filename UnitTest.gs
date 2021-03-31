@@ -153,20 +153,26 @@ function testCryptoTracker() {
     assert.equal(CryptoTracker.decimalDigits(2.01), 2, 'decimalDigits');
     assert.equal(CryptoTracker.decimalDigits(''), 0, 'decimalDigits');
 
-    assert.equal(new CryptoTracker().isFiat('USD'), true, 'isFiat USD');
-    assert.equal(new CryptoTracker().isFiat('BTC'), false, 'isFiat BTC');
-    assert.equal(new CryptoTracker().isFiat('XYZ'), false, 'isFiat XYZ');
-    assert.equal(new CryptoTracker().isFiat('A'), false, 'isFiat A');
-    assert.equal(new CryptoTracker().isFiat('AAAAAAAAA'), false, 'isFiat AAAAAAAAAA');
-    assert.equal(new CryptoTracker().isFiat('AAAAAAAAAA'), false, 'isFiat AAAAAAAAAAA');
-    assert.equal(new CryptoTracker().isFiat('$$$'), false, 'isFiat $$$');
-    assert.equal(new CryptoTracker().isCrypto('USD'), false, 'isCrypto USD');
-    assert.equal(new CryptoTracker().isCrypto('BTC'), true, 'isCrypto BTC');
-    assert.equal(new CryptoTracker().isCrypto('XYZ'), true, 'isCrypto XYZ');
-    assert.equal(new CryptoTracker().isCrypto('A'), false, 'isCrypto A');
-    assert.equal(new CryptoTracker().isCrypto('AAAAAAAAA'), true, 'isCrypto AAAAAAAAAA');
-    assert.equal(new CryptoTracker().isCrypto('AAAAAAAAAA'), false, 'isCrypto AAAAAAAAAAA');
-    assert.equal(new CryptoTracker().isCrypto('$$$'), false, 'isCrypto $$$');
+    assert.equal(CryptoTracker.isFiat('USD'), true, 'isFiat USD');
+    assert.equal(CryptoTracker.isFiat('BTC'), false, 'isFiat BTC');
+    assert.equal(CryptoTracker.isFiat('XYZ'), false, 'isFiat XYZ');
+    assert.equal(CryptoTracker.isFiat('A'), false, 'isFiat A');
+    assert.equal(CryptoTracker.isFiat('AAAAAAAAA'), false, 'isFiat AAAAAAAAAA');
+    assert.equal(CryptoTracker.isFiat('AAAAAAAAAA'), false, 'isFiat AAAAAAAAAAA');
+    assert.equal(CryptoTracker.isFiat('$$$'), false, 'isFiat $$$');
+    assert.equal(CryptoTracker.isCrypto('USD'), false, 'isCrypto USD');
+    assert.equal(CryptoTracker.isCrypto('BTC'), true, 'isCrypto BTC');
+    assert.equal(CryptoTracker.isCrypto('XYZ'), true, 'isCrypto XYZ');
+    assert.equal(CryptoTracker.isCrypto('A'), false, 'isCrypto A');
+    assert.equal(CryptoTracker.isCrypto('AAAAAAAAA'), true, 'isCrypto AAAAAAAAAA');
+    assert.equal(CryptoTracker.isCrypto('AAAAAAAAAA'), false, 'isCrypto AAAAAAAAAAA');
+    assert.equal(CryptoTracker.isCrypto('$$$'), false, 'isCrypto $$$');
+
+    assert.equal(CryptoTracker.validDecimalDigits(''), 8, 'validDecimalDigits empty');
+    assert.equal(CryptoTracker.validDecimalDigits('USD'), 2, 'validDecimalDigits USD');
+    assert.equal(CryptoTracker.validDecimalDigits('JPY'), 0, 'validDecimalDigits JPY');
+    assert.equal(CryptoTracker.validDecimalDigits('BTC'), 8, 'validDecimalDigits BTC');
+    assert.equal(CryptoTracker.validDecimalDigits('ADA'), 6, 'validDecimalDigits ADA');
 
     let cryptoTracker = new CryptoTracker();
 

@@ -150,6 +150,30 @@ class CryptoTracker {
   }
 
   /**
+   * Determines whether the currency ticker is a valid fiat.
+   * Only fiat currencies in the valid fiats list those supported by CryptoComapre will return true.
+   * @param {string} currency - The currency ticker in question.
+   * @return {boolean} Whether the currency is a valid fiat currency.
+   * @static
+   */
+  static isFiat(currency) {
+
+    return CryptoTracker.validFiats.includes(currency);
+  }
+
+  /**
+   * Determines whether the currency ticker is a valid cryptocurrency.
+   * All currencies that are not valid fiats and pass the loose regular expresion validation will return true.
+   * @param {string} currency - The currency ticker in question.
+   * @return {boolean} Whether the currency is a valid cryptocurrency.
+   * @static
+   */
+  static isCrypto(currency) {
+
+    return !CryptoTracker.validFiats.includes(currency) && CryptoTracker.cryptoRegExp.test(currency);
+  }
+
+  /**
    * Comparator used to sort items alphabetically.
    * @param {string} a - The first item to be compared.
    * @param {string} b - The second item to be compared.
@@ -172,6 +196,28 @@ class CryptoTracker {
     let charArray = number.toString().split('');
     let lastIndex = charArray.lastIndexOf('.');
     return (lastIndex < 0) ? 0 : charArray.length - lastIndex - 1;
+  }
+
+  /**
+   * Returns the valid number of decimal digits of a given currency ticker.
+   * @param {string} currency - The fiat or cryptocurrency ticker.
+   * @return {number} - The valid number of decimal digits.
+   * @static
+   */
+  static validDecimalDigits(currency) {
+
+    if (currency === 'JPY') {
+      return 0;
+    }
+    else if (currency === 'ADA') {
+      return 6;
+    }
+    else if (CryptoTracker.isFiat(currency)) {
+      return 2;
+    }
+    else {
+      return 8;
+    }
   }
 
   /**
@@ -223,29 +269,6 @@ class CryptoTracker {
     this.wallets.push(wallet);
     return wallet;
 
-  }
-
-  /**
-   * Determines whether the currency ticker is a valid fiat.
-   * Only fiat currencies in the valid fiats list those supported by CryptoComapre will return true.
-   * @param {string} currency - The currency ticker in question.
-   * @return {boolean} Whether the currency is a valid fiat currency.
-   */
-  isFiat(currency) {
-
-    return CryptoTracker.validFiats.includes(currency);
-  }
-
-  /**
-   * Determines whether the currency ticker is a valid cryptocurrency.
-   * All currencies that are not valid fiats and pass the loose regular expresion validation will return true.
-   * @param {string} currency - The currency ticker in question.
-   * @return {boolean} Whether the currency is a valid cryptocurrency.
-   */
-  isCrypto(currency) {
-
-    return !CryptoTracker.validFiats.includes(currency) &&
-      CryptoTracker.cryptoRegExp.test(currency);
   }
 
   /**

@@ -1,7 +1,7 @@
 /**
- * Creates the income report if it doesn't already exist
- * Updates the sheet with the current income data
- * Trims the sheet to fit the data
+ * Creates the income report if it doesn't already exist.
+ * Updates the sheet with the current income data.
+ * Trims the sheet to fit the data.
  */
 CryptoTracker.prototype.incomeReport = function () {
 
@@ -54,9 +54,9 @@ CryptoTracker.prototype.incomeReport = function () {
 
 
 /**
- * Returns a table of the current income data
- * The income data is collected when the ledger is processed
- * @return {*[][]} The current income data
+ * Returns a table of the current income data.
+ * The income data is collected when the ledger is processed.
+ * @return {Array<Array>} The current income data.
  */
 CryptoTracker.prototype.getIncomeTable = function () {
 

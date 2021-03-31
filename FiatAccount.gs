@@ -1,23 +1,31 @@
 /**
- * Fiat currency account
- * Calculation are done in cents to avoid computational rounding errors
- * @class
+ * Fiat currency account.
+ * Calculation are done in cents to avoid computational rounding errors.
  */
 class FiatAccount {
 
   /**
-   * @constructor Sets the fiat currency and initializes the balance to 0
-   * @param {string} fiat - the fiat currency ticker
+   * Sets the fiat currency and initializes the balance to 0.
+   * @param {string} fiat - the fiat currency ticker.
    */
   constructor(fiat) {
 
+    /**
+     * The fiat currency ticker.
+     * @type {string}
+     */
     this.fiat = fiat;
+
+    /**
+     * The balance in the account in cents.
+     * @type {number}
+     */
     this.cents = 0;
 
   }
 
   /**
-   * The balance in the account
+   * The balance in the account.
    * @type {number}
    */
   get balance() {
@@ -27,9 +35,9 @@ class FiatAccount {
   }
 
   /**
-   * Adjusts the balance in the account
-   * @param {number} amount - Deposits the amount if positive or withdraws the amount if negative
-   * @return {FiatAccount} Returns this instance for chaining
+   * Adjusts the balance in the account.
+   * @param {number} amount - Deposits the amount if positive or withdraws the amount if negative.
+   * @return {FiatAccount} Returns this instance for chaining.
    */
   transfer(amount) {
 

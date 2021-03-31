@@ -1,11 +1,11 @@
 /**
- * Creates the exrates sheet if it doesn't already exist
- * Checks whether the prices for all the cryptocurrencies are current within 10 minutes
- * Throws an ApiError if the API key is not set in settings
- * Throws an ApiError if the call to the CryptoCompare API returns an error response
- * Updates the sheet with the current prices from the CryptoCompare API if required
- * Throws an ApiError if any crypto prices are missing
- * Trims the sheet to fit the data
+ * Creates the exrates sheet if it doesn't already exist.
+ * Checks whether the prices for all the cryptocurrencies are current within 10 minutes.
+ * Throws an ApiError if the API key is not set in settings.
+ * Throws an ApiError if the call to the CryptoCompare API returns an error response.
+ * Updates the sheet with the current prices from the CryptoCompare API if required.
+ * Throws an ApiError if any crypto prices are missing.
+ * Trims the sheet to fit the data.
  */
 CryptoTracker.prototype.exRatesSheet = function () {
 
@@ -60,11 +60,11 @@ CryptoTracker.prototype.exRatesSheet = function () {
 };
 
 /**
- * Returns a table of price data for the current set of cryptocurrencies in the accounting currency obtained from the CryptoCompare API
- * The list of cryptocurrencies is collected when the ledger is processed
- * Throws an ApiError if the API key is not set in settings
- * Throws an ApiError if the call to the CryptoCompare API returns an error response
- * @return {*[][]} The table of price data for the current set of cryptocurrencies in the accounting currency
+ * Returns a table of price data for the current set of cryptocurrencies in the accounting currency obtained from the CryptoCompare API.
+ * The list of cryptocurrencies is collected when the ledger is processed.
+ * Throws an ApiError if the API key is not set in settings.
+ * Throws an ApiError if the call to the CryptoCompare API returns an error response.
+ * @return {Array<Array<string>>} The table of price data for the current set of cryptocurrencies in the accounting currency.
  */
 CryptoTracker.prototype.getCryptoPriceTable = function () {
 
@@ -76,9 +76,7 @@ CryptoTracker.prototype.getCryptoPriceTable = function () {
 
     if (!apiKey) {
 
-      let errorMessage = `CryptoCompare API key missing 
-    
-    To get an API key, go to https://www.cryptocompare.com/cryptopian/api-keys register, create a key, and save it in settings.`;
+      let errorMessage = `CryptoCompare API key missing\n\nTo get an API key, go to https://www.cryptocompare.com/cryptopian/api-keys register, create a key, and save it in settings.`;
 
       throw new ApiError(errorMessage);
 

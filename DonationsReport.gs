@@ -1,7 +1,7 @@
 /**
- * Creates the donations report if it doesn't already exist
- * Updates the sheet with the current donations data
- * Trims the sheet to fit the data
+ * Creates the donations report if it doesn't already exist.
+ * Updates the sheet with the current donations data.
+ * Trims the sheet to fit the data.
  */
 CryptoTracker.prototype.donationsReport = function () {
 
@@ -103,9 +103,9 @@ CryptoTracker.prototype.donationsReport = function () {
 };
 
 /**
- * Returns a table of the current donations data
- * The donations data is collected when the ledger is processed
- * @return {*[][]} The current donations data
+ * Returns a table of the current donations data.
+ * The donations data is collected when the ledger is processed.
+ * @return {Array<Array>} The current donations data.
  */
 CryptoTracker.prototype.getDonationsTable = function () {
 

@@ -1,8 +1,8 @@
 /**
- * Deletes the named sheet if it exists
- * Not intended for use by the end user
- * Useful in development and testing
- * @param {string} sheetName - The name of the sheet to delete
+ * Deletes the named sheet if it exists.
+ * Not intended for use by the end user.
+ * Useful in development and testing.
+ * @param {string} sheetName - The name of the sheet to delete.
  */
 CryptoTracker.prototype.deleteSheet = function (sheetName) {
 
@@ -17,10 +17,10 @@ CryptoTracker.prototype.deleteSheet = function (sheetName) {
 };
 
 /**
- * Deletes any sheet that exists given an array of sheet names
- * Not intended for use by the end user
- * Useful in development and testing
- * @param {string[]} sheetNames - The names of the sheets to delete
+ * Deletes any sheet that exists given an array of sheet names.
+ * Not intended for use by the end user.
+ * Useful in development and testing.
+ * @param {string[]} sheetNames - The names of the sheets to delete.
  */
 CryptoTracker.prototype.deleteSheets = function (sheetNames) {
 
@@ -35,14 +35,14 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
 };
 
 /**
- * Writes a table of data values to a given sheet, adds a named range, trims the sheet to the correct size and resizes the columns
- * @param {Spreadsheet} ss - Spreadsheet object e.g. from SpreadsheetApp.getActive()
- * @param {Sheet} sheet - The sheet to which the data values should be written
- * @param {*[][]]} dataTable - The table of values to write to the sheet
- * @param {string} rangeName - The named range name to apply to the data range
- * @param {number} headerRows - The number of header rows
- * @param {number} dataColumns - The number of data columns - needed as the table may be empty
- * @param {number} formulaColumns - The number of columns containing formulas to the right of the data
+ * Writes a table of data values to a given sheet, adds a named range, trims the sheet to the correct size and resizes the columns.
+ * @param {Spreadsheet} ss - Spreadsheet object e.g. from SpreadsheetApp.getActive().
+ * @param {Sheet} sheet - The sheet to which the data values should be written.
+ * @param {Array<Array>} dataTable - The table of values to write to the sheet.
+ * @param {string} rangeName - The named range name to apply to the data range.
+ * @param {number} headerRows - The number of header rows.
+ * @param {number} dataColumns - The number of data columns - needed as the table may be empty.
+ * @param {number} formulaColumns - The number of columns containing formulas to the right of the data.
  */
 CryptoTracker.prototype.writeTable = function (ss, sheet, dataTable, rangeName, headerRows, dataColumns, formulaColumns = 0) {
 
@@ -83,10 +83,10 @@ CryptoTracker.prototype.writeTable = function (ss, sheet, dataTable, rangeName, 
 
 
 /**
- * Sorts a table of values given a column index
- * The column is assumed to be numeric or date
- * @param {*[][]]} dataTable - The table of values to be sorted
- * @param {number} index - The index of the column by which to sort
+ * Sorts a table of values given a column index.
+ * The column is assumed to be numeric or date.
+ * @param {Array<Array>} dataTable - The table of values to be sorted.
+ * @param {number} index - The index of the column by which to sort.
  */
 CryptoTracker.prototype.sortTable = function (dataTable, index) {
 
@@ -98,9 +98,9 @@ CryptoTracker.prototype.sortTable = function (dataTable, index) {
 };
 
 /**
- * Renames a sheet by adding a number to the end of its name
- * Searches for the first available number starting at 1
- * @param {string} sheetName - The name of the sheet to be renamed
+ * Renames a sheet by adding a number to the end of its name.
+ * Searches for the first available number starting at 1.
+ * @param {string} sheetName - The name of the sheet to be renamed.
  */
 CryptoTracker.prototype.renameSheet = function (sheetName) {
 
@@ -121,11 +121,11 @@ CryptoTracker.prototype.renameSheet = function (sheetName) {
 };
 
 /**
- * Resizes a sheet by inserting or deleting rows and columns
- * @param {number} [neededRows] - The number of rows required
- * If not provided it resizes to the size of the data keeping at lease one non-frozen row
- * @param {number} [neededColumns] - The number of columns required
- * If not provided it resizes to the size of the data keeping at lease one non-frozen column
+ * Resizes a sheet by inserting or deleting rows and columns.
+ * @param {number} [neededRows] - The number of rows required.
+ * If not provided it resizes to the size of the data keeping at lease one non-frozen row.
+ * @param {number} [neededColumns] - The number of columns required.
+ * If not provided it resizes to the size of the data keeping at lease one non-frozen column.
  */
 CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) {
 
@@ -136,9 +136,9 @@ CryptoTracker.prototype.trimSheet = function (sheet, neededRows, neededColumns) 
 };
 
 /**
- * Resizes a sheet by inserting or deleting rows
- * @param {number} [neededRows] - The number of rows required
- * If not provided it resizes to the size of the data keeping at lease one non-frozen row
+ * Resizes a sheet by inserting or deleting rows.
+ * @param {number} [neededRows] - The number of rows required.
+ * If not provided it resizes to the size of the data keeping at lease one non-frozen row.
  */
 CryptoTracker.prototype.trimRows = function (sheet, neededRows) {
 
@@ -167,9 +167,9 @@ CryptoTracker.prototype.trimRows = function (sheet, neededRows) {
 };
 
 /**
- * Resizes a sheet by inserting or deleting columns
- * @param {number} [neededColumns] - The number of columns required
- * If not provided it resizes to the size of the data keeping at lease one non-frozen column
+ * Resizes a sheet by inserting or deleting columns.
+ * @param {number} [neededColumns] - The number of columns required.
+ * If not provided it resizes to the size of the data keeping at lease one non-frozen column.
  */
 CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
 
@@ -198,10 +198,10 @@ CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
 };
 
 /**
- * Adds specific conditional text color formatting to a range of cells in a sheet
- * Used to format the action column of the ledger sheet
- * @param {Sheet} sheet - The sheet containing the range of cells to format
- * @param {string} a1Notation - The A1 notation used to specify the range of cells to be formatted
+ * Adds specific conditional text color formatting to a range of cells in a sheet.
+ * Used to format the action column of the ledger sheet.
+ * @param {Sheet} sheet - The sheet containing the range of cells to format.
+ * @param {string} a1Notation - The A1 notation used to specify the range of cells to be formatted.
  */
 CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
 
@@ -232,10 +232,10 @@ CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
 };
 
 /**
- * Adds specific conditional text color formatting to a range of cells in a sheet
- * Used to format the long / short columns in the reports sheets
- * @param {Sheet} sheet - The sheet containing the range of cells to format
- * @param {string} a1Notation - The A1 notation used to specify the range of cells to be formatted
+ * Adds specific conditional text color formatting to a range of cells in a sheet.
+ * Used to format the long / short columns in the reports sheets.
+ * @param {Sheet} sheet - The sheet containing the range of cells to format.
+ * @param {string} a1Notation - The A1 notation used to specify the range of cells to be formatted.
  */
 CryptoTracker.prototype.addLongShortCondition = function (sheet, a1Notation) {
 
@@ -260,11 +260,11 @@ CryptoTracker.prototype.addLongShortCondition = function (sheet, a1Notation) {
 };
 
 /**
- * Sets data validation from a list on a range of cells in a sheet
- * Sets the help text that appears when the user hovers over a cell on which data validation is set
- * Used specifically to set the data validation on the currency columns in the ledger sheet
- * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set
- * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set
+ * Sets data validation from a list on a range of cells in a sheet.
+ * Sets the help text that appears when the user hovers over a cell on which data validation is set.
+ * Used specifically to set the data validation on the currency columns in the ledger sheet.
+ * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set.
+ * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set.
  * @param {string[]} values - The list of valid values
  */
 CryptoTracker.prototype.addCurrencyValidation = function (sheet, a1Notation, values) {
@@ -274,11 +274,11 @@ CryptoTracker.prototype.addCurrencyValidation = function (sheet, a1Notation, val
 };
 
 /**
- * Sets data validation from a list on a range of cells in a sheet
- * Sets the help text that appears when the user hovers over a cell on which data validation is set
- * Used specifically to set the data validation on the wallet columns in the ledger sheet
- * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set
- * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set
+ * Sets data validation from a list on a range of cells in a sheet.
+ * Sets the help text that appears when the user hovers over a cell on which data validation is set.
+ * Used specifically to set the data validation on the wallet columns in the ledger sheet.
+ * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set.
+ * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set.
  * @param {string[]} values - The list of valid values
  */
 CryptoTracker.prototype.addWalletValidation = function (sheet, a1Notation, values) {
@@ -288,11 +288,11 @@ CryptoTracker.prototype.addWalletValidation = function (sheet, a1Notation, value
 };
 
 /**
- * Sets data validation from a list on a range of cells in a sheet
- * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set
- * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set
- * @param {string[]} values - The list of valid values
- * @param {string} helpText - Sets the help text that appears when the user hovers over a cell on which data validation is set
+ * Sets data validation from a list on a range of cells in a sheet.
+ * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set.
+ * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set.
+ * @param {string[]} values - The list of valid values.
+ * @param {string} helpText - Sets the help text that appears when the user hovers over a cell on which data validation is set.
  */
 CryptoTracker.prototype.addValidation = function (sheet, a1Notation, values, helpText) {
 

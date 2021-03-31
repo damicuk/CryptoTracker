@@ -1,9 +1,9 @@
 /**
- * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports
- * Uses the error handler to handle any ValidatioError, CryptoAccountError, or ApiError 
- * Updates the data validation on the ledger currency and wallet columns
- * Displays toast on success
- * Returns the currenct cell to its original location
+ * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports.
+ * Uses the error handler to handle any ValidatioError, CryptoAccountError, or ApiError .
+ * Updates the data validation on the ledger currency and wallet columns.
+ * Displays toast on success.
+ * Returns the currenct cell to its original location.
  */
 CryptoTracker.prototype.writeReports = function () {
 
@@ -79,9 +79,9 @@ CryptoTracker.prototype.writeReports = function () {
 };
 
 /**
- * Deletes all the output sheets
- * Not intended for use by the end user
- * Useful in development and testing
+ * Deletes all the output sheets.
+ * Not intended for use by the end user.
+ * Useful in development and testing.
  */
 CryptoTracker.prototype.deleteReports = function () {
 

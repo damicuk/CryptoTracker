@@ -1,7 +1,7 @@
 /**
- * Creates the fiat accounts sheet if it doesn't already exist
- * Updates the sheet with the current fiat accounts data
- * Trims the sheet to fit the data
+ * Creates the fiat accounts sheet if it doesn't already exist.
+ * Updates the sheet with the current fiat accounts data.
+ * Trims the sheet to fit the data.
  */
 CryptoTracker.prototype.fiatAccountsSheet = function () {
 
@@ -37,9 +37,9 @@ CryptoTracker.prototype.fiatAccountsSheet = function () {
 };
 
 /**
- * Returns a table of the current fiat accounts data
- * The fiat accounts data is collected when the ledger is processed
- * @return {*[][]} The current fiat accounts data
+ * Returns a table of the current fiat accounts data.
+ * The fiat accounts data is collected when the ledger is processed.
+ * @return {Array<Array>} The current fiat accounts data.
  */
 CryptoTracker.prototype.getFiatTable = function () {
 

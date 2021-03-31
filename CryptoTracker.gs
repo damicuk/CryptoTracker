@@ -1,25 +1,69 @@
 /**
- * The main class that processes the Ledger sheet fetches the current crypto prices and writes the reports
- * @class
+ * The main class that processes the Ledger sheet fetches the current crypto prices and writes the reports.
  */
 class CryptoTracker {
 
   /**
-   * @constructor Initializes class with empty arrays of wallets, income, closed, and donated lots, user properties, and input and output sheet names
+   * Initializes class with empty arrays of wallets, income, closed, and donated lots, user properties, and input and output sheet names.
    */
   constructor() {
 
+    /**
+     * Collection of Wallets.
+     * @type {Array<Obeject>}
+     */
     this.wallets = [];
+
+    /**
+     * Collection of Lots gained as income.
+     * @type {Array<Obeject>}
+     */
     this.incomeLots = [];
+
+    /**
+     * Collection of ClosedLots.
+     * @type {Array<Obeject>}
+     */
     this.closedLots = [];
+
+    /**
+     * Collection of DocatedLots.
+     * @type {Array<Obeject>}
+     */
     this.donatedLots = [];
 
     //get user properties or set defaults
     let userProperties = PropertiesService.getUserProperties();
+
+    /**
+     * Currency ticker for the fiat currency used for accounting.
+     * Initialized from any saved value in user properties or defaults to 'USD'.
+     * @type {string} 
+     */
     this.accountingCurrency = this.getUserProperty(userProperties, 'accountingCurrency', 'USD');
+
+    /**
+     * The default lot matching method.
+     * Options are FIFO, LIFO, HIFO, LOFO.
+     * Initialized from any saved value in user properties or defaults to 'FIFO'.
+     * @type {string} 
+     */
     this.defaultLotMatching = this.getUserProperty(userProperties, 'defaultLotMatching', 'FIFO');
+
+    /**
+     * The API key used to connect to CryptoCompare to retrieve crypto prices.
+     * Options are FIFO, LIFO, HIFO, LOFO.
+     * Initialized from any saved value in user properties or defaults to 'FIFO'.
+     * @type {string} 
+     */
     this.apiKey = userProperties.getProperty('apiKey');
 
+
+    /**
+     * The current lot matching method.
+     * Options are FIFO, LIFO, HIFO, LOFO.
+     * @type {string} 
+     */
     this.lotMatching = this.defaultLotMatching;
 
     this.ledgerSheetName = 'Ledger';
@@ -47,11 +91,11 @@ class CryptoTracker {
 
 
   /**
-   * Gets the value of a user property from a Properties object or sets and returns a default
-   * @param {Properties} userProperties - Properties object from PropertiesService.getUserProperties()
-   * @param {string} key - The key of the user property to search
-   * @param {string} defaultValue - The default value to set the user property to if no value is set
-   * @return {string} The value of the user property or the default if not set
+   * Gets the value of a user property from a Properties object or sets and returns a default.
+   * @param {Properties} userProperties - Properties object from PropertiesService.getUserProperties().
+   * @param {string} key - The key of the user property to search.
+   * @param {string} defaultValue - The default value to set the user property to if no value is set.
+   * @return {string} The value of the user property or the default if not set.
    */
   getUserProperty(userProperties, key, defaultValue) {
 
@@ -71,11 +115,11 @@ class CryptoTracker {
   }
 
   /**
-   * Array of lot matching options used to determine the order in which lots are withdrawn
-   * FIFO First in first out
-   * LIFO Last in first out
-   * HIFO Highest cost first out
-   * LOFO Lowest cost first out
+   * Array of lot matching options used to determine the order in which lots are withdrawn.
+   * FIFO First in first out.
+   * LIFO Last in first out.
+   * HIFO Highest cost first out.
+   * LOFO Lowest cost first out.
    * @type {string[]}
    * @static
    */
@@ -85,8 +129,8 @@ class CryptoTracker {
   }
 
   /**
-   * Array of supported fiat currency tickers
-   * Limited to those supported by CryptoCompare
+   * Array of supported fiat currency tickers.
+   * Limited to those supported by CryptoCompare.
    * @type {string[]}
    * @static
    */
@@ -96,7 +140,7 @@ class CryptoTracker {
   }
 
   /**
-   * Regular expression to loosly validate cryptocurrency format
+   * Regular expression to loosly validate cryptocurrency format.
    * @type {RegExp}
    * @static
    */
@@ -106,10 +150,10 @@ class CryptoTracker {
   }
 
   /**
-   * Comparator used to sort items alphabetically
-   * @param {string} a - The first item to be compared
-   * @param {string} b - The second item to be compared
-   * @return {number} - Used to determine the sort order
+   * Comparator used to sort items alphabetically.
+   * @param {string} a - The first item to be compared.
+   * @param {string} b - The second item to be compared.
+   * @return {number} - Used to determine the sort order.
    * @static
    */
   static abcComparator(a, b) {
@@ -119,9 +163,9 @@ class CryptoTracker {
   }
 
   /**
-   * Finds the number of decimal digits of a given number
-   * @param {number} number - The number to test
-   * @return {number} - The number of decimal digits found
+   * Finds the number of decimal digits of a given number.
+   * @param {number} number - The number to test.
+   * @return {number} - The number of decimal digits found.
    * @static
    */
   static decimalDigits(number) {
@@ -131,8 +175,8 @@ class CryptoTracker {
   }
 
   /**
-   * Set of fiat currency tickers used by this instance
-   * Only filled once processLedger has completed
+   * Set of fiat currency tickers used by this instance.
+   * Only filled once processLedger has completed.
    * @type {Set}
    */
   get fiats() {
@@ -147,8 +191,8 @@ class CryptoTracker {
   }
 
   /**
-   * Set of cryptocurrency tickers used by this instance
-   * Only filled once processLedger has completed
+   * Set of cryptocurrency tickers used by this instance.
+   * Only filled once processLedger has completed.
    * @type {Set}
    */
   get cryptos() {
@@ -163,9 +207,9 @@ class CryptoTracker {
   }
 
   /**
-   * Returns the wallet with the given name or creates adds and returns a new wallet with that name
-   * @param {string} name - The name of the wallet to search for
-   * @return {Wallet} The wallet found or created   
+   * Returns the wallet with the given name or creates adds and returns a new wallet with that name.
+   * @param {string} name - The name of the wallet to search for.
+   * @return {Wallet} The wallet found or created.
    */
   getWallet(name) {
 
@@ -182,10 +226,10 @@ class CryptoTracker {
   }
 
   /**
-   * Determines whether the currency ticker is a valid fiat
-   * Only fiat currencies in the valid fiats list those supported by CryptoComapre will return true
-   * @param {string} currency - The currency ticker in question
-   * @return {boolean} Whether the currency is a valid fiat currency
+   * Determines whether the currency ticker is a valid fiat.
+   * Only fiat currencies in the valid fiats list those supported by CryptoComapre will return true.
+   * @param {string} currency - The currency ticker in question.
+   * @return {boolean} Whether the currency is a valid fiat currency.
    */
   isFiat(currency) {
 
@@ -193,10 +237,10 @@ class CryptoTracker {
   }
 
   /**
-   * Determines whether the currency ticker is a valid cryptocurrency
-   * All currencies that are not valid fiats and pass the loose regular expresion validation will return true
-   * @param {string} currency - The currency ticker in question
-   * @return {boolean} Whether the currency is a valid cryptocurrency
+   * Determines whether the currency ticker is a valid cryptocurrency.
+   * All currencies that are not valid fiats and pass the loose regular expresion validation will return true.
+   * @param {string} currency - The currency ticker in question.
+   * @return {boolean} Whether the currency is a valid cryptocurrency.
    */
   isCrypto(currency) {
 
@@ -205,15 +249,15 @@ class CryptoTracker {
   }
 
   /**
-   * Wraps the lots that have been sold or exchanged in a ClosedLot objects and adds it to the closedLots collection
-   * The credited amount and fees are assigned to the closed lots in proportion to the size of the lots 
-   * @param {lots} lots - The lots that have been sold or exchanged
-   * @param {date} date - The date of the sale or exchange
-   * @param {string} creditCurrency - The ticker of the fiat or cryptocurrency credited for the lots sold or exchanged
-   * @param {number} exRate - The exchange rate of the currency of the lots to the accounting currency at the time of the sale or exchange
-   * @param {number} creditAmount - The amount of the fiat or cryptocurrency credited for the lots sold or exchanged
-   * @param {number} creditFee - The fee in the credited currency for transaction
-   * @param {string} walletName - The name of the wallet (or exchange) where transaction takes place
+   * Wraps the lots that have been sold or exchanged in a ClosedLot objects and adds it to the closedLots collection.
+   * The credited amount and fees are assigned to the closed lots in proportion to the size of the lots.
+   * @param {lots} lots - The lots that have been sold or exchanged.
+   * @param {Date} date - The date of the sale or exchange.
+   * @param {string} creditCurrency - The ticker of the fiat or cryptocurrency credited for the lots sold or exchanged.
+   * @param {number} creditExRate - The exchange rate of the currency of the lots to the accounting currency at the time of the sale or exchange.
+   * @param {number} creditAmount - The amount of the fiat or cryptocurrency credited for the lots sold or exchanged.
+   * @param {number} creditFee - The fee in the credited currency for transaction.
+   * @param {string} creditWalletName - The name of the wallet (or exchange) where transaction takes place.
    */
   closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
 
@@ -253,11 +297,11 @@ class CryptoTracker {
   }
 
   /**
-   * Wraps the donated lots in a DonatedLot object and adds it to the donatedLots collection
-   * @param {lots} lots - The lots being donated
-   * @param {date} date - The date of the donation
-   * @param {number} exRate - The exchange rate of the currency of the lots to the accounting currency at the time of the donation
-   * @param {string} walletName - The name of the wallet from which the lots have been donated
+   * Wraps the donated lots in a DonatedLot object and adds it to the donatedLots collection.
+   * @param {lots} lots - The lots being donated.
+   * @param {Date} date - The date of the donation.
+   * @param {number} exRate - The exchange rate of the currency of the lots to the accounting currency at the time of the donation.
+   * @param {string} walletName - The name of the wallet from which the lots have been donated.
    */
   donateLots(lots, date, exRate, walletName) {
 
@@ -270,11 +314,11 @@ class CryptoTracker {
   }
 
   /**
-   * Saves a set of key value pairs as user properties
-   * Validates apiKey setting if attempting to change the existing value
-   * Sends message to the error handler if the api key validation fails
-   * Displays toast on success
-   * @param {Object.<string, string>} settings - The key value pairs to save as user properties 
+   * Saves a set of key value pairs as user properties.
+   * Validates apiKey setting if attempting to change the existing value.
+   * Sends message to the error handler if the api key validation fails.
+   * Displays toast on success.
+   * @param {Object.<string, string>} settings - The key value pairs to save as user properties .
    */
   saveSettings(settings) {
 

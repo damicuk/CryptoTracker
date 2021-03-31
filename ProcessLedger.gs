@@ -1,8 +1,8 @@
 /**
- * Retrieves and validates and processes the ledger records
- * It treats the ledger as a set of instuctions and simulates the actions specified
- * Uses the error handler to handle CryptoAccountError thrown on withdraw from an account with insufficient funds
- * @return {boolean} Successful completion
+ * Retrieves and validates and processes the ledger records.
+ * It treats the ledger as a set of instuctions and simulates the actions specified.
+ * Uses the error handler to handle CryptoAccountError thrown on withdraw from an account with insufficient funds.
+ * @return {boolean} Successful completion.
  */
 CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 
@@ -14,10 +14,10 @@ CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 };
 
 /**
- * Processes a ledger record
- * It treats the ledger record an instuction and simulates the action specified
- * @param {LedgerRecord} ledgerRecord - The ledger record to process
- * @param {rowIndex} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error
+ * Processes a ledger record.
+ * It treats the ledger record an instuction and simulates the action specified.
+ * @param {LedgerRecord} ledgerRecord - The ledger record to process.
+ * @param {rowIndex} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
  */
 CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) {
 

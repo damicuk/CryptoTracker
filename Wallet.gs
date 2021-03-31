@@ -1,24 +1,37 @@
 /**
- * Wallet (or exchange) with fiat and/or cryptocurrency accounts
- * @class
+ * Wallet (or exchange) with fiat and/or cryptocurrency accounts.
  */
 class Wallet {
 
   /**
-   * @constructor Sets the name of the wallet (or exchange) and initializes empty arrays to contain the fiat and cryptocurrency accounts
-   * @param {string} name - The name of the wallet (or exchange)
+   * Sets the name of the wallet (or exchange) and initializes empty arrays to contain the fiat and cryptocurrency accounts.
+   * @param {string} name - The name of the wallet (or exchange).
    */
   constructor(name) {
 
+    /**
+     * The name of the wallet (or exchange) and initializes empty arrays to contain the fiat and cryptocurrency accounts.
+     * @type {string}
+     */
     this.name = name;
+
+    /**
+     * The fiat accounts.
+     * @type {Array<FiatAccount>}
+     */
     this.fiatAccounts = [];
+
+    /**
+     * The cryptocurrency accounts.
+     * @type {Array<CryptoAccount>}
+     */
     this.cryptoAccounts = [];
   }
 
   /**
-   * Returns the fiat account with the given ticker or creates adds and returns a new fiat account with that ticker
-   * @param {string} fiat - The ticker of the fiat account to search for
-   * @return {FiatAccount} The fiat account found or created   
+   * Returns the fiat account with the given ticker or creates adds and returns a new fiat account with that ticker.
+   * @param {string} fiat - The ticker of the fiat account to search for.
+   * @return {FiatAccount} The fiat account found or created.
    */
   getFiatAccount(fiat) {
 
@@ -38,9 +51,9 @@ class Wallet {
   }
 
   /**
-   * Returns the cryptocurrency account with the given ticker or creates adds and returns a new cryptocurrency account with that ticker
-   * @param {string} crypto - The ticker of the cryptocurrency account to search for
-   * @return {CryptoAccount} The cryptocurrency account found or created   
+   * Returns the cryptocurrency account with the given ticker or creates adds and returns a new cryptocurrency account with that ticker.
+   * @param {string} crypto - The ticker of the cryptocurrency account to search for.
+   * @return {CryptoAccount} The cryptocurrency account found or created.
    */
   getCryptoAccount(crypto) {
 

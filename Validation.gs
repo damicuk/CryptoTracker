@@ -1,7 +1,7 @@
 /**
- * Retrieves and validates the ledger records
- * Uses the error handler to handle any ValidatioError
- * Displays toast on success
+ * Retrieves and validates the ledger records.
+ * Uses the error handler to handle any ValidatioError.
+ * Displays toast on success.
  */
 CryptoTracker.prototype.validateLedger = function () {
 
@@ -24,8 +24,8 @@ CryptoTracker.prototype.validateLedger = function () {
 };
 
 /**
- * Validates a set of ledger records and throws a ValidationError on failure
- * @param {LedgerRecord[]} ledgerRecords - The colection of ledger records to validate
+ * Validates a set of ledger records and throws a ValidationError on failure.
+ * @param {LedgerRecord[]} ledgerRecords - The colection of ledger records to validate.
  */
 CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
 
@@ -37,8 +37,8 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
 };
 
 /**
- * Validates a ledger record and throws a ValidationError on failure
- * @param {LedgerRecord} ledgerRecord - The ledger record to validate
+ * Validates a ledger record and throws a ValidationError on failure.
+ * @param {LedgerRecord} ledgerRecord - The ledger record to validate.
  */
 CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex) {
 

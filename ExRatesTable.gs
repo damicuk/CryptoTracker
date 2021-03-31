@@ -1,7 +1,7 @@
 /**
- * Creates the exrates table sheet if it doesn't already exist
- * No data is writen to this sheet
- * It contains formulas that pull data from other sheets
+ * Creates the exrates table sheet if it doesn't already exist.
+ * No data is writen to this sheet.
+ * It contains formulas that pull data from other sheets.
  */
 CryptoTracker.prototype.exRatesTable = function () {
 

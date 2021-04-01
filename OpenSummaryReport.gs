@@ -26,7 +26,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
       'Crypto',
       'Holding Period',
       'Balance',
-      'Av. Buy Price',
+      'Cost Price',
       'Current Price',
       'Cost Basis',
       'Current Value',

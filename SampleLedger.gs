@@ -96,11 +96,11 @@ CryptoTracker.prototype.sampleLedger = function () {
     ['2021-02-12 12:00:00', 'Transfer', 'ADA', , 2, 0.174433, 'Yoroi', , , , , 'Deposit', , `Start Staking`],
     ['2021-02-24 22:45:00', 'Income', , , , , , 'ADA', 1, 10, , 'Rewards', , `Staking reward`],
     ['2021-03-01 22:45:00', 'Income', , , , , , 'ADA', 1.3, 10, , 'Rewards', , `Staking reward`],
-    ['2021-03-02 22:45:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Payments are treated as a trade of the asset for its current value`],
-    ['2021-03-03 22:45:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Alternatively Payent may be entered as a Trade if you know the value of the goods or services received`],
-    ['2021-03-04 22:45:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Donations (to registered charities) are recorded in the donations report`],
-    ['2021-03-05 22:45:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , ,],
-    ['2021-03-06 22:45:00', 'Gift', 'ADA', , 1000, , 'Yoroi', , , , , , , `Gifts are not recorded, the asset simply disappears`]
+    ['2021-03-02 12:00:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Payments are treated as a trade of the asset for its current value`],
+    ['2021-03-03 12:00:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Alternatively Payent may be entered as a Trade if you know the value of the goods or services received`],
+    ['2021-03-04 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Donations (to registered charities) are recorded in the donations report`],
+    ['2021-03-05 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , ,],
+    ['2021-03-06 12:00:00', 'Gift', 'ADA', , 1000, , 'Yoroi', , , , , , , `Gifts are not recorded, the asset simply disappears`]
   ];
 
   sheet.getRange('A3:N20').setValues(sampleData);

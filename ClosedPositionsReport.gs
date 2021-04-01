@@ -41,7 +41,7 @@ CryptoTracker.prototype.closedPositionsReport = function () {
         'Cost Price',
         'Sell Price',
         'Cost Basis',
-        'Sell Value',
+        'Proceeds',
         'Realized P/L',
         'Realized P/L %',
         'Holding Period'

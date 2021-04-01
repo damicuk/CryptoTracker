@@ -29,7 +29,7 @@ CryptoTracker.prototype.openSummaryReport = function () {
       'Av. Buy Price',
       'Current Price',
       'Cost Basis',
-      'Value',
+      'Current Value',
       'Unrealized P/L',
       'Unrealized P/L %',
       'Crypto (chart)',

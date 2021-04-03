@@ -41,7 +41,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
 
   if (action === 'Transfer') {  //Transfer
 
-    if (CryptoTracker.isFiat(debitCurrency)) { //Fiat transfer
+    if (Currency.isFiat(debitCurrency)) { //Fiat transfer
 
       if (debitWalletName) { //Fiat withdrawal
 
@@ -54,7 +54,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
 
       }
     }
-    else if (CryptoTracker.isCrypto(debitCurrency)) {  //Crypto transfer
+    else if (Currency.isCrypto(debitCurrency)) {  //Crypto transfer
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
@@ -64,7 +64,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
   }
   else if (action === 'Trade') { //Trade
 
-    if (CryptoTracker.isFiat(debitCurrency) && CryptoTracker.isCrypto(creditCurrency)) {  //Buy crypto
+    if (Currency.isFiat(debitCurrency) && Currency.isCrypto(creditCurrency)) {  //Buy crypto
 
       this.getWallet(debitWalletName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
 
@@ -73,7 +73,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
       this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
     }
-    else if (CryptoTracker.isCrypto(debitCurrency) && CryptoTracker.isFiat(creditCurrency)) { //Sell crypto
+    else if (Currency.isCrypto(debitCurrency) && Currency.isFiat(creditCurrency)) { //Sell crypto
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
@@ -82,7 +82,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
       this.getWallet(debitWalletName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
 
     }
-    else if (CryptoTracker.isCrypto(debitCurrency) && CryptoTracker.isCrypto(creditCurrency)) { //Exchange cyrptos
+    else if (Currency.isCrypto(debitCurrency) && Currency.isCrypto(creditCurrency)) { //Exchange cyrptos
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 

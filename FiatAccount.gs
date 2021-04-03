@@ -1,26 +1,34 @@
 /**
  * Fiat currency account.
- * Calculation are done in cents to avoid computational rounding errors.
+ * Calculation are done in integer amounts of subunits to avoid computational rounding errors.
  */
 class FiatAccount {
 
   /**
    * Sets the fiat currency and initializes the balance to 0.
-   * @param {string} fiat - the fiat currency ticker.
+   * @param {string} ticker - the fiat currency ticker.
    */
-  constructor(fiat) {
+  constructor(ticker) {
 
     /**
      * The fiat currency ticker.
      * @type {string}
      */
-    this.fiat = fiat;
+    this.ticker = ticker;
+
 
     /**
-     * The balance in the account in cents.
+     * The number of subunit in a unit of the currency (e.g 100 cents in 1 USD).
+     * @type {number}
+     * @static
+     */
+    this.currencySubunits = Currency.subunits(ticker);
+
+    /**
+     * The balance in the account in subunits.
      * @type {number}
      */
-    this.cents = 0;
+    this.subunits = 0;
 
   }
 
@@ -30,7 +38,7 @@ class FiatAccount {
    */
   get balance() {
 
-    return this.cents / 100;
+    return this.subunits / this.currencySubunits;
 
   }
 
@@ -41,7 +49,7 @@ class FiatAccount {
    */
   transfer(amount) {
 
-    this.cents += Math.round(amount * 100); //round because multiplying
+    this.subunits += Math.round(amount * this.currencySubunits); //round because multiplying
 
     return this;
 

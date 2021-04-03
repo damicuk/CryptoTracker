@@ -118,13 +118,13 @@ CryptoTracker.prototype.getDonationsTable = function () {
     let dateBuy = lot.date;
     let debitCurrencyBuy = lot.debitCurrency;
     let debitExRateBuy = lot.debitExRate;
-    let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
-    let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
+    let debitAmountBuy = lot.debitAmount;
+    let debitFeeBuy = lot.debitFee;
     let walletBuy = lot.walletName;
 
     let creditCurrencyBuy = lot.creditCurrency;
-    let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
-    let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
+    let creditAmountBuy = lot.creditAmount;
+    let creditFeeBuy = lot.creditFee;
 
     let dateDonation = donatedLot.date;
     let exRateDonation = donatedLot.exRate;

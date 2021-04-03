@@ -1,6 +1,6 @@
 /**
  * Represents an amount of cryptocurrency purchased together.
- * Calculations are done in satoshi (1/100,000,000) to avoid computational rounding errors.
+ * Calculations are done in integer amounts of subunits to avoid computational rounding errors.
  */
 class Lot {
 
@@ -31,22 +31,29 @@ class Lot {
     this.debitCurrency = debitCurrency;
 
     /**
+    * The number of subunit in a unit of the debit currency (e.g 100 cents in 1 USD, or 100,000,000 satoshi in 1 BTC).
+    * @type {number}
+    * @static
+    */
+    this.debitCurrencySubunits = Currency.subunits(debitCurrency);
+
+    /**
      * The debit currency to accounting currency exchange rate, 0 if the debit currency is the accounting currency.
      * @type {number}
      */
     this.debitExRate = debitExRate;
-
+    
     /**
-     * The amount of fiat or cryptocurrency debited in satoshi (1/100,000,000).
+     * The amount of fiat or cryptocurrency debited in subunits.
      * @type {number}
      */
-    this.debitAmountSatoshi = Math.round(debitAmount * 1e8);
+    this.debitAmountSubunits = Math.round(debitAmount * this.debitCurrencySubunits);
 
     /**
-     * The fee in the fiat or cryptocurrency debited in satoshi (1/100,000,000).
+     * The fee in the fiat or cryptocurrency debited in subunits.
      * @type {number}
      */
-    this.debitFeeSatoshi = Math.round(debitFee * 1e8);
+    this.debitFeeSubunits = Math.round(debitFee * this.debitCurrencySubunits);
 
     /**
      * The ticker of the cryptocurrency credited.
@@ -55,16 +62,23 @@ class Lot {
     this.creditCurrency = creditCurrency;
 
     /**
-     * The amount of fiat or cryptocurrency credited in satoshi (1/100,000,000).
+     * The number of subunit in a unit of the credit currency (e.g 100 cents in 1 USD, or 100,000,000 satoshi in 1 BTC).
      * @type {number}
+     * @static
      */
-    this.creditAmountSatoshi = Math.round(creditAmount * 1e8);
+    this.creditCurrencySubunits = Currency.subunits(creditCurrency);
 
     /**
-     * The fee in the fiat or cryptocurrency credited in satoshi (1/100,000,000).
+     * The amount of fiat or cryptocurrency credited in subunits.
      * @type {number}
      */
-    this.creditFeeSatoshi = Math.round(creditFee * 1e8);
+    this.creditAmountSubunits = Math.round(creditAmount * this.creditCurrencySubunits);
+
+    /**
+     * The fee in the fiat or cryptocurrency credited in subunits.
+     * @type {number}
+     */
+    this.creditFeeSubunits = Math.round(creditFee * this.creditCurrencySubunits);
 
     /**
      * The name of the wallet (or exchange) in which the transaction took place.
@@ -75,19 +89,55 @@ class Lot {
   }
 
   /**
-   * The balance in the account in satoshi (1/100,000,000).
+   * The amount of fiat or cryptocurrency debited.
    * @type {number}
    */
-  get satoshi() {
+  get debitAmount() {
 
-    return this.creditAmountSatoshi - this.creditFeeSatoshi;
+    return this.debitAmountSubunits / this.debitCurrencySubunits;
   }
 
   /**
-   * The cost basis in cents.
+   * The fee in the fiat or cryptocurrency debited.
    * @type {number}
    */
-  get costBasisCents() {
+  get debitFee() {
+
+    return this.debitFeeSubunits / this.debitCurrencySubunits;
+  }
+
+  /**
+   * The amount of fiat or cryptocurrency credited.
+   * @type {number}
+   */
+  get creditAmount() {
+
+    return this.creditAmountSubunits / this.creditCurrencySubunits;
+  }
+
+  /**
+   * The fee in the fiat or cryptocurrency credited.
+   * @type {number}
+   */
+  get creditFee() {
+
+    return this.creditFeeSubunits / this.creditCurrencySubunits;
+  }
+
+  /**
+   * The balance in the account in subunits.
+   * @type {number}
+   */
+  get subunits() {
+
+    return this.creditAmountSubunits - this.creditFeeSubunits;
+  }
+
+  /**
+   * The cost basis in subunits.
+   * @type {number}
+   */
+  get costBasisSubunits() {
 
     let exRate = 1;
     if (this.debitExRate) {
@@ -96,34 +146,34 @@ class Lot {
 
     }
 
-    return Math.round(((this.debitAmountSatoshi + this.debitFeeSatoshi) * exRate) / 1e6);
+    return Math.round((this.debitAmountSubunits + this.debitFeeSubunits) * exRate);
   }
 
   /**
    * Splits a lot into two lots.
    * Used when withdrawing an amount from a cryptocurrency account.
    * The costs are assigned in proportion to the balances of the returned lots.
-   * @param {number} satoshi - The balance in satoshi requiered in the first lot of the returned lots.
+   * @param {number} subunits - The balance in subunits required in the first lot of the returned lots.
    * @return {Lots[]} Array of two lots, the first having the requested balance, the second with the remainder.
    */
-  split(satoshi) {
+  split(subunits) {
 
     let splitLots = [];
 
-    let debitAmountSatoshi = Math.round((satoshi / this.satoshi) * this.debitAmountSatoshi);
-    let debitFeeSatoshi = Math.round((satoshi / this.satoshi) * this.debitFeeSatoshi);
-    let creditFeeSatoshi = Math.round((satoshi / this.satoshi) * this.creditFeeSatoshi);
-    let creditAmountSatoshi = satoshi + creditFeeSatoshi;
+    let debitAmountSubunits = Math.round((subunits / this.subunits) * this.debitAmountSubunits);
+    let debitFeeSubunits = Math.round((subunits / this.subunits) * this.debitFeeSubunits);
+    let creditFeeSubunits = Math.round((subunits / this.subunits) * this.creditFeeSubunits);
+    let creditAmountSubunits = subunits + creditFeeSubunits;
 
     let lot1 = new Lot(
       this.date,
       this.debitCurrency,
       this.debitExRate,
-      debitAmountSatoshi / 1e8,
-      debitFeeSatoshi / 1e8,
+      debitAmountSubunits / this.debitCurrencySubunits,
+      debitFeeSubunits / this.debitCurrencySubunits,
       this.creditCurrency,
-      creditAmountSatoshi / 1e8,
-      creditFeeSatoshi / 1e8,
+      creditAmountSubunits / this.creditCurrencySubunits,
+      creditFeeSubunits / this.creditCurrencySubunits,
       this.walletName);
 
     splitLots.push(lot1);
@@ -132,11 +182,11 @@ class Lot {
       this.date,
       this.debitCurrency,
       this.debitExRate,
-      (this.debitAmountSatoshi - lot1.debitAmountSatoshi) / 1e8,
-      (this.debitFeeSatoshi - lot1.debitFeeSatoshi) / 1e8,
+      (this.debitAmountSubunits - lot1.debitAmountSubunits) / this.debitCurrencySubunits,
+      (this.debitFeeSubunits - lot1.debitFeeSubunits) / this.debitCurrencySubunits,
       this.creditCurrency,
-      (this.creditAmountSatoshi - lot1.creditAmountSatoshi) / 1e8,
-      (this.creditFeeSatoshi - lot1.creditFeeSatoshi) / 1e8,
+      (this.creditAmountSubunits - lot1.creditAmountSubunits) / this.creditCurrencySubunits,
+      (this.creditFeeSubunits - lot1.creditFeeSubunits) / this.creditCurrencySubunits,
       this.walletName);
 
     splitLots.push(lot2);
@@ -156,11 +206,11 @@ class Lot {
       this.date,
       this.debitCurrency,
       this.debitExRate,
-      this.debitAmountSatoshi / 1e8,
-      this.debitFeeSatoshi / 1e8,
+      this.debitAmountSubunits / this.debitCurrencySubunits,
+      this.debitFeeSubunits / this.debitCurrencySubunits,
       this.creditCurrency,
-      this.creditAmountSatoshi / 1e8,
-      this.creditFeeSatoshi / 1e8,
+      this.creditAmountSubunits / this.creditCurrencySubunits,
+      this.creditFeeSubunits / this.creditCurrencySubunits,
       this.walletName);
   }
 }

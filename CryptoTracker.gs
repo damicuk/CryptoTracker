@@ -129,51 +129,6 @@ class CryptoTracker {
   }
 
   /**
-   * Array of supported fiat currency tickers.
-   * Limited to those supported by CryptoCompare.
-   * @type {string[]}
-   * @static
-   */
-  static get validFiats() {
-
-    return ['USD', 'EUR', 'CAD', 'AUD', 'GBP', 'CHF', 'JPY'];
-  }
-
-  /**
-   * Regular expression to loosly validate cryptocurrency format.
-   * @type {RegExp}
-   * @static
-   */
-  static get cryptoRegExp() {
-
-    return /^\w{2,9}$/;
-  }
-
-  /**
-   * Determines whether the currency ticker is a valid fiat.
-   * Only fiat currencies in the valid fiats list those supported by CryptoComapre will return true.
-   * @param {string} currency - The currency ticker in question.
-   * @return {boolean} Whether the currency is a valid fiat currency.
-   * @static
-   */
-  static isFiat(currency) {
-
-    return CryptoTracker.validFiats.includes(currency);
-  }
-
-  /**
-   * Determines whether the currency ticker is a valid cryptocurrency.
-   * All currencies that are not valid fiats and pass the loose regular expresion validation will return true.
-   * @param {string} currency - The currency ticker in question.
-   * @return {boolean} Whether the currency is a valid cryptocurrency.
-   * @static
-   */
-  static isCrypto(currency) {
-
-    return !CryptoTracker.validFiats.includes(currency) && CryptoTracker.cryptoRegExp.test(currency);
-  }
-
-  /**
    * Comparator used to sort items alphabetically.
    * @param {string} a - The first item to be compared.
    * @param {string} b - The second item to be compared.
@@ -199,28 +154,6 @@ class CryptoTracker {
   }
 
   /**
-   * Returns the valid number of decimal digits of a given currency ticker.
-   * @param {string} currency - The fiat or cryptocurrency ticker.
-   * @return {number} - The valid number of decimal digits.
-   * @static
-   */
-  static validDecimalDigits(currency) {
-
-    if (currency === 'JPY') {
-      return 0;
-    }
-    else if (currency === 'ADA') {
-      return 6;
-    }
-    else if (CryptoTracker.isFiat(currency)) {
-      return 2;
-    }
-    else {
-      return 8;
-    }
-  }
-
-  /**
    * Set of fiat currency tickers used by this instance.
    * Only filled once processLedger has completed.
    * @type {Set}
@@ -230,7 +163,7 @@ class CryptoTracker {
     let fiats = new Set();
     for (let wallet of this.wallets) {
       for (let fiatAccount of wallet.fiatAccounts) {
-        fiats.add(fiatAccount.fiat);
+        fiats.add(fiatAccount.ticker);
       }
     }
     return fiats;
@@ -246,7 +179,7 @@ class CryptoTracker {
     let cryptos = new Set();
     for (let wallet of this.wallets) {
       for (let cryptoAccount of wallet.cryptoAccounts) {
-        cryptos.add(cryptoAccount.crypto);
+        cryptos.add(cryptoAccount.ticker);
       }
     }
     return cryptos;
@@ -284,37 +217,38 @@ class CryptoTracker {
    */
   closeLots(lots, date, creditCurrency, creditExRate, creditAmount, creditFee, creditWalletName) {
 
-    let creditAmountSatoshi = Math.round(creditAmount * 1e8);
-    let creditFeeSatoshi = Math.round(creditFee * 1e8);
+    let currencySubunits = Currency.subunits(creditCurrency);
+    let creditAmountSubunits = Math.round(creditAmount * currencySubunits);
+    let creditFeeSubunits = Math.round(creditFee * currencySubunits);
 
-    //get total satoshi in lots
-    let lotsSatoshi = 0;
+    //get total subunits in lots
+    let lotsSubunits = 0;
     for (let lot of lots) {
 
-      lotsSatoshi += lot.satoshi;
+      lotsSubunits += lot.subunits;
 
     }
 
     //apportion creditAmount creditFee to lots
-    let remainingCreditAmountSatoshi = creditAmountSatoshi;
-    let remainingCreditFeeSatoshi = creditFeeSatoshi;
+    let remainingCreditAmountSubunits = creditAmountSubunits;
+    let remainingCreditFeeSubunits = creditFeeSubunits;
 
     // loop through all except the last lot
     for (let i = 0; i < lots.length - 1; i++) {
 
       let lot = lots[i];
-      let apportionedCreditAmountSatoshi = Math.round((lot.satoshi / lotsSatoshi) * creditAmountSatoshi);
-      let apportionedCreditFeeSatoshi = Math.round((lot.satoshi / lotsSatoshi) * creditFeeSatoshi);
+      let apportionedCreditAmountSubunits = Math.round((lot.subunits / lotsSubunits) * creditAmountSubunits);
+      let apportionedCreditFeeSubunits = Math.round((lot.subunits / lotsSubunits) * creditFeeSubunits);
 
-      let closedLot = new ClosedLot(lot, date, creditCurrency, creditExRate, (apportionedCreditAmountSatoshi / 1e8), (apportionedCreditFeeSatoshi / 1e8), creditWalletName);
+      let closedLot = new ClosedLot(lot, date, creditCurrency, creditExRate, (apportionedCreditAmountSubunits / currencySubunits), (apportionedCreditFeeSubunits / currencySubunits), creditWalletName);
       this.closedLots.push(closedLot);
 
-      remainingCreditAmountSatoshi -= apportionedCreditAmountSatoshi;
-      remainingCreditFeeSatoshi -= apportionedCreditFeeSatoshi;
+      remainingCreditAmountSubunits -= apportionedCreditAmountSubunits;
+      remainingCreditFeeSubunits -= apportionedCreditFeeSubunits;
 
     }
     //just add the remaining amount fee to the last closed lot to correct for any accumulated rounding errors
-    let closedLot = new ClosedLot(lots[lots.length - 1], date, creditCurrency, creditExRate, (remainingCreditAmountSatoshi / 1e8), (remainingCreditFeeSatoshi / 1e8), creditWalletName);
+    let closedLot = new ClosedLot(lots[lots.length - 1], date, creditCurrency, creditExRate, (remainingCreditAmountSubunits / currencySubunits), (remainingCreditFeeSubunits / currencySubunits), creditWalletName);
     this.closedLots.push(closedLot);
 
   }

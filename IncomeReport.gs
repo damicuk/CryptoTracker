@@ -67,7 +67,7 @@ CryptoTracker.prototype.getIncomeTable = function () {
     let date = lot.date;
     let currency = lot.debitCurrency;
     let exRate = lot.debitExRate;
-    let amount = lot.debitAmountSatoshi / 1e8;
+    let amount = lot.debitAmount;
     let wallet = lot.walletName;
 
     table.push([

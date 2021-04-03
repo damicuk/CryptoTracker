@@ -33,17 +33,17 @@ class Wallet {
    * @param {string} fiat - The ticker of the fiat account to search for.
    * @return {FiatAccount} The fiat account found or created.
    */
-  getFiatAccount(fiat) {
+  getFiatAccount(ticker) {
 
     for (let fiatAccount of this.fiatAccounts) {
 
-      if (fiatAccount.fiat === fiat) {
+      if (fiatAccount.ticker === ticker) {
 
         return fiatAccount;
       }
     }
 
-    let fiatAccount = new FiatAccount(fiat);
+    let fiatAccount = new FiatAccount(ticker);
 
     this.fiatAccounts.push(fiatAccount);
 
@@ -52,20 +52,20 @@ class Wallet {
 
   /**
    * Returns the cryptocurrency account with the given ticker or creates adds and returns a new cryptocurrency account with that ticker.
-   * @param {string} crypto - The ticker of the cryptocurrency account to search for.
+   * @param {string} ticker - The ticker of the cryptocurrency account to search for.
    * @return {CryptoAccount} The cryptocurrency account found or created.
    */
-  getCryptoAccount(crypto) {
+  getCryptoAccount(ticker) {
 
     for (let cryptoAccount of this.cryptoAccounts) {
 
-      if (cryptoAccount.crypto === crypto) {
+      if (cryptoAccount.ticker === ticker) {
 
         return cryptoAccount;
       }
     }
 
-    let cryptoAccount = new CryptoAccount(crypto);
+    let cryptoAccount = new CryptoAccount(ticker);
 
     this.cryptoAccounts.push(cryptoAccount);
 

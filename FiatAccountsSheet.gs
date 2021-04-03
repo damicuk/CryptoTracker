@@ -49,7 +49,7 @@ CryptoTracker.prototype.getFiatTable = function () {
 
     for (let fiatAccount of wallet.fiatAccounts) {
 
-      table.push([wallet.name, fiatAccount.fiat, fiatAccount.balance]);
+      table.push([wallet.name, fiatAccount.ticker, fiatAccount.balance]);
 
     }
   }

@@ -1,20 +1,27 @@
 /**
  * Cryptocurrency account.
- * Calculation are done in satoshi (1/100,000,000) to avoid computational rounding errors.
+ * Calculation are done in integer amounts of subunits to avoid computational rounding errors.
  */
 class CryptoAccount {
 
   /**
    * Sets the cryptocurrency currency and initializes an empty array to contain the crytocurrency lots.
-   * @param {string} crypto - the cryptocurrency currency ticker.
+   * @param {string} ticker - the cryptocurrency currency ticker.
    */
-  constructor(crypto) {
+  constructor(ticker) {
 
     /**
      * The cryptocurrency currency ticker.
      * @type {string}
      */
-    this.crypto = crypto;
+    this.ticker = ticker;
+
+    /**
+     * The number of subunit in a unit of the currency (e.g 100,000,000 satoshi in 1 BTC).
+     * @type {number}
+     * @static
+     */
+    this.currencySubunits = Currency.subunits(ticker);
 
     /**
      * The crytocurrency lots.
@@ -25,18 +32,18 @@ class CryptoAccount {
   }
 
   /**
-   * The balance in the account in satoshi (1/100,000,000).
+   * The balance in the account in subunits.
    * @type {number}
    */
-  get satoshi() {
+  get subunits() {
 
-    let satoshi = 0;
+    let subunits = 0;
     for (let lot of this.lots) {
 
-      satoshi += lot.satoshi; //adding two integers - no need to round
+      subunits += lot.subunits; //adding two integers - no need to round
 
     }
-    return satoshi;
+    return subunits;
   }
 
   /**
@@ -45,7 +52,7 @@ class CryptoAccount {
    */
   get balance() {
 
-    return this.satoshi / 1e8;
+    return this.subunits / this.currencySubunits;
   }
 
   /**
@@ -82,13 +89,13 @@ class CryptoAccount {
    */
   withdraw(amount, fee, lotMatching, row) {
 
-    let amountSatoshi = Math.round(amount * 1e8);
-    let feeSatoshi = Math.round(fee * 1e8);
-    let neededSatoshi = amountSatoshi + feeSatoshi;
+    let amountSubunits = Math.round(amount * this.currencySubunits);
+    let feeSubunits = Math.round(fee * this.currencySubunits);
+    let neededSubunits = amountSubunits + feeSubunits;
 
-    if (neededSatoshi > this.satoshi) {
+    if (neededSubunits > this.subunits) {
 
-      throw new CryptoAccountError(`Attempted to withdraw ${this.crypto} ${amount} + fee ${fee} from balance of ${this.crypto} ${this.balance}`, row);
+      throw new CryptoAccountError(`Attempted to withdraw ${this.ticker} ${amount} + fee ${fee} from balance of ${this.ticker} ${this.balance}`, row);
 
     }
 
@@ -98,17 +105,17 @@ class CryptoAccount {
     let withdrawLots = [];
     for (let lot of this.lots) {
 
-      if (neededSatoshi > 0) {  //need more
+      if (neededSubunits > 0) {  //need more
 
-        if (lot.satoshi <= neededSatoshi) { //want full lot
+        if (lot.subunits <= neededSubunits) { //want full lot
           withdrawLots.push(lot);
-          neededSatoshi -= lot.satoshi;
+          neededSubunits -= lot.subunits;
         }
         else {  //need to split lot
-          let splitLots = lot.split(neededSatoshi);
+          let splitLots = lot.split(neededSubunits);
           withdrawLots.push(splitLots[0]);
           keepLots.push(splitLots[1]);
-          neededSatoshi = 0;
+          neededSubunits = 0;
         }
 
       }
@@ -120,21 +127,21 @@ class CryptoAccount {
     }
 
     //apportion the fee to withdrawal lots
-    let totalSatoshi = amountSatoshi + feeSatoshi;
-    let remainingFeeSatoshi = feeSatoshi;
+    let totalSubunits = amountSubunits + feeSubunits;
+    let remainingFeeSubunits = feeSubunits;
 
     // loop through all except the last lot
     for (let i = 0; i < withdrawLots.length - 1; i++) {
 
       let lot = withdrawLots[i];
-      let apportionedFeeSatoshi = Math.round((lot.satoshi / totalSatoshi) * feeSatoshi);
-      lot.creditFeeSatoshi += apportionedFeeSatoshi;
-      remainingFeeSatoshi -= apportionedFeeSatoshi;
+      let apportionedFeeSubunits = Math.round((lot.subunits / totalSubunits) * feeSubunits);
+      lot.creditFeeSubunits += apportionedFeeSubunits;
+      remainingFeeSubunits -= apportionedFeeSubunits;
 
     }
     //just add the remaining fee to the last lot to correct for any accumulated rounding errors
-    withdrawLots[withdrawLots.length - 1].creditFeeSatoshi += remainingFeeSatoshi;
-
+    withdrawLots[withdrawLots.length - 1].creditFeeSubunits += remainingFeeSubunits;
+    
     this.lots = keepLots;
     return withdrawLots;
   }
@@ -166,13 +173,13 @@ class CryptoAccount {
     else if (lotMatching === 'LOFO') {
 
       return function (lot1, lot2) {
-        return (lot1.costBasisCents / lot1.satoshi) - (lot2.costBasisCents / lot2.satoshi);
+        return (lot1.costBasisSubunits / lot1.subunits) - (lot2.costBasisSubunits / lot2.subunits);
       };
     }
     else if (lotMatching === 'HIFO') {
 
       return function (lot1, lot2) {
-        return (lot2.costBasisCents / lot2.satoshi) - (lot1.costBasisCents / lot1.satoshi);
+        return (lot2.costBasisSubunits / lot2.subunits) - (lot1.costBasisSubunits / lot1.subunits);
       };
     }
     else {

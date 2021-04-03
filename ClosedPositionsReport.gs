@@ -124,19 +124,19 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
     let dateBuy = lot.date;
     let debitCurrencyBuy = lot.debitCurrency;
     let debitExRateBuy = lot.debitExRate;
-    let debitAmountBuy = lot.debitAmountSatoshi / 1e8;
-    let debitFeeBuy = lot.debitFeeSatoshi / 1e8;
+    let debitAmountBuy = lot.debitAmount;
+    let debitFeeBuy = lot.debitFee;
     let walletBuy = lot.walletName;
 
     let creditCurrencyBuy = lot.creditCurrency;
-    let creditAmountBuy = lot.creditAmountSatoshi / 1e8;
-    let creditFeeBuy = lot.creditFeeSatoshi / 1e8;
+    let creditAmountBuy = lot.creditAmount;
+    let creditFeeBuy = lot.creditFee;
 
     let dateSell = closedLot.date;
     let creditCurrencySell = closedLot.creditCurrency;
     let creditExRateSell = closedLot.creditExRate;
-    let creditAmountSell = closedLot.creditAmountSatoshi / 1e8;
-    let creditFeeSell = closedLot.creditFeeSatoshi / 1e8;
+    let creditAmountSell = closedLot.creditAmount;
+    let creditFeeSell = closedLot.creditFee;
     let walletSell = closedLot.walletName;
 
     table.push([

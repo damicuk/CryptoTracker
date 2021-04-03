@@ -115,13 +115,13 @@ CryptoTracker.prototype.getOpenPositionsTable = function () {
         let date = lot.date;
         let debitCurrency = lot.debitCurrency;
         let debitExRate = lot.debitExRate;
-        let debitAmount = lot.debitAmountSatoshi / 1e8;
-        let debitFee = lot.debitFeeSatoshi / 1e8;
+        let debitAmount = lot.debitAmount;
+        let debitFee = lot.debitFee;
         let buyWallet = lot.walletName;
 
         let creditCurrency = lot.creditCurrency;
-        let creditAmount = lot.creditAmountSatoshi / 1e8;
-        let creditFee = lot.creditFeeSatoshi / 1e8;
+        let creditAmount = lot.creditAmount;
+        let creditFee = lot.creditFee;
 
         let currentWallet = wallet.name;
 

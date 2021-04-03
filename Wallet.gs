@@ -30,7 +30,7 @@ class Wallet {
 
   /**
    * Returns the fiat account with the given ticker or creates adds and returns a new fiat account with that ticker.
-   * @param {string} fiat - The ticker of the fiat account to search for.
+   * @param {string} ticker - The ticker of the fiat account to search for.
    * @return {FiatAccount} The fiat account found or created.
    */
   getFiatAccount(ticker) {

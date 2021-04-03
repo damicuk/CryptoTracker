@@ -29,7 +29,7 @@ class Currency {
   /**
    * Determines whether the currency ticker is a valid fiat.
    * Only fiat currencies in the valid fiats list those supported by CryptoComapre will return true.
-   * @param {string} currency - The currency ticker in question.
+   * @param {string} ticker - The currency ticker in question.
    * @return {boolean} Whether the currency is a valid fiat currency.
    * @static
    */
@@ -41,7 +41,7 @@ class Currency {
   /**
    * Determines whether the currency ticker is a valid cryptocurrency.
    * All currencies that are not valid fiats and pass the loose regular expresion validation will return true.
-   * @param {string} currency - The currency ticker in question.
+   * @param {string} ticker - The currency ticker in question.
    * @return {boolean} Whether the currency is a valid cryptocurrency.
    * @static
    */
@@ -52,7 +52,7 @@ class Currency {
 
   /**
    * Returns the valid number of decimal digits of a given currency ticker.
-   * @param {string} currency - The fiat or cryptocurrency ticker.
+   * @param {string} ticker - The fiat or cryptocurrency ticker.
    * @return {number} - The valid number of decimal digits.
    * @static
    */
@@ -74,7 +74,7 @@ class Currency {
 
   /**
    * Returns the number of subunit in a unit of a given currency ticker (e.g 100 cents in 1 USD, or 100,000,000 satoshi in 1 BTC).
-   * @param {string} currency - The fiat or cryptocurrency ticker.
+   * @param {string} ticker - The fiat or cryptocurrency ticker.
    * @return {number} - The number of subunit in a unit of the currency ticker (e.g 100 cents in 1 USD, or 100,000,000 satoshi in 1 BTC).
    * @static
    */

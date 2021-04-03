@@ -1,7 +1,7 @@
 /**
- * Creates the income report if it doesn't already exist
- * Updates the sheet with the current income data
- * Trims the sheet to fit the data
+ * Creates the income report if it doesn't already exist.
+ * Updates the sheet with the current income data.
+ * Trims the sheet to fit the data.
  */
 CryptoTracker.prototype.incomeReport = function () {
 
@@ -36,7 +36,7 @@ CryptoTracker.prototype.incomeReport = function () {
     sheet.getRange('F2:F').setNumberFormat('#,##0.00;(#,##0.00)');
 
     const formulas = [[
-      `IFERROR(ArrayFormula(FILTER(D2:D*C2:C, LEN(A2:A))),)`
+      `IF(ISBLANK(A2),,ArrayFormula(FILTER(D2:D*C2:C, LEN(A2:A))))`
     ]];
 
     sheet.getRange('F2:F2').setFormulas(formulas);
@@ -48,15 +48,15 @@ CryptoTracker.prototype.incomeReport = function () {
 
   let dataTable = this.getIncomeTable();
 
-  this.writeTable(sheet, dataTable, 1, 5, 1);
+  this.writeTable(ss, sheet, dataTable, this.incomeRangeName, 1, 5, 1);
 
-}
+};
 
 
 /**
- * Returns a table of the current income data
- * The income data is collected when the ledger is processed
- * @return {*[][]} The current income data
+ * Returns a table of the current income data.
+ * The income data is collected when the ledger is processed.
+ * @return {Array<Array>} The current income data.
  */
 CryptoTracker.prototype.getIncomeTable = function () {
 
@@ -81,4 +81,4 @@ CryptoTracker.prototype.getIncomeTable = function () {
   }
 
   return this.sortTable(table, 0);
-}
+};

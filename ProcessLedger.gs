@@ -1,43 +1,23 @@
 /**
- * Retrieves and validates and processes the ledger records
- * It treats the ledger as a set of instuctions and simulates the actions specified
- * Uses the error handler to handle CryptoAccountError thrown on withdraw from an account with insufficient funds
- * @return {boolean} Successful completion
+ * Retrieves and validates and processes the ledger records.
+ * It treats the ledger as a set of instuctions and simulates the actions specified.
+ * Uses the error handler to handle CryptoAccountError thrown on withdraw from an account with insufficient funds.
+ * @return {boolean} Successful completion.
  */
-CryptoTracker.prototype.processLedger = function () {
+CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 
-  let ledgerRecords = this.getLedgerRecords();
-
-  let ledgerValid = this.validateLedgerRecords(ledgerRecords);
-
-  if (!ledgerValid) {
-    return false;
+  //ledger sheet row numbers start at 1 plus two header rows
+  let rowIndex = 3;
+  for (let ledgerRecord of ledgerRecords) {
+    this.processLedgerRecord(ledgerRecord, rowIndex++);
   }
-
-  try {
-    //ledger sheet row numbers start at 1 plus two header rows
-    let rowIndex = 3;
-    for (let ledgerRecord of ledgerRecords) {
-      this.processLedgerRecord(ledgerRecord, rowIndex++);
-    }
-  }
-  catch (error) {
-    if (error instanceof CryptoAccountError) {
-      this.handleError('cryptoAccount', error.message, error.rowIndex, 'debitAmount');
-      return false;
-    }
-    else {
-      throw error;
-    }
-  }
-  return true;
-}
+};
 
 /**
- * Processes a ledger record
- * It treats the ledger record an instuction and simulates the action specified
- * @param {LedgerRecord} ledgerRecord - The ledger record to process
- * @param {rowIndex} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error
+ * Processes a ledger record.
+ * It treats the ledger record an instuction and simulates the action specified.
+ * @param {LedgerRecord} ledgerRecord - The ledger record to process.
+ * @param {rowIndex} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
  */
 CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) {
 
@@ -61,7 +41,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
 
   if (action === 'Transfer') {  //Transfer
 
-    if (this.isFiat(debitCurrency)) { //Fiat transfer
+    if (CryptoTracker.isFiat(debitCurrency)) { //Fiat transfer
 
       if (debitWalletName) { //Fiat withdrawal
 
@@ -74,7 +54,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
 
       }
     }
-    else if (this.isCrypto(debitCurrency)) {  //Crypto transfer
+    else if (CryptoTracker.isCrypto(debitCurrency)) {  //Crypto transfer
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
@@ -84,7 +64,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
   }
   else if (action === 'Trade') { //Trade
 
-    if (this.isFiat(debitCurrency) && this.isCrypto(creditCurrency)) {  //Buy crypto
+    if (CryptoTracker.isFiat(debitCurrency) && CryptoTracker.isCrypto(creditCurrency)) {  //Buy crypto
 
       this.getWallet(debitWalletName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
 
@@ -93,7 +73,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
       this.getWallet(debitWalletName).getCryptoAccount(creditCurrency).deposit(lot);
 
     }
-    else if (this.isCrypto(debitCurrency) && this.isFiat(creditCurrency)) { //Sell crypto
+    else if (CryptoTracker.isCrypto(debitCurrency) && CryptoTracker.isFiat(creditCurrency)) { //Sell crypto
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
@@ -102,7 +82,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
       this.getWallet(debitWalletName).getFiatAccount(creditCurrency).transfer(creditAmount).transfer(-creditFee);
 
     }
-    else if (this.isCrypto(debitCurrency) && this.isCrypto(creditCurrency)) { //Exchange cyrptos
+    else if (CryptoTracker.isCrypto(debitCurrency) && CryptoTracker.isCrypto(creditCurrency)) { //Exchange cyrptos
 
       let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
@@ -141,7 +121,11 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
 
     let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
-    this.payLots(lots, date, debitExRate, debitAmount, debitFee, debitWalletName);
+    //convert amount and fee to accounting currency
+    let creditAmount = Math.round(debitExRate * debitAmount * 100) / 100;
+    let creditFee = Math.round(debitExRate * debitFee * 100) / 100;
+
+    this.closeLots(lots, date, this.accountingCurrency, 0, creditAmount, creditFee, debitWalletName);
 
   }
-}
+};

@@ -1,7 +1,7 @@
 /**
- * Creates the closed positions report if it doesn't already exist
- * Updates the sheet with the current closed positions data
- * Trims the sheet to fit the data
+ * Creates the closed positions report if it doesn't already exist.
+ * Updates the sheet with the current closed positions data.
+ * Trims the sheet to fit the data.
  */
 CryptoTracker.prototype.closedPositionsReport = function () {
 
@@ -41,10 +41,10 @@ CryptoTracker.prototype.closedPositionsReport = function () {
         'Cost Price',
         'Sell Price',
         'Cost Basis',
-        'Sell Value',
-        'Unrealized P/L',
-        'Unrealized P/L %',
-        'Long / Short Term'
+        'Proceeds',
+        'Realized P/L',
+        'Realized P/L %',
+        'Holding Period'
       ]
     ];
 
@@ -85,14 +85,14 @@ CryptoTracker.prototype.closedPositionsReport = function () {
     this.addLongShortCondition(sheet, 'W3:W');
 
     const formulas = [[
-      `IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(S3:S/P3:P, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(T3:T/P3:P, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(IF(L3:L, (M3:M-N3:N)*L3:L, M3:M-N3:N), LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(T3:T-S3:S, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(U3:U/S3:S, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, J3:J, "Y") > 1)+(((DATEDIF(A3:A, J3:J, "Y") = 1)*(DATEDIF(A3:A, J3:J, "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(P3:P=0,,S3:S/P3:P), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(P3:P=0,,T3:T/P3:P), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(L3:L, (M3:M-N3:N)*L3:L, M3:M-N3:N), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(T3:T-S3:S, LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(S3:S=0,,U3:U/S3:S), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF((DATEDIF(A3:A, J3:J, "Y") > 1)+(((DATEDIF(A3:A, J3:J, "Y") = 1)*(DATEDIF(A3:A, J3:J, "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A)))))`
     ]];
 
     sheet.getRange('P3:W3').setFormulas(formulas);
@@ -104,14 +104,14 @@ CryptoTracker.prototype.closedPositionsReport = function () {
 
   let dataTable = this.getClosedPositionsTable();
 
-  this.writeTable(sheet, dataTable, 2, 15, 8);
+  this.writeTable(ss, sheet, dataTable, this.closedPositionsRangeName, 2, 15, 8);
 
-}
+};
 
 /**
- * Returns a table of the current closed positions data
- * The closed positions data is collected when the ledger is processed
- * @return {*[][]} The current closed positions data
+ * Returns a table of the current closed positions data.
+ * The closed positions data is collected when the ledger is processed.
+ * @return {Array<Array>} The current closed positions data.
  */
 CryptoTracker.prototype.getClosedPositionsTable = function () {
 
@@ -162,5 +162,5 @@ CryptoTracker.prototype.getClosedPositionsTable = function () {
   }
 
   return this.sortTable(table, 9);
-}
+};
 

@@ -1,7 +1,7 @@
 /**
- * Creates the income summary report if it doesn't already exist
- * No data is writen to this sheet
- * It contains formulas that pull data from other sheets
+ * Creates the income summary report if it doesn't already exist.
+ * No data is writen to this sheet.
+ * It contains formulas that pull data from other sheets.
  */
 CryptoTracker.prototype.incomeSummaryReport = function () {
 
@@ -13,12 +13,12 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
   if (sheet) {
 
     return;
-    
+
   }
 
   sheet = ss.insertSheet(sheetName);
-  
-  const referenceSheetName = this.incomeReportName;
+
+  const referenceRangeName = this.incomeRangeName;
 
   let headers = [
     [
@@ -37,18 +37,14 @@ CryptoTracker.prototype.incomeSummaryReport = function () {
   sheet.getRange('D2:D').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR(SORT(UNIQUE(FILTER({YEAR('${referenceSheetName}'!A2:A),'${referenceSheetName}'!B2:B},LEN('${referenceSheetName}'!A2:A)))),)`, ,
-    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!A2:A)&'${referenceSheetName}'!B2:B, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!D2:D))`,
-    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!A2:A)&'${referenceSheetName}'!B2:B, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!F2:F))`
+    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{QUERY(${referenceRangeName}, "SELECT YEAR(A), B, SUM(D), SUM(F) GROUP BY B, YEAR(A) ORDER BY YEAR(A), B LABEL YEAR(A) '', SUM(D) '', SUM(F) ''");
+{QUERY(${referenceRangeName}, "SELECT YEAR(A), 'SUBTOTAL', ' ', SUM(F) GROUP BY YEAR(A) ORDER BY YEAR(A) LABEL YEAR(A) '', 'SUBTOTAL' '', ' ' '', SUM(F) ''")};
+{"","TOTAL","",QUERY(${referenceRangeName}, "SELECT SUM(F) LABEL SUM(F) ''")}})`, , , ,
   ]];
 
   sheet.getRange('A2:D2').setFormulas(formulas);
 
   this.trimColumns(sheet, 4);
 
-  SpreadsheetApp.flush();
-
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
-
-  SpreadsheetApp.flush();
-}
+};

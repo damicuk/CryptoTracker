@@ -1,27 +1,50 @@
 /**
- * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports
- * Updates the data validation on the ledger currency and wallet columns
- * Uses the error handler to handle API errors
- * Otherwise displays toast on success
- * Returns the currenct cell to its original location
+ * Validates and processes the ledger, retrieves the currenct crypto prices, and writes the reports.
+ * Uses the error handler to handle any ValidatioError, CryptoAccountError, or ApiError .
+ * Updates the data validation on the ledger currency and wallet columns.
+ * Displays toast on success.
+ * Returns the currenct cell to its original location.
  */
 CryptoTracker.prototype.writeReports = function () {
 
   let currentCell = SpreadsheetApp.getCurrentCell();
 
-  let ledgerProcessed = this.processLedger();
-
-  if (!ledgerProcessed) {
-    return;
+  let ledgerRecords;
+  try {
+    ledgerRecords = this.getLedgerRecords();
+    this.validateLedgerRecords(ledgerRecords);
+  }
+  catch (error) {
+    if (error instanceof ValidationError) {
+      this.handleError('validation', error.message, error.rowIndex, error.columnName);
+      return;
+    }
+    else {
+      throw error;
+    }
   }
 
-  let errorMessage;
+  try {
+    this.processLedger(ledgerRecords);
+  }
+  catch (error) {
+    if (error instanceof CryptoAccountError) {
+      this.handleError('cryptoAccount', error.message, error.rowIndex, 'debitAmount');
+      return;
+    }
+    else {
+      throw error;
+    }
+  }
+
+  let apiError;
   try {
     this.exRatesSheet();
   }
   catch (error) {
-    if(error instanceof ApiError) {
-      errorMessage = error.message;
+    if (error instanceof ApiError) {
+      //handle the error later
+      apiError = error;
     }
     else {
       throw error;
@@ -39,15 +62,13 @@ CryptoTracker.prototype.writeReports = function () {
   this.donationsSummaryReport();
   this.cryptoWalletsReport();
   this.fiatWalletsReport();
-  this.openPLReport();
-  this.closedPLReport();
   this.exRatesTable();
 
   this.updateLedgerCurrencies();
   this.updateLedgerWallets();
 
-  if (errorMessage) {
-    this.handleError('api', errorMessage);
+  if (apiError) {
+    this.handleError('api', apiError.message);
   }
   else {
     SpreadsheetApp.getActive().toast('Reports complete', 'Finished', 10);
@@ -55,12 +76,12 @@ CryptoTracker.prototype.writeReports = function () {
 
   SpreadsheetApp.setCurrentCell(currentCell);
 
-}
+};
 
 /**
- * Deletes all the output sheets
- * Not intended for use by the end user
- * Useful in development and testing
+ * Deletes all the output sheets.
+ * Not intended for use by the end user.
+ * Useful in development and testing.
  */
 CryptoTracker.prototype.deleteReports = function () {
 
@@ -75,8 +96,6 @@ CryptoTracker.prototype.deleteReports = function () {
     this.donationsSummaryReportName,
     this.cryptoWalletsReportName,
     this.fiatWalletsReportName,
-    this.openPLReportName,
-    this.closedPLReportName,
     this.exRatesTableSheetName,
     this.exRatesSheetName,
     this.fiatAccountsSheetName
@@ -84,4 +103,4 @@ CryptoTracker.prototype.deleteReports = function () {
 
   this.deleteSheets(sheetNames);
 
-}
+};

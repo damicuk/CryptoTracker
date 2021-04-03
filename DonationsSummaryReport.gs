@@ -1,7 +1,7 @@
 /**
- * Creates the donations summary report if it doesn't already exist
- * No data is writen to this sheet
- * It contains formulas that pull data from other sheets
+ * Creates the donations summary report if it doesn't already exist.
+ * No data is writen to this sheet.
+ * It contains formulas that pull data from other sheets.
  */
 CryptoTracker.prototype.donationsSummaryReport = function () {
 
@@ -13,12 +13,12 @@ CryptoTracker.prototype.donationsSummaryReport = function () {
   if (sheet) {
 
     return;
-    
+
   }
 
   sheet = ss.insertSheet(sheetName);
 
-  const referenceSheetName = this.donationsReportName;
+  const referenceRangeName = this.donationsRangeName;
 
   let headers = [
     [
@@ -39,19 +39,14 @@ CryptoTracker.prototype.donationsSummaryReport = function () {
   sheet.getRange('E2:E').setNumberFormat('#,##0.00;(#,##0.00)');
 
   const formulas = [[
-    `IFERROR(SORT(UNIQUE(FILTER({YEAR('${referenceSheetName}'!J3:J),'${referenceSheetName}'!G3:G},LEN('${referenceSheetName}'!A3:A)))),)`, ,
-    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!M2:M))`,
-    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!P2:P))`,
-    `ArrayFormula(SUMIF(YEAR('${referenceSheetName}'!J2:J)&'${referenceSheetName}'!G2:G, FILTER(A2:A&B2:B, LEN(A2:A)), '${referenceSheetName}'!Q2:Q))`
+    `IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,{QUERY(${referenceRangeName}, "SELECT YEAR(J), G, SUM(M), SUM(P), SUM(Q) GROUP BY YEAR(J), G ORDER BY YEAR(J), G LABEL YEAR(J) '', SUM(M) '', SUM(P) '', SUM(Q) ''");
+{QUERY(${referenceRangeName}, "SELECT YEAR(J), 'SUBTOTAL', ' ', SUM(P), SUM(Q) GROUP BY YEAR(J) ORDER BY YEAR(J) LABEL YEAR(J) '', 'SUBTOTAL' '', ' ' '', SUM(P) '', SUM(Q) ''")};
+{"","TOTAL","",QUERY(${referenceRangeName}, "SELECT SUM(P), SUM(Q) LABEL SUM(P) '', SUM(Q) ''")}})`, , , , ,
   ]];
 
   sheet.getRange('A2:E2').setFormulas(formulas);
 
   this.trimColumns(sheet, 5);
 
-  SpreadsheetApp.flush();
-
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
-
-  SpreadsheetApp.flush();
-}
+};

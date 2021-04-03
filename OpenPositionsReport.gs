@@ -1,12 +1,12 @@
 /**
- * Creates the open positions report if it doesn't already exist
- * Updates the sheet with the current open positions data
- * Trims the sheet to fit the data
+ * Creates the open positions report if it doesn't already exist.
+ * Updates the sheet with the current open positions data.
+ * Trims the sheet to fit the data.
  */
 CryptoTracker.prototype.openPositionsReport = function () {
 
   const sheetName = this.openPositionsReportName;
-  const exRatesSheetName = this.exRatesSheetName;
+  const exRatesRangeName = this.exRatesRangeName;
 
   let ss = SpreadsheetApp.getActive();
   let sheet = ss.getSheetByName(sheetName);
@@ -40,7 +40,7 @@ CryptoTracker.prototype.openPositionsReport = function () {
         'Current Value',
         'Unrealized P/L',
         'Unrealized P/L %',
-        'Long / Short Term'
+        'Holding Period'
       ]
     ];
 
@@ -75,14 +75,14 @@ CryptoTracker.prototype.openPositionsReport = function () {
     this.addLongShortCondition(sheet, 'R3:R');
 
     const formulas = [[
-      `IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(N3:N/K3:K, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(VLOOKUP(G3:G,'${exRatesSheetName}'!B2:D, 3, FALSE), LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
-      `ArrayFormula(IF(NOT(LEN(M3:M)),,FILTER(K3:K*M3:M, LEN(A3:A))))`,
-      `ArrayFormula(IF(NOT(LEN(M3:M)),,FILTER(O3:O-N3:N, LEN(A3:A))))`,
-      `ArrayFormula(IF(NOT(LEN(M3:M)),,FILTER(IF(N3:N>0, P3:P/N3:N, ""), LEN(A3:A))))`,
-      `IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, NOW(), "Y") > 1)+(((DATEDIF(A3:A, NOW(), "Y") = 1)*(DATEDIF(A3:A, NOW(), "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(K3:K=0,,N3:N/K3:K), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,ArrayFormula(FILTER(IFNA(VLOOKUP(G3:G, QUERY(${exRatesRangeName}, "SELECT B, D"), 2, FALSE),), LEN(A3:A))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A)))))`,
+      `ArrayFormula(IF(ISBLANK(M3:M),,FILTER(K3:K*M3:M, LEN(A3:A))))`,
+      `ArrayFormula(IF(ISBLANK(M3:M),,FILTER(O3:O-N3:N, LEN(A3:A))))`,
+      `ArrayFormula(IF(ISBLANK(M3:M),,FILTER(IF(N3:N=0,,P3:P/N3:N), LEN(A3:A))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF((DATEDIF(A3:A, NOW(), "Y") > 1)+(((DATEDIF(A3:A, NOW(), "Y") = 1)*(DATEDIF(A3:A, NOW(), "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A)))))`
     ]];
 
     sheet.getRange('K3:R3').setFormulas(formulas);
@@ -94,14 +94,14 @@ CryptoTracker.prototype.openPositionsReport = function () {
 
   let dataTable = this.getOpenPositionsTable();
 
-  this.writeTable(sheet, dataTable, 2, 10, 8);
+  this.writeTable(ss, sheet, dataTable, this.openPositionsRangeName, 2, 10, 8);
 
-}
+};
 
 /**
- * Returns a table of the current open positions data
- * The open positions data is collected when the ledger is processed
- * @return {*[][]} The current open positions data
+ * Returns a table of the current open positions data.
+ * The open positions data is collected when the ledger is processed.
+ * @return {Array<Array>} The current open positions data.
  */
 CryptoTracker.prototype.getOpenPositionsTable = function () {
 
@@ -145,4 +145,4 @@ CryptoTracker.prototype.getOpenPositionsTable = function () {
   }
 
   return this.sortTable(table, 0);
-}
+};

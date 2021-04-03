@@ -1,7 +1,7 @@
 /**
- * Creates the crypto wallets report if it doesn't already exist
- * No data is writen to this sheet
- * It contains formulas that pull data from other sheets
+ * Creates the crypto wallets report if it doesn't already exist.
+ * No data is writen to this sheet.
+ * It contains formulas that pull data from other sheets.
  */
 CryptoTracker.prototype.cryptoWalletsReport = function () {
 
@@ -18,10 +18,7 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
 
   sheet = ss.insertSheet(sheetName);
 
-  const referenceSheetName = this.openPositionsReportName;
-
-  sheet.getRange('A1').setValue('Wallet');
-  sheet.getRange('B1').setFormula(`=TRANSPOSE(SORT(UNIQUE('${referenceSheetName}'!G3:G)))`);
+  const referenceRangeName = this.openPositionsRangeName;
 
   sheet.getRange('A1:1').setFontWeight('bold').setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
@@ -29,16 +26,7 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
   sheet.getRange('A2:A').setNumberFormat('@');
   sheet.getRange(2, 2, sheet.getMaxRows(), sheet.getMaxColumns()).setNumberFormat('#,##0.00000000;(#,##0.00000000);');
 
-  const formulas = [[
-    `SORT(UNIQUE('${referenceSheetName}'!J3:J))`,
-    `ARRAYFORMULA(SUMIF('${referenceSheetName}'!J3:J&'${referenceSheetName}'!G3:G, FILTER(A2:A, LEN(A2:A))&FILTER(B1:1, LEN(B1:1)), '${referenceSheetName}'!K3:K))`
-  ]];
-
-  sheet.getRange('A2:B2').setFormulas(formulas);
-
-  SpreadsheetApp.flush();
+  sheet.getRange('A1').setFormula(`IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,QUERY(${referenceRangeName}, "SELECT J, SUM(K) GROUP BY J PIVOT G ORDER BY J LABEL J 'Wallet', SUM(K) ''"))`);
 
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
-
-  SpreadsheetApp.flush();
-}
+};

@@ -1,7 +1,7 @@
 /**
- * Creates the donations report if it doesn't already exist
- * Updates the sheet with the current donations data
- * Trims the sheet to fit the data
+ * Creates the donations report if it doesn't already exist.
+ * Updates the sheet with the current donations data.
+ * Trims the sheet to fit the data.
  */
 CryptoTracker.prototype.donationsReport = function () {
 
@@ -41,7 +41,7 @@ CryptoTracker.prototype.donationsReport = function () {
         'Donation Value',
         'Notional P/L',
         'Notional P/L %',
-        'Long / Short Term'
+        'Holding Period'
       ]
     ];
 
@@ -79,14 +79,14 @@ CryptoTracker.prototype.donationsReport = function () {
     this.addLongShortCondition(sheet, 'T3:T');
 
     const formulas = [[
-      `IFERROR(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(P3:P/M3:M, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(Q3:Q/M3:M, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(K3:K*M3:M, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(Q3:Q-P3:P, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(R3:R/P3:P, LEN(A3:A))),)`,
-      `IFERROR(ArrayFormula(FILTER(IF((DATEDIF(A3:A, J3:J, "Y") > 1)+(((DATEDIF(A3:A, J3:J, "Y") = 1)*(DATEDIF(A3:A, J3:J, "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A))),)`
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(H3:H-I3:I, LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(M3:M=0,,P3:P/M3:M), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(M3:M=0,,Q3:Q/M3:M), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(C3:C, (D3:D+E3:E)*C3:C, D3:D+E3:E), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(K3:K*M3:M, LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(Q3:Q-P3:P, LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF(P3:P=0,,R3:R/P3:P), LEN(A3:A)))))`,
+      `IF(ISBLANK(A3),,(ArrayFormula(FILTER(IF((DATEDIF(A3:A, J3:J, "Y") > 1)+(((DATEDIF(A3:A, J3:J, "Y") = 1)*(DATEDIF(A3:A, J3:J, "YD") > 0))=1)>0,"LONG","SHORT"), LEN(A3:A)))))`
     ]];
 
     sheet.getRange('M3:T3').setFormulas(formulas);
@@ -98,14 +98,14 @@ CryptoTracker.prototype.donationsReport = function () {
 
   let dataTable = this.getDonationsTable();
 
-  this.writeTable(sheet, dataTable, 2, 12, 8);
+  this.writeTable(ss, sheet, dataTable, this.donationsRangeName, 2, 12, 8);
 
-}
+};
 
 /**
- * Returns a table of the current donations data
- * The donations data is collected when the ledger is processed
- * @return {*[][]} The current donations data
+ * Returns a table of the current donations data.
+ * The donations data is collected when the ledger is processed.
+ * @return {Array<Array>} The current donations data.
  */
 CryptoTracker.prototype.getDonationsTable = function () {
 
@@ -150,5 +150,5 @@ CryptoTracker.prototype.getDonationsTable = function () {
   }
 
   return this.sortTable(table, 9);
-}
+};
 

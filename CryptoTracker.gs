@@ -154,6 +154,62 @@ class CryptoTracker {
   }
 
   /**
+   * Apportions an integer amount to an array or integers as equitably as possible.
+   * e.g. used to apportion fees amoungst lots of cryptocurrency in proportion to the size of the lots.
+   * @param {number} integerAmount - The integer amount to divide and apportion.
+   * @param {Array<number>} integerArray - The array of integers which determines the distribution of the divided amount.
+   * @return {Array<number>} - The array of integers that sum to the orignal integer amount, divided as equitably as possible.
+   * @static
+   */
+  static apportionInteger(integerAmount, integerArray) {
+
+    let total = integerArray.reduce((a, b) => a + b, 0);
+    let resultArray = [];
+    let totalError = -integerAmount;
+    let originalIndex = 0;
+    for (let integer of integerArray) {
+
+      let float = (integer / total) * integerAmount;
+      let rounded = Math.round(float);
+      let error = rounded - float;
+
+      resultArray.push([rounded, error, originalIndex++]);
+
+      //By how much does the total apportioned amount differ from the original input amount
+      totalError += rounded;
+
+    }
+
+    if (totalError < 0) { //negative error means we have to add values
+      resultArray.sort(function (a, b) { // sort by error desc (most negative first)
+        return a[1] - b[1];
+      });
+      for (let i = 0; i < -totalError; i++) {
+        resultArray[i][0] += 1;
+      }
+    }
+    else if (totalError > 0) { //positive error means we have to subtract values
+      resultArray.sort(function (a, b) { //sort by error asc (most positive first)
+        return b[1] - a[1];
+      });
+      for (let i = 0; i < totalError; i++) {
+        resultArray[i][0] -= 1;
+      }
+    }
+    resultArray.sort(function (a, b) { //sort back to original order (original index desc)
+      return a[2] - b[2];
+    });
+
+    //extract the first column with the adjusted rounded values
+    let returnArray = [];
+    for (let row of resultArray) {
+      returnArray.push(row[0]);
+    }
+
+    return returnArray;
+  }
+
+  /**
    * Set of fiat currency tickers used by this instance.
    * Only filled once processLedger has completed.
    * @type {Set}
@@ -221,36 +277,26 @@ class CryptoTracker {
     let creditAmountSubunits = Math.round(creditAmount * currencySubunits);
     let creditFeeSubunits = Math.round(creditFee * currencySubunits);
 
-    //get total subunits in lots
-    let lotsSubunits = 0;
+    //apportion the fee to withdrawal lots
+    let lotSubunits = [];
+    for (let lot of lots) {
+      lotSubunits.push(lot.subunits);
+    }
+    let apportionedCreditAmountSubunits = CryptoTracker.apportionInteger(creditAmountSubunits, lotSubunits);
+    let apportionedCreditFeeSubunits = CryptoTracker.apportionInteger(creditFeeSubunits, lotSubunits);
+    let index = 0;
     for (let lot of lots) {
 
-      lotsSubunits += lot.subunits;
+      let closedLot = new ClosedLot(lot,
+        date,
+        creditCurrency,
+        creditExRate,
+        (apportionedCreditAmountSubunits[index] / currencySubunits),
+        (apportionedCreditFeeSubunits[index++] / currencySubunits),
+        creditWalletName);
 
-    }
-
-    //apportion creditAmount creditFee to lots
-    let remainingCreditAmountSubunits = creditAmountSubunits;
-    let remainingCreditFeeSubunits = creditFeeSubunits;
-
-    // loop through all except the last lot
-    for (let i = 0; i < lots.length - 1; i++) {
-
-      let lot = lots[i];
-      let apportionedCreditAmountSubunits = Math.round((lot.subunits / lotsSubunits) * creditAmountSubunits);
-      let apportionedCreditFeeSubunits = Math.round((lot.subunits / lotsSubunits) * creditFeeSubunits);
-
-      let closedLot = new ClosedLot(lot, date, creditCurrency, creditExRate, (apportionedCreditAmountSubunits / currencySubunits), (apportionedCreditFeeSubunits / currencySubunits), creditWalletName);
       this.closedLots.push(closedLot);
-
-      remainingCreditAmountSubunits -= apportionedCreditAmountSubunits;
-      remainingCreditFeeSubunits -= apportionedCreditFeeSubunits;
-
     }
-    //just add the remaining amount fee to the last closed lot to correct for any accumulated rounding errors
-    let closedLot = new ClosedLot(lots[lots.length - 1], date, creditCurrency, creditExRate, (remainingCreditAmountSubunits / currencySubunits), (remainingCreditFeeSubunits / currencySubunits), creditWalletName);
-    this.closedLots.push(closedLot);
-
   }
 
   /**

@@ -127,20 +127,15 @@ class CryptoAccount {
     }
 
     //apportion the fee to withdrawal lots
-    let totalSubunits = amountSubunits + feeSubunits;
-    let remainingFeeSubunits = feeSubunits;
-
-    // loop through all except the last lot
-    for (let i = 0; i < withdrawLots.length - 1; i++) {
-
-      let lot = withdrawLots[i];
-      let apportionedFeeSubunits = Math.round((lot.subunits / totalSubunits) * feeSubunits);
-      lot.creditFeeSubunits += apportionedFeeSubunits;
-      remainingFeeSubunits -= apportionedFeeSubunits;
-
+    let withdrawLotSubunits = [];
+    for(let withdrawLot of withdrawLots) {
+      withdrawLotSubunits.push(withdrawLot.subunits);
     }
-    //just add the remaining fee to the last lot to correct for any accumulated rounding errors
-    withdrawLots[withdrawLots.length - 1].creditFeeSubunits += remainingFeeSubunits;
+    let apportionedFeeSubunits = CryptoTracker.apportionInteger(feeSubunits, withdrawLotSubunits);
+    let index = 0;
+    for(let withdrawLot of withdrawLots) {
+      withdrawLot.creditFeeSubunits += apportionedFeeSubunits[index++];
+    }
     
     this.lots = keepLots;
     return withdrawLots;

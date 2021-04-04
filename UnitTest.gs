@@ -1,5 +1,5 @@
 // Optional for easier use.
-var QUnit = QUnitGS2.QUnit;
+let QUnit = QUnitGS2.QUnit;
 
 // HTML get function
 function doGet() {
@@ -8,6 +8,7 @@ function doGet() {
   testFiatAccount();
   testLot();
   testCryptoAccount();
+  testCurrency();
   testCryptoTracker();
 
   QUnit.start();
@@ -23,22 +24,51 @@ function testFiatAccount() {
 
   QUnit.test('FiatAccount', function (assert) {
 
-    let fiatAccount = new FiatAccount('USD');
-    assert.equal(fiatAccount.balance, 0, 'initial balance 0');
-    fiatAccount.transfer(1.03);
-    assert.equal(fiatAccount.balance, 1.03, 'transfer + whole cents');
-    fiatAccount.transfer(0.004);
-    assert.equal(fiatAccount.balance, 1.03, 'transfer +0.004 cents');
-    fiatAccount.transfer(0.005);
-    assert.equal(fiatAccount.balance, 1.04, 'transfer +0.005 cents');
+    let fiatAccount;
+
+    fiatAccount = new FiatAccount('USD');
+    assert.equal(fiatAccount.balance, 0, 'Initial balance 0');
+
+    fiatAccount = new FiatAccount('USD');
+    fiatAccount.transfer(1.01);
+    assert.equal(fiatAccount.balance, 1.01, 'USD Transfer + whole cents');
+
+    // fiatAccount = new FiatAccount('USD');
+    // fiatAccount.transfer(1.014);
+    // assert.equal(fiatAccount.balance, 1.01, 'USD Transfer + round down');
+
+    // fiatAccount = new FiatAccount('USD');
+    // fiatAccount.transfer(1.015);
+    // assert.equal(fiatAccount.balance, 1.02, 'USD Transfer + round up');
+
+    fiatAccount = new FiatAccount('USD');
+    fiatAccount.transfer(1);
     fiatAccount.transfer(-0.01);
-    assert.equal(fiatAccount.balance, 1.03, 'transfer - whole cents');
-    fiatAccount.transfer(-0.005);
-    assert.equal(fiatAccount.balance, 1.03, 'transfer -0.005 cents');
-    fiatAccount.transfer(-0.006);
-    assert.equal(fiatAccount.balance, 1.02, 'transfer -0.006 cents');
-    fiatAccount.transfer(-2);
-    assert.equal(fiatAccount.balance, -0.98, 'negative balance');
+    assert.equal(fiatAccount.balance, 0.99, 'USD Transfer - whole cents');
+
+    // fiatAccount = new FiatAccount('USD');
+    // fiatAccount.transfer(1);
+    // fiatAccount.transfer(-0.005);
+    // assert.equal(fiatAccount.balance, 1, 'transfer - round up');
+
+    // fiatAccount = new FiatAccount('USD');
+    // fiatAccount.transfer(1);
+    // fiatAccount.transfer(-0.006);
+    // assert.equal(fiatAccount.balance, 0.99, 'transfer - round down');
+
+    fiatAccount = new FiatAccount('USD');
+    fiatAccount.transfer(-1);
+    assert.equal(fiatAccount.balance, -1, 'transfer - negative balance');
+
+    fiatAccount = new FiatAccount('JPY');
+    fiatAccount.transfer(101);
+    assert.equal(fiatAccount.balance, 101, 'JPY Transfer + whole yen');
+
+    fiatAccount = new FiatAccount('USD');
+    fiatAccount.transfer(100);
+    fiatAccount.transfer(-1);
+    assert.equal(fiatAccount.balance, 99, 'USD Transfer - whole cents');
+
   });
 }
 
@@ -138,15 +168,10 @@ function testCryptoAccount() {
   });
 }
 
-function testCryptoTracker() {
+function testCurrency() {
+
 
   QUnit.test('CryptoTracker', function (assert) {
-
-    let list = ['Bananas', 'Apples', 'Dates', 'Cherries'];
-    list.sort(CryptoTracker.abcComparator);
-
-    assert.equal(list[0], 'Apples', 'abcComparator');
-    assert.equal(list[3], 'Dates', 'abcComparator');
 
     assert.equal(Currency.decimalDigits(0), 0, 'decimalDigits');
     assert.equal(Currency.decimalDigits(5), 0, 'decimalDigits');
@@ -173,6 +198,32 @@ function testCryptoTracker() {
     assert.equal(Currency.validDecimalDigits('JPY'), 0, 'validDecimalDigits JPY');
     assert.equal(Currency.validDecimalDigits('BTC'), 8, 'validDecimalDigits BTC');
     assert.equal(Currency.validDecimalDigits('ADA'), 6, 'validDecimalDigits ADA');
+
+  });
+}
+
+function testCryptoTracker() {
+
+  QUnit.test('CryptoTracker', function (assert) {
+
+    let list = ['Bananas', 'Apples', 'Dates', 'Cherries'];
+    list.sort(CryptoTracker.abcComparator);
+
+    assert.equal(list[0], 'Apples', 'abcComparator');
+    assert.equal(list[3], 'Dates', 'abcComparator');
+
+    let integerArray;
+    integerArray = [3 ,1, 5, 2, 4];
+    let resultsArray = CryptoTracker.apportionInteger(6, integerArray);
+    assert.deepEqual(resultsArray, [1, 0, 2, 1, 2], 'Apportion Integer no adjust');
+
+    integerArray = [3 ,1, 5, 2, 4];
+    resultsArray = CryptoTracker.apportionInteger(7, integerArray);
+    assert.deepEqual(resultsArray, [1, 1, 2, 1, 2], 'Apportion integer adjust add');
+
+    integerArray = [3 ,1, 5, 2, 4];
+    resultsArray = CryptoTracker.apportionInteger(23, integerArray);
+    assert.deepEqual(resultsArray, [5, 1, 8, 3, 6], 'Apportion Integer adjust subtract');
 
     let cryptoTracker = new CryptoTracker();
 

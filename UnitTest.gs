@@ -219,11 +219,19 @@ function testCryptoTracker() {
 
     integerArray = [3 ,1, 5, 2, 4];
     resultsArray = CryptoTracker.apportionInteger(7, integerArray);
-    assert.deepEqual(resultsArray, [1, 1, 2, 1, 2], 'Apportion integer adjust add');
+    assert.deepEqual(resultsArray, [1, 1, 2, 1, 2], 'Apportion integer adjust single add');
 
     integerArray = [3 ,1, 5, 2, 4];
     resultsArray = CryptoTracker.apportionInteger(23, integerArray);
-    assert.deepEqual(resultsArray, [5, 1, 8, 3, 6], 'Apportion Integer adjust subtract');
+    assert.deepEqual(resultsArray, [5, 1, 8, 3, 6], 'Apportion Integer adjust single subtract');
+
+    integerArray = [3, 18, 3, 3, 3, 3, 3];
+    resultsArray = CryptoTracker.apportionInteger(16, integerArray);
+    assert.deepEqual(resultsArray, [2, 8, 2, 1, 1, 1, 1], 'Apportion Integer adjust multiple add');
+
+    integerArray = [3, 18, 3, 3, 3, 3, 3];
+    resultsArray = CryptoTracker.apportionInteger(20, integerArray);
+    assert.deepEqual(resultsArray, [1, 10, 1, 2, 2, 2, 2], 'Apportion Integer adjust multiple subtract');
 
     let cryptoTracker = new CryptoTracker();
 

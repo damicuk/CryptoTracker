@@ -42,7 +42,7 @@ class Lot {
      * @type {number}
      */
     this.debitExRate = debitExRate;
-    
+
     /**
      * The amount of fiat or cryptocurrency debited in subunits.
      * @type {number}
@@ -160,10 +160,13 @@ class Lot {
 
     let splitLots = [];
 
+    //javascript may round the wrong way but it doesn't matter as both options are equally wrong
+    //where a subunit should be divided in the middle it doesn't matter if it goes into lot1 or lot2
     let debitAmountSubunits = Math.round((subunits / this.subunits) * this.debitAmountSubunits);
     let debitFeeSubunits = Math.round((subunits / this.subunits) * this.debitFeeSubunits);
-    let creditFeeSubunits = Math.round((subunits / this.subunits) * this.creditFeeSubunits);
-    let creditAmountSubunits = subunits + creditFeeSubunits;
+
+    let creditAmountSubunits = Math.round((subunits / this.subunits) * this.creditAmountSubunits);
+    let creditFeeSubunits = creditAmountSubunits - subunits;
 
     let lot1 = new Lot(
       this.date,

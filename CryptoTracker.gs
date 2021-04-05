@@ -175,9 +175,8 @@ class CryptoTracker {
 
       resultArray.push([rounded, error, originalIndex++]);
 
-      //By how much does the total apportioned amount differ from the original input amount
+      //by how much does the total apportioned amount differ from the original input amount
       totalError += rounded;
-
     }
 
     if (totalError < 0) { //negative error means we have to add values

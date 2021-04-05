@@ -132,7 +132,7 @@ class CryptoTracker {
    * Comparator used to sort items alphabetically.
    * @param {string} a - The first item to be compared.
    * @param {string} b - The second item to be compared.
-   * @return {number} - Used to determine the sort order.
+   * @return {number} Used to determine the sort order.
    * @static
    */
   static abcComparator(a, b) {
@@ -144,7 +144,7 @@ class CryptoTracker {
   /**
    * Finds the number of decimal digits of a given number.
    * @param {number} number - The number to test.
-   * @return {number} - The number of decimal digits found.
+   * @return {number} The number of decimal digits found.
    * @static
    */
   static decimalDigits(number) {
@@ -158,7 +158,7 @@ class CryptoTracker {
    * e.g. used to apportion fees amoungst lots of cryptocurrency in proportion to the size of the lots.
    * @param {number} integerAmount - The integer amount to divide and apportion.
    * @param {Array<number>} integerArray - The array of integers which determines the distribution of the divided amount.
-   * @return {Array<number>} - The array of integers that sum to the orignal integer amount, divided as equitably as possible.
+   * @return {Array<number>} The array of integers that sum to the orignal integer amount, divided as equitably as possible.
    * @static
    */
   static apportionInteger(integerAmount, integerArray) {

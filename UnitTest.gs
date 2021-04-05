@@ -321,8 +321,14 @@ function testCryptoTracker() {
     assert.equal(list[3], 'Dates', 'abcComparator');
 
     let integerArray;
+    let resultsArray;
+
+    integerArray = [3];
+    resultsArray = CryptoTracker.apportionInteger(5, integerArray);
+    assert.deepEqual(resultsArray, [5], 'Apportion Integer single item');
+
     integerArray = [3, 1, 5, 2, 4];
-    let resultsArray = CryptoTracker.apportionInteger(6, integerArray);
+    resultsArray = CryptoTracker.apportionInteger(6, integerArray);
     assert.deepEqual(resultsArray, [1, 0, 2, 1, 2], 'Apportion Integer no adjust');
 
     integerArray = [3, 1, 5, 2, 4];

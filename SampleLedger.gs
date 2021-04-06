@@ -91,21 +91,20 @@ CryptoTracker.prototype.sampleLedger = function () {
     ['2019-03-06 12:00:00', 'Transfer', 'USD', , 7000, , 'Binance', , , , , , , `Leave Credit Wallet blank when transfering fiat to bank account`],
     ['2020-12-01 12:00:00', 'Transfer', 'USD', , 10000, , , , , , , 'Kraken', , ,],
     ['2020-12-02 12:00:00', 'Trade', 'USD', , 7990, 10, 'Kraken', 'ADA', , 40000, , , , ,],
-    ['2020-12-03 12:00:00', 'Trade', 'ADA', 0.2, 20000, , 'Kraken', 'BTC', 20000, 0.2, , , , ,],
+    ['2020-12-03 12:00:00', 'Trade', 'ADA', 0.2, 20000, , 'Kraken', 'BTC', 20000, 0.2, , , , `Exchange cryptos`],
     ['2020-12-04 12:00:00', 'Transfer', 'ADA', , 19999.4, 0.6, 'Kraken', , , , , 'Yoroi', , ,],
-    ['2021-02-12 12:00:00', 'Transfer', 'ADA', , 2, 0.174433, 'Yoroi', , , , , 'Deposit', , `Start Staking`],
-    ['2021-02-24 22:45:00', 'Income', , , , , , 'ADA', 1, 10, , 'Rewards', , `Staking reward`],
-    ['2021-03-01 22:45:00', 'Income', , , , , , 'ADA', 1.3, 10, , 'Rewards', , `Staking reward`],
-    ['2021-03-02 12:00:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Payments are treated as a trade of the asset for its current value`],
-    ['2021-03-03 12:00:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Alternatively Payent may be entered as a Trade if you know the value of the goods or services received`],
-    ['2021-03-04 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Donations (to registered charities) are recorded in the donations report`],
-    ['2021-03-05 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , ,],
-    ['2021-03-06 12:00:00', 'Gift', 'ADA', , 1000, , 'Yoroi', , , , , , , `Gifts are not recorded, the asset simply disappears`]
+    ['2021-02-01 12:00:00', 'Income', , , , , , 'ADA', 1, 10, , 'Rewards', , `Staking reward`],
+    ['2021-02-05 12:00:00', 'Income', , , , , , 'ADA', 1.3, 10, , 'Rewards', , `Staking reward`],
+    ['2021-03-01 12:00:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Payments are treated as a trade of the asset for its current value`],
+    ['2021-03-02 12:00:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Payent could also be entered as a Trade if you know the value of the goods or services received`],
+    ['2021-03-03 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Donations (e.g. to registered charities) are recorded in the donations report`],
+    ['2021-03-04 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , ,],
+    ['2021-03-05 12:00:00', 'Gift', 'ADA', , 1000, , 'Yoroi', , , , , , , `Gifts (e.g. to family or friends) are not recorded, the asset simply disappears`]
   ];
 
-  sheet.getRange('A3:N20').setValues(sampleData);
+  sheet.getRange('A3:N19').setValues(sampleData);
 
-  this.trimSheet(sheet, 21, 14);
+  this.trimSheet(sheet, 20, 14);
 
   sheet.autoResizeColumns(1, 1);
   sheet.autoResizeColumns(5, 1);

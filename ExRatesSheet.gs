@@ -76,7 +76,7 @@ CryptoTracker.prototype.getCryptoPriceTable = function () {
 
     if (!apiKey) {
 
-      let errorMessage = `CryptoCompare API key missing\n\nTo get an API key, go to https://www.cryptocompare.com/cryptopian/api-keys register, create a key, and save it in settings.`;
+      let errorMessage = `CryptoCompare API key missing\n\nTo get an API key, go to https://min-api.cryptocompare.com register, create a key, and save it in settings.`;
 
       throw new ApiError(errorMessage);
 

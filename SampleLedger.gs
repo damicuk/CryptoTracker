@@ -98,12 +98,13 @@ CryptoTracker.prototype.sampleLedger = function () {
     ['2021-03-01 12:00:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Payments are treated as a trade of the asset for its current value.`],
     ['2021-03-02 12:00:00', 'Payment', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , ,],
     ['2021-03-03 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Donations (e.g. to registered charities) are recorded in the donations report.`],
-    ['2021-03-04 12:00:00', 'Gift', 'ADA', , 500, , 'Yoroi', , , , , , , `Gifts (e.g. to friends or family) are not recorded. The asset simply disappears.`]
+    ['2021-03-04 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , ,],
+    ['2021-03-05 12:00:00', 'Gift', 'ADA', , 500, , 'Yoroi', , , , , , , `Gifts (e.g. to friends or family) are not recorded. The asset simply disappears.`]
   ];
 
-  sheet.getRange('A3:N18').setValues(sampleData);
+  sheet.getRange('A3:N19').setValues(sampleData);
 
-  this.trimSheet(sheet, 19, 14);
+  this.trimSheet(sheet, 20, 14);
 
   sheet.autoResizeColumns(1, 1);
   sheet.autoResizeColumns(5, 1);

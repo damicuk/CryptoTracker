@@ -87,8 +87,9 @@ CryptoTracker.prototype.sampleLedger = function () {
     ['2019-03-02 12:00:00', 'Trade', 'USD', , 3990, 10, 'Binance', 'BTC', , 1, , , , `Debit Amount is debited and Credit Amount is credited but Fees are always debited.`],
     ['2019-03-03 12:00:00', 'Trade', 'USD', , 9990, 10, 'Binance', 'BTC', , 2, , , , ,],
     ['2019-03-04 12:00:00', 'Trade', 'BTC', , 1, , 'Binance', 'USD', , 6010, 10, , 'LIFO', `Lot Matching applies to the current and subsequent Transfers and Trades (default in Settings).`],
-    ['2019-03-05 12:00:00', 'Transfer', 'BTC', , 1.9995, 0.0005, 'Binance', , , , , 'Ledger', , `Transfer Amount and Fee are always and only entered in the debit column.`],
+    ['2019-03-05 12:00:00', 'Transfer', 'BTC', , 0.9995, 0.0005, 'Binance', , , , , 'Ledger', , `Transfer Amount and Fee are always and only entered in the debit column.`],
     ['2019-03-06 12:00:00', 'Transfer', 'USD', , 7000, , 'Binance', , , , , , , `Leave Credit Wallet blank when transferring fiat to a bank account.`],
+    ['2020-04-01 12:00:00', 'Trade', 'BTC', , 1, , 'Binance', 'USD', , 6510, 10, , , ,],
     ['2020-12-01 12:00:00', 'Transfer', 'USD', , 10000, , , , , , , 'Kraken', , ,],
     ['2020-12-02 12:00:00', 'Trade', 'USD', , 7990, 10, 'Kraken', 'ADA', , 40000, , , , ,],
     ['2020-12-03 12:00:00', 'Trade', 'ADA', 0.2, 20000, , 'Kraken', 'BTC', 20000, 0.2, , , , `Exchange cryptos.`],
@@ -102,9 +103,9 @@ CryptoTracker.prototype.sampleLedger = function () {
     ['2021-03-05 12:00:00', 'Gift', 'ADA', , 500, , 'Yoroi', , , , , , , `Gifts (e.g. to friends or family) are not recorded. The asset simply disappears.`]
   ];
 
-  sheet.getRange('A3:N19').setValues(sampleData);
+  sheet.getRange('A3:N20').setValues(sampleData);
 
-  this.trimSheet(sheet, 20, 14);
+  this.trimSheet(sheet, 21, 14);
 
   sheet.autoResizeColumns(1, 1);
   sheet.autoResizeColumns(5, 1);

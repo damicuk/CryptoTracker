@@ -55,7 +55,7 @@ CryptoTracker.prototype.exRatesSheet = function () {
     }
   }
   if (missingCryptos.size > 0) {
-    throw new ApiError(`Failed to update crypto price for ${Array.from(missingCryptos).sort(this.abcComparator).toString()}`);
+    throw new ApiError(`Failed to update crypto price for ${Array.from(missingCryptos).sort(this.abcComparator).join(', ')}`);
   }
 };
 

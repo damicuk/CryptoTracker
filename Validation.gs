@@ -56,10 +56,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
   let creditWalletName = ledgerRecord.creditWalletName;
   let lotMatching = ledgerRecord.lotMatching;
 
-  if (date === '') {
-    throw new ValidationError(`${action} row ${rowIndex}: missing date.`, rowIndex, 'date');
-  }
-  else if (isNaN(date)) {
+  if (isNaN(date)) {
     throw new ValidationError(`${action} row ${rowIndex}: invalid date.`, rowIndex, 'date');
   }
   else if (date > new Date()) {

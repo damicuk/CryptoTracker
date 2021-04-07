@@ -38,7 +38,7 @@ class CryptoTracker {
     /**
      * Currency ticker for the fiat currency used for accounting.
      * Initialized from any saved value in user properties or defaults to 'USD'.
-     * @type {string} 
+     * @type {string}
      */
     this.accountingCurrency = this.getUserProperty(userProperties, 'accountingCurrency', 'USD');
 
@@ -46,7 +46,7 @@ class CryptoTracker {
      * The default lot matching method.
      * Options are FIFO, LIFO, HIFO, LOFO.
      * Initialized from any saved value in user properties or defaults to 'FIFO'.
-     * @type {string} 
+     * @type {string}
      */
     this.defaultLotMatching = this.getUserProperty(userProperties, 'defaultLotMatching', 'FIFO');
 
@@ -54,7 +54,7 @@ class CryptoTracker {
      * The API key used to connect to CryptoCompare to retrieve crypto prices.
      * Options are FIFO, LIFO, HIFO, LOFO.
      * Initialized from any saved value in user properties or defaults to 'FIFO'.
-     * @type {string} 
+     * @type {string}
      */
     this.apiKey = userProperties.getProperty('apiKey');
 
@@ -62,9 +62,18 @@ class CryptoTracker {
     /**
      * The current lot matching method.
      * Options are FIFO, LIFO, HIFO, LOFO.
-     * @type {string} 
+     * @type {string}
      */
     this.lotMatching = this.defaultLotMatching;
+
+    /**
+     * The number of header rows in the ledger sheet.
+     * @type {number}
+     */
+    this.ledgerHeaderRows = 2;
+    this.ledgerDataColumns = 13;
+    this.exRatesSheetHeaderRows = 1;
+    this.exRatesSheetDataColumns = 4;
 
     this.ledgerSheetName = 'Ledger';
     this.exRatesSheetName = 'Ex Rates Data';
@@ -175,7 +184,7 @@ class CryptoTracker {
 
       resultArray.push([rounded, error, originalIndex++]);
 
-      //by how much does the total apportioned amount differ from the original input amount
+      //how much does the total apportioned amount differ from the original input amount?
       totalError += rounded;
     }
 

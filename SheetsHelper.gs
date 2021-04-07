@@ -42,7 +42,7 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
  * @param {string} rangeName - The named range name to apply to the data range.
  * @param {number} headerRows - The number of header rows.
  * @param {number} dataColumns - The number of data columns - needed as the table may be empty.
- * @param {number} formulaColumns - The number of columns containing formulas to the right of the data.
+ * @param {number} [formulaColumns] - The number of columns containing formulas to the right of the data.
  */
 CryptoTracker.prototype.writeTable = function (ss, sheet, dataTable, rangeName, headerRows, dataColumns, formulaColumns = 0) {
 

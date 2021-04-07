@@ -6,8 +6,7 @@
  */
 CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 
-  //ledger sheet row numbers start at 1 plus two header rows
-  let rowIndex = 3;
+  let rowIndex = this.ledgerHeaderRows + 1;
   for (let ledgerRecord of ledgerRecords) {
     this.processLedgerRecord(ledgerRecord, rowIndex++);
   }
@@ -122,8 +121,9 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
     let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
     //convert amount and fee to accounting currency
-    let creditAmount = Math.round(debitExRate * debitAmount * 100) / 100;
-    let creditFee = Math.round(debitExRate * debitFee * 100) / 100;
+    let currencySubunits = Currency.subunits(this.accountingCurrency);
+    let creditAmount = Math.round(debitExRate * debitAmount * currencySubunits) / currencySubunits;
+    let creditFee = Math.round(debitExRate * debitFee * currencySubunits) / currencySubunits;
 
     this.closeLots(lots, date, this.accountingCurrency, 0, creditAmount, creditFee, debitWalletName);
 

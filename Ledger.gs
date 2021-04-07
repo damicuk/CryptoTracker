@@ -14,17 +14,17 @@ CryptoTracker.prototype.getLedgerRange = function () {
     ledgerSheet = this.sampleLedger();
   }
 
-  if(ledgerSheet.getMaxColumns() < 13) {
+  if(ledgerSheet.getMaxColumns() < this.ledgerDataColumns) {
     throw new ValidationError('Ledger has insufficient columns.');
   }
 
   let ledgerRange = ledgerSheet.getDataRange();
 
-  if(ledgerRange.getHeight() < 3) {
+  if(ledgerRange.getHeight() < this.ledgerHeaderRows + 1) {
     throw new ValidationError('Ledger contains no data rows.');
   }
   
-  ledgerRange = ledgerRange.offset(2, 0, ledgerRange.getHeight() - 2, 13);
+  ledgerRange = ledgerRange.offset(this.ledgerHeaderRows, 0, ledgerRange.getHeight() - this.ledgerHeaderRows, this.ledgerDataColumns);
 
   return ledgerRange;
 };

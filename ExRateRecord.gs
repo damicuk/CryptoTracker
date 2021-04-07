@@ -102,7 +102,7 @@ CryptoTracker.prototype.lookupExRate = function (exRateRecords, date, crypto, mi
  */
 CryptoTracker.prototype.getExRateRecords = function (sheet) {
 
-  let range = sheet.getRange(2, 1, sheet.getMaxRows() - 1, 4);
+  let range = sheet.getRange(this.exRatesSheetHeaderRows + 1, 1, sheet.getMaxRows() - this.exRatesSheetHeaderRows, this.exRatesSheetDataColumns);
   let data = range.getValues();
 
   let exRateRecords = [];

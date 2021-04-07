@@ -266,7 +266,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
       throw new ValidationError(`${action} row ${rowIndex}: No credit wallet specified.`, rowIndex, 'creditWalletName');
     }
   }
-  else if (action === 'Donation' || action === 'Payment') { //Donation or Payment
+  else if (action === 'Donation') { //Donation
     if (!debitCurrency) {
       throw new ValidationError(`${action} row ${rowIndex}: No debit currency specified.`, rowIndex, 'debitCurrency');
     }

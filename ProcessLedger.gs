@@ -116,16 +116,4 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
     this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
 
   }
-  else if (action === 'Payment') { //Payment
-
-    let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
-
-    //convert amount and fee to accounting currency
-    let currencySubunits = Currency.subunits(this.accountingCurrency);
-    let creditAmount = Math.round(debitExRate * debitAmount * currencySubunits) / currencySubunits;
-    let creditFee = Math.round(debitExRate * debitFee * currencySubunits) / currencySubunits;
-
-    this.closeLots(lots, date, this.accountingCurrency, 0, creditAmount, creditFee, debitWalletName);
-
-  }
 };

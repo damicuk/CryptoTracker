@@ -209,8 +209,8 @@ CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
     ['Donation', '#ff9900'],
     ['Gift', '#ff9900'],
     ['Income', '#6aa84f'],
-    ['Payment', '#1155cc'],
     ['Stop', '#9900ff'],
+    ['Trade', '#1155cc'],
     ['Transfer', '#ff0000']
   ];
 

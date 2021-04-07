@@ -71,8 +71,23 @@ class CryptoTracker {
      * @type {number}
      */
     this.ledgerHeaderRows = 2;
+
+    /**
+     * The number of data columns in the ledger sheet.
+     * @type {number}
+     */
     this.ledgerDataColumns = 13;
+
+    /**
+     * The number of header rows in the ex rates sheet
+     * @type {number}
+     */
     this.exRatesSheetHeaderRows = 1;
+
+    /**
+     * The number of data columns in the ex rates sheet
+     * @type {number}
+     */
     this.exRatesSheetDataColumns = 4;
 
     this.ledgerSheetName = 'Ledger';

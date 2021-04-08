@@ -160,10 +160,10 @@ class Lot {
 
     let splitLots = [];
 
-    //javascript may round the wrong way but it doesn't matter as both options are equally wrong
-    //where a subunit should be divided in the middle it doesn't matter if it goes into lot1 or lot2
+    //prioritize balance accuracy over fee accuracy 
+    let debitBalanceSubunits = Math.round((subunits / this.subunits) * (this.debitAmountSubunits - this.debitFeeSubunits));
     let debitAmountSubunits = Math.round((subunits / this.subunits) * this.debitAmountSubunits);
-    let debitFeeSubunits = Math.round((subunits / this.subunits) * this.debitFeeSubunits);
+    let debitFeeSubunits = debitAmountSubunits - debitBalanceSubunits;
 
     let creditAmountSubunits = Math.round((subunits / this.subunits) * this.creditAmountSubunits);
     let creditFeeSubunits = creditAmountSubunits - subunits;

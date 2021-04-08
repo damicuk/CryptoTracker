@@ -160,10 +160,8 @@ class Lot {
 
     let splitLots = [];
 
-    //prioritize balance accuracy over fee accuracy 
-    let debitBalanceSubunits = Math.round((subunits / this.subunits) * (this.debitAmountSubunits - this.debitFeeSubunits));
     let debitAmountSubunits = Math.round((subunits / this.subunits) * this.debitAmountSubunits);
-    let debitFeeSubunits = debitAmountSubunits - debitBalanceSubunits;
+    let debitFeeSubunits = Math.round((subunits / this.subunits) * this.debitFeeSubunits);
 
     let creditAmountSubunits = Math.round((subunits / this.subunits) * this.creditAmountSubunits);
     let creditFeeSubunits = creditAmountSubunits - subunits;

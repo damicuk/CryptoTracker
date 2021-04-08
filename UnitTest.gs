@@ -142,12 +142,12 @@ function testLot() {
     assert.equal(splitLots[1].walletName, 'Kraken', 'split splitLots[1].walletName');
 
     assert.equal(splitLots[0].debitAmountSubunits, 561123, 'split splitLots[0].debitAmountSubunits');
-    assert.equal(splitLots[0].debitFeeSubunits, 561, 'split splitLots[0].debitFeeSubunits');
+    assert.equal(splitLots[0].debitFeeSubunits, 562, 'split splitLots[0].debitFeeSubunits');
     assert.equal(splitLots[0].creditAmountSubunits, 14028056, 'split splitLots[0].debitAmountSubunits');
     assert.equal(splitLots[0].creditFeeSubunits, 28056, 'split splitLots[0].debitFeeSubunits');
 
     assert.equal(splitLots[1].debitAmountSubunits, 438879, 'split splitLots[1].debitAmountSubunits');
-    assert.equal(splitLots[1].debitFeeSubunits, 440, 'split splitLots[1].debitFeeSubunits');
+    assert.equal(splitLots[1].debitFeeSubunits, 439, 'split splitLots[1].debitFeeSubunits');
     assert.equal(splitLots[1].creditAmountSubunits, 10971944, 'split splitLots[1].debitAmountSubunits');
     assert.equal(splitLots[1].creditFeeSubunits, 21944, 'split splitLots[1].debitFeeSubunits');
   });

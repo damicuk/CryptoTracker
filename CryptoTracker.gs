@@ -166,18 +166,6 @@ class CryptoTracker {
   }
 
   /**
-   * Finds the number of decimal digits of a given number.
-   * @param {number} number - The number to test.
-   * @return {number} The number of decimal digits found.
-   * @static
-   */
-  static decimalDigits(number) {
-    let charArray = number.toString().split('');
-    let lastIndex = charArray.lastIndexOf('.');
-    return (lastIndex < 0) ? 0 : charArray.length - lastIndex - 1;
-  }
-
-  /**
    * Apportions an integer amount to an array or integers as equitably as possible.
    * e.g. used to apportion fees amoungst lots of cryptocurrency in proportion to the size of the lots.
    * @param {number} integerAmount - The integer amount to divide and apportion.

@@ -56,7 +56,7 @@ class Currency {
    * @return {number} - The valid number of decimal digits.
    * @static
    */
-  static validDecimalDigits(ticker) {
+  static decimalDigits(ticker) {
 
     if (ticker === 'JPY') {
       return 0;
@@ -80,18 +80,6 @@ class Currency {
    */
   static subunits(ticker) {
 
-    return 10 ** Currency.validDecimalDigits(ticker);
-  }
-
-  /**
-   * Finds the number of decimal digits of a given number.
-   * @param {number} number - The number to test.
-   * @return {number} - The number of decimal digits found.
-   * @static
-   */
-  static decimalDigits(number) {
-    let charArray = number.toString().split('');
-    let lastIndex = charArray.lastIndexOf('.');
-    return (lastIndex < 0) ? 0 : charArray.length - lastIndex - 1;
+    return 10 ** Currency.decimalDigits(ticker);
   }
 }

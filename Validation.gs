@@ -70,20 +70,11 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
   else if (isNaN(debitExRate)) {
     throw new ValidationError(`${action} row ${rowIndex}: Debit exchange rate is not valid (number or blank).`, rowIndex, 'debitExRate');
   }
-  else if (Currency.decimalDigits(debitExRate) > 8) {
-    throw new ValidationError(`${action} row ${rowIndex}: Debit exchange rate has more than 8 decimal places.`, rowIndex, 'debitExRate');
-  }
   else if (isNaN(debitAmount)) {
     throw new ValidationError(`${action} row ${rowIndex}: Debit amount is not valid (number or blank).`, rowIndex, 'debitAmount');
   }
-  else if (Currency.decimalDigits(debitAmount) > Currency.validDecimalDigits(debitCurrency)) {
-    throw new ValidationError(`${action} row ${rowIndex}: ${debitCurrency} debit amount has more than ${Currency.validDecimalDigits(debitCurrency)} decimal places.`, rowIndex, 'debitAmount');
-  }
   else if (isNaN(debitFee)) {
     throw new ValidationError(`${action} row ${rowIndex}: Debit fee is not valid (number or blank).`, rowIndex, 'debitFee');
-  }
-  else if (Currency.decimalDigits(debitFee) > Currency.validDecimalDigits(debitCurrency)) {
-    throw new ValidationError(`${action} row ${rowIndex}: ${debitCurrency} debit fee has more than ${Currency.validDecimalDigits(debitCurrency)} decimal places.`, rowIndex, 'debitFee');
   }
   else if (creditCurrency && !Currency.isFiat(creditCurrency) && !Currency.isCrypto(creditCurrency)) {
     throw new ValidationError(`${action} row ${rowIndex}: Credit currency (${creditCurrency}) is not recognized - neither fiat (${Currency.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`, rowIndex, 'creditCurrency');
@@ -91,20 +82,11 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, rowIndex)
   else if (isNaN(creditExRate)) {
     throw new ValidationError(`${action} row ${rowIndex}: Credit exchange rate is not valid (number or blank).`, rowIndex, 'creditExRate');
   }
-  else if (Currency.decimalDigits(creditExRate) > 8) {
-    throw new ValidationError(`${action} row ${rowIndex}: Credit exchange rate has more than 8 decimal places.`, rowIndex, 'creditExRate');
-  }
   else if (isNaN(creditAmount)) {
     throw new ValidationError(`${action} row ${rowIndex}: Credit amount is not valid (number or blank).`, rowIndex, 'creditAmount');
   }
-  else if (Currency.decimalDigits(creditAmount) > Currency.validDecimalDigits(creditCurrency)) {
-    throw new ValidationError(`${action} row ${rowIndex}: ${creditCurrency} credit amount has more than ${Currency.validDecimalDigits(creditCurrency)} decimal places.`, rowIndex, 'creditAmount');
-  }
   else if (isNaN(creditFee)) {
     throw new ValidationError(`${action} row ${rowIndex}: Credit fee is not valid (number or blank).`, rowIndex, 'creditFee');
-  }
-  else if (Currency.decimalDigits(creditFee) > Currency.validDecimalDigits(creditCurrency)) {
-    throw new ValidationError(`${action} row ${rowIndex}: ${creditCurrency} Credit fee has more than ${Currency.validDecimalDigits(creditCurrency)} decimal places.`, rowIndex, 'creditFee');
   }
   else if (lotMatching && !CryptoTracker.lotMatchings.includes(lotMatching)) {
     throw new ValidationError(`${action} row ${rowIndex}: Lot matching (${lotMatching}) is not valid (${CryptoTracker.lotMatchings.join(', ')}) or blank.`, rowIndex, 'lotMatching');

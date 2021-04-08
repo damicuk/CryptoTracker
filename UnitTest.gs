@@ -281,11 +281,6 @@ function testCurrency() {
 
   QUnit.test('CryptoTracker', function (assert) {
 
-    assert.equal(Currency.decimalDigits(0), 0, 'decimalDigits');
-    assert.equal(Currency.decimalDigits(5), 0, 'decimalDigits');
-    assert.equal(Currency.decimalDigits(2.01), 2, 'decimalDigits');
-    assert.equal(Currency.decimalDigits(''), 0, 'decimalDigits');
-
     assert.equal(Currency.isFiat('USD'), true, 'isFiat USD');
     assert.equal(Currency.isFiat('BTC'), false, 'isFiat BTC');
     assert.equal(Currency.isFiat('XYZ'), false, 'isFiat XYZ');
@@ -301,11 +296,17 @@ function testCurrency() {
     assert.equal(Currency.isCrypto('AAAAAAAAAA'), false, 'isCrypto AAAAAAAAAAA');
     assert.equal(Currency.isCrypto('$$$'), false, 'isCrypto $$$');
 
-    assert.equal(Currency.validDecimalDigits(''), 8, 'validDecimalDigits empty');
-    assert.equal(Currency.validDecimalDigits('USD'), 2, 'validDecimalDigits USD');
-    assert.equal(Currency.validDecimalDigits('JPY'), 0, 'validDecimalDigits JPY');
-    assert.equal(Currency.validDecimalDigits('BTC'), 8, 'validDecimalDigits BTC');
-    assert.equal(Currency.validDecimalDigits('ADA'), 6, 'validDecimalDigits ADA');
+    assert.equal(Currency.decimalDigits(''), 8, 'validDecimalDigits empty');
+    assert.equal(Currency.decimalDigits('USD'), 2, 'validDecimalDigits USD');
+    assert.equal(Currency.decimalDigits('JPY'), 0, 'validDecimalDigits JPY');
+    assert.equal(Currency.decimalDigits('BTC'), 8, 'validDecimalDigits BTC');
+    assert.equal(Currency.decimalDigits('ADA'), 6, 'validDecimalDigits ADA');
+
+    assert.equal(Currency.subunits(''), 100000000, 'validDecimalDigits empty');
+    assert.equal(Currency.subunits('USD'), 100, 'validDecimalDigits USD');
+    assert.equal(Currency.subunits('JPY'), 1, 'validDecimalDigits JPY');
+    assert.equal(Currency.subunits('BTC'), 100000000, 'validDecimalDigits BTC');
+    assert.equal(Currency.subunits('ADA'), 1000000, 'validDecimalDigits ADA');
 
   });
 }

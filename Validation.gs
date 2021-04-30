@@ -28,17 +28,32 @@ CryptoTracker.prototype.validateLedger = function () {
  */
 CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
 
-  let previousRecord;
-  let rowIndex = this.ledgerHeaderRows + 1;
-  for (let ledgerRecord of ledgerRecords) {
-    this.validateLedgerRecord(ledgerRecord, previousRecord, rowIndex++);
-    previousRecord = ledgerRecord;
+  if (LedgerRecord.inReverseOrder(ledgerRecords)) {
+
+    let previousRecord;
+    let rowIndex = this.ledgerHeaderRows + ledgerRecords.length;
+    for (let i = ledgerRecords.length - 1; i >= 0; i--) {
+      let ledgerRecord = ledgerRecords[i];
+      this.validateLedgerRecord(ledgerRecord, previousRecord, rowIndex--);
+      previousRecord = ledgerRecord;
+    }
+  }
+  else {
+
+    let previousRecord;
+    let rowIndex = this.ledgerHeaderRows + 1;
+    for (let ledgerRecord of ledgerRecords) {
+      this.validateLedgerRecord(ledgerRecord, previousRecord, rowIndex++);
+      previousRecord = ledgerRecord;
+    }
   }
 };
 
 /**
  * Validates a ledger record and throws a ValidationError on failure.
  * @param {LedgerRecord} ledgerRecord - The ledger record to validate.
+ * @param {LedgerRecord} previousRecord - The previous ledger record validated.
+ * @param {number} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
  */
 CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousRecord, rowIndex) {
 
@@ -60,7 +75,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousR
     throw new ValidationError(`${action} row ${rowIndex}: Invalid date.`, rowIndex, 'date');
   }
   else if (previousRecord && date < previousRecord.date) {
-    throw new ValidationError(`${action} row ${rowIndex}: Date is not in chronological order.`, rowIndex, 'date');
+    throw new ValidationError(`${action} row ${rowIndex}: Dates must be in chronological or reverse chronological order.`, rowIndex, 'date');
   }
   else if (date > new Date()) {
     throw new ValidationError(`${action} row ${rowIndex}: Date must be in the past.`, rowIndex, 'date');

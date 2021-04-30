@@ -1,22 +1,31 @@
 /**
- * Retrieves and validates and processes the ledger records.
+ * Processes the ledger records.
  * It treats the ledger as a set of instuctions and simulates the actions specified.
- * Uses the error handler to handle CryptoAccountError thrown on withdraw from an account with insufficient funds.
- * @return {boolean} Successful completion.
+ * @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
  */
 CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 
-  let rowIndex = this.ledgerHeaderRows + 1;
-  for (let ledgerRecord of ledgerRecords) {
-    this.processLedgerRecord(ledgerRecord, rowIndex++);
+  if (LedgerRecord.inReverseOrder(ledgerRecords)) {
+
+    let rowIndex = this.ledgerHeaderRows + ledgerRecords.length;
+    for (let i = ledgerRecords.length - 1; i >= 0; i--) {
+      this.processLedgerRecord(ledgerRecords[i], rowIndex--);
+    }
+  }
+  else {
+
+    let rowIndex = this.ledgerHeaderRows + 1;
+    for (let ledgerRecord of ledgerRecords) {
+      this.processLedgerRecord(ledgerRecord, rowIndex++);
+    }
   }
 };
 
 /**
  * Processes a ledger record.
- * It treats the ledger record an instuction and simulates the action specified.
+ * It treats the ledger record as an instuction and simulates the action specified.
  * @param {LedgerRecord} ledgerRecord - The ledger record to process.
- * @param {rowIndex} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
+ * @param {number} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
  */
 CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) {
 

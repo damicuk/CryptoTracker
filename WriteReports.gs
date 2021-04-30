@@ -3,7 +3,6 @@
  * Uses the error handler to handle any ValidatioError, CryptoAccountError, or ApiError .
  * Updates the data validation on the ledger currency and wallet columns.
  * Displays toast on success.
- * Returns the currenct cell to its original location.
  */
 CryptoTracker.prototype.writeReports = function () {
 

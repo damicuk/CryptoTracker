@@ -58,16 +58,16 @@ class LedgerRecord {
      */
     this.debitExRate = debitExRate;
 
-     /**
-     * The amount of fiat or cryptocurrency debited from the account.
-     * @type {number}
-     */
+    /**
+    * The amount of fiat or cryptocurrency debited from the account.
+    * @type {number}
+    */
     this.debitAmount = debitAmount;
 
-     /**
-     * The fee in the fiat or cryptocurrency debited from the account.
-     * @type {number}
-     */
+    /**
+    * The fee in the fiat or cryptocurrency debited from the account.
+    * @type {number}
+    */
     this.debitFee = debitFee;
 
     /**
@@ -142,6 +142,17 @@ class LedgerRecord {
     let index = columns.indexOf(columnName);
 
     return index === -1 ? index : index + 1;
+  }
+
+  /**
+   * Determines whether the ledger records are intended to be in reverse chronological order.
+   * @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
+   * @return {boolean} Whether the ledger records are intended to be in reverse chronological order.
+   * @static
+   */
+  static inReverseOrder(ledgerRecords) {
+
+    return ledgerRecords.length > 1 && ledgerRecords[ledgerRecords.length - 1].date < ledgerRecords[0].date;
   }
 }
 

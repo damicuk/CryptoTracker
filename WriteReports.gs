@@ -7,8 +7,6 @@
  */
 CryptoTracker.prototype.writeReports = function () {
 
-  let currentCell = SpreadsheetApp.getCurrentCell();
-
   let ledgerRecords;
   try {
     ledgerRecords = this.getLedgerRecords();
@@ -73,9 +71,6 @@ CryptoTracker.prototype.writeReports = function () {
   else {
     SpreadsheetApp.getActive().toast('Reports complete', 'Finished', 10);
   }
-
-  SpreadsheetApp.setCurrentCell(currentCell);
-
 };
 
 /**

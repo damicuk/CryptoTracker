@@ -29,7 +29,7 @@ var CryptoAccount = class CryptoAccount {
      */
     this.lots = [];
 
-  };
+  }
 
   /**
    * The balance in the account in subunits.
@@ -181,4 +181,4 @@ var CryptoAccount = class CryptoAccount {
       throw Error(`Lot Matching Method (${lotMatching}) not recognized.`);
     }
   }
-}
+};

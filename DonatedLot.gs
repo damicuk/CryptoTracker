@@ -1,7 +1,7 @@
 /**
  * Represents an amount of cryptocurrency that has been donated to a charity.
  */
-class DonatedLot {
+var DonatedLot = class DonatedLot {
 
   /**
    * Initializes the class with the properties set to the parameters.

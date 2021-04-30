@@ -2,7 +2,7 @@
  * Cryptocurrency account.
  * Calculation are done in integer amounts of subunits to avoid computational rounding errors.
  */
-class CryptoAccount {
+var CryptoAccount = class CryptoAccount {
 
   /**
    * Sets the cryptocurrency currency and initializes an empty array to contain the crytocurrency lots.

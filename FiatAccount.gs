@@ -2,7 +2,7 @@
  * Fiat currency account.
  * Calculation are done in integer amounts of subunits to avoid computational rounding errors.
  */
-class FiatAccount {
+var FiatAccount = class FiatAccount {
 
   /**
    * Sets the fiat currency and initializes the balance to 0.

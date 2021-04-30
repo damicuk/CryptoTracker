@@ -1,7 +1,7 @@
 /**
  * A collection of static utility functions for currencies.
  */
-class Currency {
+var Currency = class Currency {
   constructor() {
   }
 

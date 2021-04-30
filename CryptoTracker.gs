@@ -1,7 +1,7 @@
 /**
  * The main class that processes the Ledger sheet fetches the current crypto prices and writes the reports.
  */
-class CryptoTracker {
+var CryptoTracker = class CryptoTracker {
 
   /**
    * Initializes class with empty arrays of wallets, income, closed, and donated lots, user properties, and input and output sheet names.

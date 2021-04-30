@@ -2,7 +2,7 @@
  * Represents an amount of cryptocurrency that has been sold or exchanged.
  * Calculations are done in integer amounts of subunits to avoid computational rounding errors.
  */
-class ClosedLot {
+var ClosedLot = class ClosedLot {
 
   /**
    * Initializes the class with the properties set to the parameters.

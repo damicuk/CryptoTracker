@@ -84,4 +84,4 @@ var ClosedLot = class ClosedLot {
 
     return this.creditFeeSubunits / this.creditCurrencySubunits;
   }
-}
+};

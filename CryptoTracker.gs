@@ -352,4 +352,4 @@ var CryptoTracker = class CryptoTracker {
     userProperties.setProperties(settings);
     SpreadsheetApp.getActive().toast('Settings saved');
   }
-}
+};

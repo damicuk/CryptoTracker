@@ -214,4 +214,4 @@ var Lot = class Lot {
       this.creditFeeSubunits / this.creditCurrencySubunits,
       this.walletName);
   }
-}
+};

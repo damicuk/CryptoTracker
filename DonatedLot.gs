@@ -37,4 +37,4 @@ var DonatedLot = class DonatedLot {
     this.walletName = walletName;
 
   }
-}
+};

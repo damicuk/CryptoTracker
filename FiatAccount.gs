@@ -54,4 +54,4 @@ var FiatAccount = class FiatAccount {
     return this;
 
   }
-}
+};

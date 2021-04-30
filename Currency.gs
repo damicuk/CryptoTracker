@@ -82,4 +82,4 @@ var Currency = class Currency {
 
     return 10 ** Currency.decimalDigits(ticker);
   }
-}
+};

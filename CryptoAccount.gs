@@ -29,7 +29,7 @@ var CryptoAccount = class CryptoAccount {
      */
     this.lots = [];
 
-  }
+  };
 
   /**
    * The balance in the account in subunits.

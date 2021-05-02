@@ -10,6 +10,9 @@ var CryptoAccount = class CryptoAccount {
    */
   constructor(ticker) {
 
+    this._ticker;
+    this._currencySubunits;
+
     /**
      * The cryptocurrency currency ticker.
      * @type {string}
@@ -17,18 +20,22 @@ var CryptoAccount = class CryptoAccount {
     this.ticker = ticker;
 
     /**
-     * The number of subunit in a unit of the currency (e.g 100,000,000 satoshi in 1 BTC).
-     * @type {number}
-     * @static
-     */
-    this.currencySubunits = Currency.subunits(ticker);
-
-    /**
      * The crytocurrency lots.
      * @type {Array<Lot>}
      */
     this.lots = [];
 
+  }
+
+  get ticker() {
+
+    return this._ticker;
+  }
+
+  set ticker(ticker) {
+
+    this._ticker = ticker;
+    this._currencySubunits = Currency.subunits(ticker);
   }
 
   /**
@@ -52,7 +59,7 @@ var CryptoAccount = class CryptoAccount {
    */
   get balance() {
 
-    return this.subunits / this.currencySubunits;
+    return this.subunits / this._currencySubunits;
   }
 
   /**
@@ -89,8 +96,8 @@ var CryptoAccount = class CryptoAccount {
    */
   withdraw(amount, fee, lotMatching, row) {
 
-    let amountSubunits = Math.round(amount * this.currencySubunits);
-    let feeSubunits = Math.round(fee * this.currencySubunits);
+    let amountSubunits = Math.round(amount * this._currencySubunits);
+    let feeSubunits = Math.round(fee * this._currencySubunits);
     let neededSubunits = amountSubunits + feeSubunits;
 
     if (neededSubunits > this.subunits) {
@@ -128,15 +135,15 @@ var CryptoAccount = class CryptoAccount {
 
     //apportion the fee to withdrawal lots
     let withdrawLotSubunits = [];
-    for(let withdrawLot of withdrawLots) {
+    for (let withdrawLot of withdrawLots) {
       withdrawLotSubunits.push(withdrawLot.subunits);
     }
     let apportionedFeeSubunits = CryptoTracker.apportionInteger(feeSubunits, withdrawLotSubunits);
     let index = 0;
-    for(let withdrawLot of withdrawLots) {
+    for (let withdrawLot of withdrawLots) {
       withdrawLot.creditFeeSubunits += apportionedFeeSubunits[index++];
     }
-    
+
     this.lots = keepLots;
     return withdrawLots;
   }

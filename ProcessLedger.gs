@@ -7,17 +7,12 @@ CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 
   if (LedgerRecord.inReverseOrder(ledgerRecords)) {
 
-    let rowIndex = this.ledgerHeaderRows + ledgerRecords.length;
-    for (let i = ledgerRecords.length - 1; i >= 0; i--) {
-      this.processLedgerRecord(ledgerRecords[i], rowIndex--);
-    }
+    ledgerRecords = ledgerRecords.slice().reverse();
   }
-  else {
 
-    let rowIndex = this.ledgerHeaderRows + 1;
-    for (let ledgerRecord of ledgerRecords) {
-      this.processLedgerRecord(ledgerRecord, rowIndex++);
-    }
+  let rowIndex = this.ledgerHeaderRows + 1;
+  for (let ledgerRecord of ledgerRecords) {
+    this.processLedgerRecord(ledgerRecord, rowIndex++);
   }
 };
 

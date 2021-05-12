@@ -84,14 +84,19 @@ CryptoTracker.prototype.writeTable = function (ss, sheet, dataTable, rangeName, 
 
 /**
  * Sorts a table of values given a column index.
- * The column is assumed to be numeric or date.
  * @param {Array<Array>} dataTable - The table of values to be sorted.
  * @param {number} index - The index of the column by which to sort.
+ * @param {boolean} [abc=false] - The column should be sorted in alphabetical order rather than numeric or date.
  */
-CryptoTracker.prototype.sortTable = function (dataTable, index) {
+CryptoTracker.prototype.sortTable = function (dataTable, index, abc = false) {
 
   dataTable.sort(function (a, b) {
-    return a[index] - b[index];
+    if (abc) {
+      return CryptoTracker.abcComparator(a[index], b[index]);
+    }
+    else {
+      return a[index] - b[index];
+    }
   });
 
   return dataTable;

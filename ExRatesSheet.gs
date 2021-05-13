@@ -46,8 +46,8 @@ CryptoTracker.prototype.exRatesSheet = function () {
   this.writeTable(ss, sheet, dataTable, this.exRatesRangeName, 1, 4);
 
   //check for any missing crypto prices
-  let missingCryptos = new Set(this.cryptos);
-  for (let crypto of this.cryptos) {
+  let missingCryptos = new Set(this.currentCryptos);
+  for (let crypto of this.currentCryptos) {
     for (let row of dataTable) {
       if (crypto === row[1]) {
         missingCryptos.delete(crypto);
@@ -69,7 +69,7 @@ CryptoTracker.prototype.exRatesSheet = function () {
 CryptoTracker.prototype.getCryptoPriceTable = function () {
 
   let table = [];
-  let cryptos = Array.from(this.cryptos).toString();
+  let cryptos = Array.from(this.currentCryptos).toString();
   let apiKey = this.apiKey;
 
   if (cryptos) {

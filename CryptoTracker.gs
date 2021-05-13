@@ -253,6 +253,24 @@ var CryptoTracker = class CryptoTracker {
   }
 
   /**
+   * Set of cryptocurrency tickers with positive balances used by this instance.
+   * Only filled once processLedger has completed.
+   * @type {Set}
+   */
+  get currentCryptos() {
+
+    let cryptos = new Set();
+    for (let wallet of this.wallets) {
+      for (let cryptoAccount of wallet.cryptoAccounts) {
+        if (cryptoAccount.balance > 0) {
+          cryptos.add(cryptoAccount.ticker);
+        }
+      }
+    }
+    return cryptos;
+  }
+
+  /**
    * Returns the wallet with the given name or creates adds and returns a new wallet with that name.
    * @param {string} name - The name of the wallet to search for.
    * @return {Wallet} The wallet found or created.

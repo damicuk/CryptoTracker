@@ -26,7 +26,7 @@ CryptoTracker.prototype.cryptoWalletsReport = function () {
   sheet.getRange('A2:A').setNumberFormat('@');
   sheet.getRange(2, 2, sheet.getMaxRows(), sheet.getMaxColumns()).setNumberFormat('#,##0.00000000;(#,##0.00000000);');
 
-  sheet.getRange('A1').setFormula(`IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,QUERY(${referenceRangeName}, "SELECT J, SUM(K) GROUP BY J PIVOT G ORDER BY J LABEL J 'Wallet', SUM(K) ''"))`);
+  sheet.getRange('A1').setFormula(`IF(ISBLANK(INDEX(${referenceRangeName}, 1, 1)),,QUERY(${referenceRangeName}, "SELECT J, SUM(K) GROUP BY J PIVOT G ORDER BY J LABEL J 'Wallet'"))`);
 
   sheet.autoResizeColumns(1, sheet.getMaxColumns());
 };

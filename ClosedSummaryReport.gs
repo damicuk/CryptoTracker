@@ -41,7 +41,7 @@ CryptoTracker.prototype.closedSummaryReport = function () {
   sheet.getRange('A1:L1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
 
-  sheet.getRange('A2:C').setNumberFormat('@');
+  sheet.getRange('B2:C').setNumberFormat('@');
   sheet.getRange('D2:D').setNumberFormat('#,##0.00000000;(#,##0.00000000)');
   sheet.getRange('E2:F').setNumberFormat('#,##0.0000;(#,##0.0000)');
   sheet.getRange('G2:H').setNumberFormat('#,##0.00;(#,##0.00)');

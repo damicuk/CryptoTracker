@@ -1,6 +1,7 @@
 /**
  * Processes the ledger records.
  * It treats the ledger as a set of instuctions and simulates the actions specified.
+ * Stops reading if it encounters the stop action.
  * @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
  */
 CryptoTracker.prototype.processLedger = function (ledgerRecords) {
@@ -12,6 +13,9 @@ CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 
   let rowIndex = this.ledgerHeaderRows + 1;
   for (let ledgerRecord of ledgerRecords) {
+    if (ledgerRecord.action === 'Stop') {
+      break;
+    }
     this.processLedgerRecord(ledgerRecord, rowIndex++);
   }
 };

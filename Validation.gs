@@ -24,6 +24,7 @@ CryptoTracker.prototype.validateLedger = function () {
 
 /**
  * Validates a set of ledger records and throws a ValidationError on failure.
+ * Stops reading if it encounters the stop action.
  * @param {LedgerRecord[]} ledgerRecords - The colection of ledger records to validate.
  */
 CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
@@ -36,6 +37,9 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
   let previousRecord;
   let rowIndex = this.ledgerHeaderRows + 1;
   for (let ledgerRecord of ledgerRecords) {
+    if (ledgerRecord.action === 'Stop') {
+      break;
+    }
     this.validateLedgerRecord(ledgerRecord, previousRecord, rowIndex++);
     previousRecord = ledgerRecord;
   }

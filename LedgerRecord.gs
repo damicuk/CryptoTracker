@@ -158,7 +158,6 @@ class LedgerRecord {
 
 /**
  * Retrieves the ledger records from the ledger sheet.
- * Stops reading if it encounters the stop action.
  * @return {LedgerRecord[]} The collection of ledger records.
  */
 CryptoTracker.prototype.getLedgerRecords = function () {
@@ -186,10 +185,6 @@ CryptoTracker.prototype.getLedgerRecords = function () {
       row[12]
     );
 
-    //Stop reading here
-    if (ledgerRecord.action === 'Stop') {
-      break;
-    }
     ledgerRecords.push(ledgerRecord);
   }
   return ledgerRecords;

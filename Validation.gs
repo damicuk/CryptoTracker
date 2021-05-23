@@ -32,16 +32,27 @@ CryptoTracker.prototype.validateLedgerRecords = function (ledgerRecords) {
   if (LedgerRecord.inReverseOrder(ledgerRecords)) {
 
     ledgerRecords = ledgerRecords.slice().reverse();
-  }
-
-  let previousRecord;
-  let rowIndex = this.ledgerHeaderRows + 1;
-  for (let ledgerRecord of ledgerRecords) {
-    if (ledgerRecord.action === 'Stop') {
-      break;
+    let previousRecord;
+    let rowIndex = this.ledgerHeaderRows + ledgerRecords.length;
+    for (let ledgerRecord of ledgerRecords) {
+      if (ledgerRecord.action === 'Stop') {
+        break;
+      }
+      this.validateLedgerRecord(ledgerRecord, previousRecord, rowIndex--);
+      previousRecord = ledgerRecord;
     }
-    this.validateLedgerRecord(ledgerRecord, previousRecord, rowIndex++);
-    previousRecord = ledgerRecord;
+  }
+  else {
+
+    let previousRecord;
+    let rowIndex = this.ledgerHeaderRows + 1;
+    for (let ledgerRecord of ledgerRecords) {
+      if (ledgerRecord.action === 'Stop') {
+        break;
+      }
+      this.validateLedgerRecord(ledgerRecord, previousRecord, rowIndex++);
+      previousRecord = ledgerRecord;
+    }
   }
 };
 

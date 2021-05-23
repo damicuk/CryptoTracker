@@ -9,14 +9,22 @@ CryptoTracker.prototype.processLedger = function (ledgerRecords) {
   if (LedgerRecord.inReverseOrder(ledgerRecords)) {
 
     ledgerRecords = ledgerRecords.slice().reverse();
-  }
-
-  let rowIndex = this.ledgerHeaderRows + 1;
-  for (let ledgerRecord of ledgerRecords) {
-    if (ledgerRecord.action === 'Stop') {
-      break;
+    let rowIndex = this.ledgerHeaderRows + ledgerRecords.length;
+    for (let ledgerRecord of ledgerRecords) {
+      if (ledgerRecord.action === 'Stop') {
+        break;
+      }
+      this.processLedgerRecord(ledgerRecord, rowIndex--);
     }
-    this.processLedgerRecord(ledgerRecord, rowIndex++);
+  }
+  else {
+    let rowIndex = this.ledgerHeaderRows + 1;
+    for (let ledgerRecord of ledgerRecords) {
+      if (ledgerRecord.action === 'Stop') {
+        break;
+      }
+      this.processLedgerRecord(ledgerRecord, rowIndex++);
+    }
   }
 };
 

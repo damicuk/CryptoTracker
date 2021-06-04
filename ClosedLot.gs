@@ -16,9 +16,6 @@ var ClosedLot = class ClosedLot {
    */
   constructor(lot, date, creditCurrency, creditExRate, creditAmount, creditFee, walletName) {
 
-    this._creditCurrency;
-    this._creditCurrencySubunits;
-
     /**
      * An amount of cryptocurrency purchased together.
      * @type {Lot}

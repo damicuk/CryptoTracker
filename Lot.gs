@@ -18,11 +18,6 @@ var Lot = class Lot {
    */
   constructor(date, debitCurrency, debitExRate, debitAmount, debitFee, creditCurrency, creditAmount, creditFee, walletName) {
 
-    this._debitCurrency;
-    this._debitCurrencySubunits;
-    this._creditCurrency;
-    this._creditCurrencySubunits;
-
     /**
      * The date of the transaction.
      * @type {Date}

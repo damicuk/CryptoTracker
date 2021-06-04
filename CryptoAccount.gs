@@ -10,9 +10,6 @@ var CryptoAccount = class CryptoAccount {
    */
   constructor(ticker) {
 
-    this._ticker;
-    this._currencySubunits;
-
     /**
      * The cryptocurrency currency ticker.
      * @type {string}

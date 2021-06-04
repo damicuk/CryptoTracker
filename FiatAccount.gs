@@ -10,9 +10,6 @@ var FiatAccount = class FiatAccount {
    */
   constructor(ticker) {
 
-    this._ticker;
-    this._currencySubunits;
-
     /**
      * The fiat currency ticker.
      * @type {string}

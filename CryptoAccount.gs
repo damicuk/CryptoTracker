@@ -140,8 +140,8 @@ var CryptoAccount = class CryptoAccount {
 
   /**
    * Apportions fee subunits equitably between lots.
-   * The fee subunits are assigned to the lots in proportion to the lot subunits.
-   * Throws an error if the fee subunits are greater than the lots subunits.
+   * The fee subunits are assigned to the lots in proportion to each lot's subunits.
+   * Throws an error if the fee subunits are greater than the total lots' subunits.
    * @param {number} fee subunit - The fee subunits to assign to the lots.
    * @param {Lot[]} lots - The collection of lots.
    */

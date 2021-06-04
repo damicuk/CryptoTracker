@@ -353,6 +353,44 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousR
       throw new ValidationError(`${action} row ${rowIndex}: Leave credit wallet (${creditWalletName}) blank.`, rowIndex, 'creditWalletName');
     }
   }
+  else if(action === 'Fee') { //Fee
+    if (!debitCurrency) {
+      throw new ValidationError(`${action} row ${rowIndex}: No debit currency specified.`, rowIndex, 'debitCurrency');
+    }
+    else if (Currency.isFiat(debitCurrency)) {
+      throw new ValidationError(`${action} row ${rowIndex}: Debit currency (${debitCurrency}) is fiat, not supported.`, rowIndex, 'debitCurrency');
+    }
+    else if (debitExRate !== '') {
+      throw new ValidationError(`${action} row ${rowIndex}: Leave debit exchange rate blank.`, rowIndex, 'debitExRate');
+    }
+    else if (debitAmount !== '') {
+      throw new ValidationError(`${action} row ${rowIndex}: Leave debit amount blank.`, rowIndex, 'debitAmount');
+    }
+    else if (debitFee === '') {
+      throw new ValidationError(`${action} row ${rowIndex}: No debit fee specified.`, rowIndex, 'debitFee');
+    }
+    else if (debitFee <= 0) {
+      throw new ValidationError(`${action} row ${rowIndex}: Debit fee must be greater than 0.`, rowIndex, 'debitFee');
+    }
+    else if (!debitWalletName) {
+      throw new ValidationError(`${action} row ${rowIndex}: No debit wallet specified.`, rowIndex, 'debitWalletName');
+    }
+    else if (creditCurrency) {
+      throw new ValidationError(`${action} row ${rowIndex}: Leave credit currency (${creditCurrency}) blank.`, rowIndex, 'creditCurrency');
+    }
+    else if (creditExRate !== '') {
+      throw new ValidationError(`${action} row ${rowIndex}: Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
+    }
+    else if (creditAmount !== '') {
+      throw new ValidationError(`${action} row ${rowIndex}: Leave credit amount blank.`, rowIndex, 'creditAmount');
+    }
+    else if (creditFee !== '') {
+      throw new ValidationError(`${action} row ${rowIndex}: Leave credit fee blank.`, rowIndex, 'creditFee');
+    }
+    else if (creditWalletName) {
+      throw new ValidationError(`${action} row ${rowIndex}: Leave credit wallet (${creditWalletName}) blank.`, rowIndex, 'creditWalletName');
+    }
+  }
   else {
     throw new ValidationError(`Ledger row ${rowIndex}: Action (${action}) is invalid.`, rowIndex, 'action');
   }

@@ -212,6 +212,7 @@ CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
 
   let textColors = [
     ['Donation', '#ff9900'],
+    ['Fee', '#9900ff'],
     ['Gift', '#ff9900'],
     ['Income', '#6aa84f'],
     ['Stop', '#9900ff'],

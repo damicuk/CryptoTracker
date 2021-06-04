@@ -92,9 +92,10 @@ var CryptoAccount = class CryptoAccount {
    * LIFO Last in first out.
    * HIFO Highest cost first out.
    * LOFO Lowest cost first out.
-   * @return {Lot[]} The collection if lots withdrawn.
+   * @param {number} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
+   * @return {Lot[]} The collection of lots withdrawn.
    */
-  withdraw(amount, fee, lotMatching, row) {
+  withdraw(amount, fee, lotMatching, rowIndex) {
 
     let amountSubunits = Math.round(amount * this._currencySubunits);
     let feeSubunits = Math.round(fee * this._currencySubunits);
@@ -102,7 +103,7 @@ var CryptoAccount = class CryptoAccount {
 
     if (neededSubunits > this.subunits) {
 
-      throw new CryptoAccountError(`Attempted to withdraw ${this.ticker} ${amount} + fee ${fee} from balance of ${this.ticker} ${this.balance}`, row);
+      throw new CryptoAccountError(`Attempted to withdraw ${this.ticker} ${amount} + fee ${fee} from balance of ${this.ticker} ${this.balance}`, rowIndex);
 
     }
 
@@ -134,18 +135,50 @@ var CryptoAccount = class CryptoAccount {
     }
 
     //apportion the fee to withdrawal lots
-    let withdrawLotSubunits = [];
-    for (let withdrawLot of withdrawLots) {
-      withdrawLotSubunits.push(withdrawLot.subunits);
-    }
-    let apportionedFeeSubunits = CryptoTracker.apportionInteger(feeSubunits, withdrawLotSubunits);
-    let index = 0;
-    for (let withdrawLot of withdrawLots) {
-      withdrawLot.creditFeeSubunits += apportionedFeeSubunits[index++];
-    }
+    this.apportionFeeSubunits(feeSubunits, withdrawLots);
 
     this.lots = keepLots;
     return withdrawLots;
+  }
+
+  /**
+   * Apportions fee subunits equitably between lots.
+   * The fee subunits are assigned to the lots in proportion to the lot subunits.
+   * Throws an error if the fee subunits are greater than the lots subunits.
+   * @param {number} fee subunit - The fee subunits to assign to the lots.
+   * @param {Lot[]} lots - The collection of lots.
+   */
+  apportionFeeSubunits(feeSubunits, lots) {
+
+    let lotSubunits = [];
+    for (let lot of lots) {
+      lotSubunits.push(lot.subunits);
+    }
+    let apportionedFeeSubunits = CryptoTracker.apportionInteger(feeSubunits, lotSubunits);
+    let index = 0;
+    for (let lot of lots) {
+      lot.creditFeeSubunits += apportionedFeeSubunits[index++];
+    }
+  }
+
+  /**
+   * Apportions fee equitably between the lots of the account.
+   * The fee is assigned to the lots in proportion to the lot size.
+   * Throws an error if the fee is greater than the balance in the account.
+   * @param {number} fee - The fee to assign to the lots of this account.
+   * @param {number} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
+   */
+  apportionFee(fee, rowIndex) {
+
+    let feeSubunits = Math.round(fee * this._currencySubunits);
+
+    if (feeSubunits > this.subunits) {
+
+      throw new CryptoAccountError(`Attempted to withdraw fee ${fee} from balance of ${this.ticker} ${this.balance}`, rowIndex);
+
+    }
+
+    this.apportionFeeSubunits(feeSubunits, this.lots);
   }
 
   /**

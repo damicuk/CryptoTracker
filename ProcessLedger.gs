@@ -134,7 +134,7 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
   }
   else if (action === 'Fee') { //Fee
 
-    this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(0, debitFee, this.lotMatching, rowIndex);
+    this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).apportionFee(debitFee, rowIndex);
 
   }
 };

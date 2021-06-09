@@ -96,7 +96,14 @@ CryptoTracker.prototype.getCryptoPriceTable = function () {
 
       for (let coin in data) {
 
-        table.push([timestamp, coin, accountingCurrency, data[coin][accountingCurrency]]);
+        let exRate = data[coin][accountingCurrency];
+
+        //hack to fix bug in API returning the wrong exchange rate for EURX/EUR
+        if (coin === 'EURX' && accountingCurrency === 'EUR') {
+          exRate = 1;
+        }
+
+        table.push([timestamp, coin, accountingCurrency, exRate]);
 
       }
     }

@@ -211,11 +211,17 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousR
     else if (debitCurrency === this.accountingCurrency && debitExRate !== '') {
       throw new ValidationError(`${action} row ${rowIndex}: Debit currency is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate blank.`, rowIndex, 'debitExRate');
     }
+    else if (debitCurrency === this.accountingCurrency && creditExRate !== '') {
+      throw new ValidationError(`${action} row ${rowIndex}: Debit currency is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
+    }
     else if (creditCurrency === this.accountingCurrency && creditExRate !== '') {
       throw new ValidationError(`${action} row ${rowIndex}: Credit currency is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
     }
+    else if (creditCurrency === this.accountingCurrency && debitExRate !== '') {
+      throw new ValidationError(`${action} row ${rowIndex}: Credit currency is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate blank.`, rowIndex, 'debitExRate');
+    }
     else {
-      if (Currency.isCrypto(creditCurrency) && debitCurrency != this.accountingCurrency) { //buy or exchange crypto
+      if (Currency.isCrypto(creditCurrency) && debitCurrency !== this.accountingCurrency) { //buy or exchange crypto
         if (debitExRate === '') {
           throw new ValidationError(`${action} row ${rowIndex}: Missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'debitExRate');
         }
@@ -223,7 +229,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousR
           throw new ValidationError(`${action} row ${rowIndex}: Debit exchange rate must be greater than 0.`, rowIndex, 'debitExRate');
         }
       }
-      if (Currency.isCrypto(debitCurrency) && creditCurrency != this.accountingCurrency) { //sell or exchange crypto
+      if (Currency.isCrypto(debitCurrency) && creditCurrency !== this.accountingCurrency) { //sell or exchange crypto
         if (creditExRate === '') {
           throw new ValidationError(`${action} row ${rowIndex}: Missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'creditExRate');
         }
@@ -353,7 +359,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousR
       throw new ValidationError(`${action} row ${rowIndex}: Leave credit wallet (${creditWalletName}) blank.`, rowIndex, 'creditWalletName');
     }
   }
-  else if(action === 'Fee') { //Fee
+  else if (action === 'Fee') { //Fee
     if (!debitCurrency) {
       throw new ValidationError(`${action} row ${rowIndex}: No debit currency specified.`, rowIndex, 'debitCurrency');
     }

@@ -136,5 +136,9 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
 
     this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).apportionFee(debitFee, rowIndex);
 
+    let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).removeZeroSubunitLots();
+
+    this.closeLots(lots, date, this.accountingCurrency, 0, 0, 0, debitWalletName);
+
   }
 };

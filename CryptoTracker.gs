@@ -181,7 +181,10 @@ var CryptoTracker = class CryptoTracker {
     let originalIndex = 0;
     for (let integer of integerArray) {
 
-      let float = (integer / total) * integerAmount;
+      let float = 0;
+      if (total > 0) {
+        float = (integer / total) * integerAmount;
+      }
       let rounded = Math.round(float);
       let error = rounded - float;
 

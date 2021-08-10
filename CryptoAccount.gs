@@ -179,6 +179,30 @@ var CryptoAccount = class CryptoAccount {
   }
 
   /**
+   * Removes any lots with zero subunits.
+   * Used when misc fee sets lot subunits to zero.
+   * @return {Lot[]} The collection of lots with zero subunits.
+   */
+  removeZeroSubunitLots() {
+
+    let keepLots = [];
+    let withdrawLots = [];
+
+    for (let lot of this.lots) {
+
+      if (lot.subunits > 0) {
+        keepLots.push(lot);
+      }
+      else {
+        withdrawLots.push(lot);
+      }
+    }
+
+    this.lots = keepLots;
+    return withdrawLots;
+  }
+
+  /**
    * Given a lot matching method string returns a comparator function used to sort lots.
    * @param {string} lotMatching - The lot matching method used to determine the order in which lots are withdrawn.
    * FIFO First in first out.

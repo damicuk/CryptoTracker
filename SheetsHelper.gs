@@ -211,13 +211,13 @@ CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
 CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
 
   let textColors = [
-    ['Donation', '#ff9900'],
-    ['Fee', '#9900ff'],
-    ['Gift', '#ff9900'],
-    ['Income', '#6aa84f'],
-    ['Stop', '#9900ff'],
-    ['Trade', '#1155cc'],
-    ['Transfer', '#ff0000']
+    ['Donation', '#ff9900', null],
+    ['Fee', '#9900ff', null],
+    ['Gift', '#ff9900', null],
+    ['Income', '#6aa84f', null],
+    ['Stop', '#ff0000', '#ffbb00'],
+    ['Trade', '#1155cc', null],
+    ['Transfer', '#ff0000', null],
   ];
 
   let range = sheet.getRange(a1Notation);
@@ -228,6 +228,7 @@ CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
     let rule = SpreadsheetApp.newConditionalFormatRule()
       .whenTextEqualTo(textColor[0])
       .setFontColor(textColor[1])
+      .setBackground(textColor[2])
       .setRanges([range])
       .build();
 

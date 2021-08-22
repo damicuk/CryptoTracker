@@ -112,7 +112,7 @@ var CryptoTracker = class CryptoTracker {
     this.donationsRangeName = 'Donations';
     this.incomeRangeName = 'Income';
   }
-  
+
   /**
    * Gets the value of a user property from a Properties object or sets and returns a default.
    * @param {Properties} userProperties - Properties object from PropertiesService.getUserProperties().

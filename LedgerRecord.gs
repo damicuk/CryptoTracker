@@ -59,15 +59,15 @@ class LedgerRecord {
     this.debitExRate = debitExRate;
 
     /**
-    * The amount of fiat or cryptocurrency debited from the account.
-    * @type {number}
-    */
+     * The amount of fiat or cryptocurrency debited from the account.
+     * @type {number}
+     */
     this.debitAmount = debitAmount;
 
     /**
-    * The fee in the fiat or cryptocurrency debited from the account.
-    * @type {number}
-    */
+     * The fee in the fiat or cryptocurrency debited from the account.
+     * @type {number}
+     */
     this.debitFee = debitFee;
 
     /**

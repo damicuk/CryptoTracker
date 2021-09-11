@@ -85,8 +85,8 @@ CryptoTracker.prototype.sampleLedger = function () {
   let sampleData = [
     ['2019-03-01 12:00:00', 'Transfer', 'USD', , 20000, , , , , , , 'Kraken', , `Leave debit wallet blank when transferring fiat from a bank account.`],
     ['2019-03-02 12:00:00', 'Trade', 'USD', , 7990, 10, 'Kraken', 'BTC', , 2, , , , `Debit amount is debited and credit amount is credited but fees are always debited.`],
-    ['2019-03-03 12:00:00', 'Trade', 'USD', , 9990, 10, 'Kraken', 'BTC', , 2, , , , ,],
-    ['2019-03-04 12:00:00', 'Trade', 'BTC', , 1, , 'Kraken', 'USD', , 6010, 10, , , ,],
+    ['2019-03-03 12:00:00', 'Trade', 'USD', , 9990, 10, 'Kraken', 'BTC', , 2, , , , `Buy BTC.`],
+    ['2019-03-04 12:00:00', 'Trade', 'BTC', , 1, , 'Kraken', 'USD', , 6010, 10, , , `Sell BTC.`],
     ['2020-12-01 12:00:00', 'Trade', 'BTC', , 1, , 'Kraken', 'USD', , 20010, 10, , 'LIFO', `Lot matching method applies to the current and following transactions (default in settings).`],
     ['2020-12-02 12:00:00', 'Trade', 'BTC', 20000, 1, , 'Kraken', 'ADA', 0.2, 100000, , , , `Exchange cryptos.`],
     ['2020-12-03 12:00:00', 'Trade', 'ADA', , 50000, , 'Kraken', 'USD', , 12010, 10, , , ,],

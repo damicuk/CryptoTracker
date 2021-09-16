@@ -79,6 +79,23 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
   }
   else if (action === 'Trade') { //Trade
 
+    // Infer missing ex rates
+    if(debitCurrency !== this.accountingCurrency && creditCurrency !== this.accountingCurrency) {
+
+      const decimalPlaces = 7;
+      
+      if(!debitExRate) {
+        
+        debitExRate = Math.round(10 ** decimalPlaces * creditExRate * creditAmount / debitAmount) / 10 ** decimalPlaces;
+      
+      }
+      if(!creditExRate) {
+
+        creditExRate = Math.round(10 ** decimalPlaces * debitExRate * debitAmount / creditAmount) / 10 ** decimalPlaces;
+
+      }
+    }
+
     if (Currency.isFiat(debitCurrency) && Currency.isCrypto(creditCurrency)) {  //Buy crypto
 
       this.getWallet(debitWalletName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);

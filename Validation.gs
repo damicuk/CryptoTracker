@@ -208,34 +208,31 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousR
     else if (creditWalletName) {
       throw new ValidationError(`${action} row ${rowIndex}: Leave credit wallet (${creditWalletName}) blank. It is inferred from the debit wallet (${debitWalletName}).`, rowIndex, 'creditWalletName');
     }
-    else if (debitCurrency === this.accountingCurrency && debitExRate !== '') {
-      throw new ValidationError(`${action} row ${rowIndex}: Debit currency is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate blank.`, rowIndex, 'debitExRate');
-    }
-    else if (debitCurrency === this.accountingCurrency && creditExRate !== '') {
-      throw new ValidationError(`${action} row ${rowIndex}: Debit currency is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
-    }
-    else if (creditCurrency === this.accountingCurrency && creditExRate !== '') {
-      throw new ValidationError(`${action} row ${rowIndex}: Credit currency is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
-    }
-    else if (creditCurrency === this.accountingCurrency && debitExRate !== '') {
-      throw new ValidationError(`${action} row ${rowIndex}: Credit currency is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate blank.`, rowIndex, 'debitExRate');
-    }
-    else {
-      if (Currency.isCrypto(creditCurrency) && debitCurrency !== this.accountingCurrency) { //buy or exchange crypto
-        if (debitExRate === '') {
-          throw new ValidationError(`${action} row ${rowIndex}: Missing debit currency (${debitCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'debitExRate');
-        }
-        else if (debitExRate <= 0) {
-          throw new ValidationError(`${action} row ${rowIndex}: Debit exchange rate must be greater than 0.`, rowIndex, 'debitExRate');
-        }
+    else if (debitCurrency === this.accountingCurrency) { //Base currency buy trade
+      if (debitExRate !== '') {
+        throw new ValidationError(`${action} row ${rowIndex}: Debit currency is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate blank.`, rowIndex, 'debitExRate');
       }
-      if (Currency.isCrypto(debitCurrency) && creditCurrency !== this.accountingCurrency) { //sell or exchange crypto
-        if (creditExRate === '') {
-          throw new ValidationError(`${action} row ${rowIndex}: Missing credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'creditExRate');
-        }
-        else if (creditExRate <= 0) {
-          throw new ValidationError(`${action} row ${rowIndex}: Credit exchange rate must be greater than 0.`, rowIndex, 'creditExRate');
-        }
+      if (creditExRate !== '') {
+        throw new ValidationError(`${action} row ${rowIndex}: Debit currency is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
+      }
+    }
+    else if (creditCurrency === this.accountingCurrency) { //Base currency sell trade
+      if (debitExRate !== '') {
+        throw new ValidationError(`${action} row ${rowIndex}: Credit currency is the accounting currency (${this.accountingCurrency}). Leave debit exchange rate blank.`, rowIndex, 'debitExRate');
+      }
+      if (creditExRate !== '') {
+        throw new ValidationError(`${action} row ${rowIndex}: Credit currency is the accounting currency (${this.accountingCurrency}). Leave credit exchange rate blank.`, rowIndex, 'creditExRate');
+      }
+    }
+    else { //Non base currency trade
+      if(debitExRate === '' && creditExRate === '') {
+        throw new ValidationError(`${action} row ${rowIndex}: Non accounting currency trade requires debit currency (${debitCurrency}) and/or credit currency (${creditCurrency}) to accounting currency (${this.accountingCurrency}) exchange rate.`, rowIndex, 'debitExRate');
+      }
+      else if (debitExRate && debitExRate <= 0) {
+        throw new ValidationError(`${action} row ${rowIndex}: Debit exchange rate must be greater than 0.`, rowIndex, 'debitExRate');
+      }
+      else if (creditExRate && creditExRate <= 0) {
+        throw new ValidationError(`${action} row ${rowIndex}: Credit exchange rate must be greater than 0.`, rowIndex, 'creditExRate');
       }
     }
   }

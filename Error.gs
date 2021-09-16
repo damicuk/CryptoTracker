@@ -40,7 +40,7 @@ CryptoTracker.prototype.handleError = function (error, message, rowIndex, column
 };
 
 /**
- * Sets the currenct cell i the ledger sheet.
+ * Sets the currenct cell in the ledger sheet.
  * @param {number} rowIndex - The row index of the cell in the ledger sheet.
  * @param {string} columnName - the name assigned to the column in the ledger sheet.
  * Used to get the index from LedgerRecord.getColumnIndex(columnName).

@@ -35,13 +35,6 @@ var ClosedLot = class ClosedLot {
     this.creditCurrency = creditCurrency;
 
     /**
-     * The number of subunit in a unit of the credit currency (e.g 100 cents in 1 USD, or 100,000,000 satoshi in 1 BTC).
-     * @type {number}
-     * @static
-     */
-    this.creditCurrencySubunits = Currency.subunits(creditCurrency);
-
-    /**
      * The credit currency to accounting currency exchange rate, 0 if the credit currency is the accounting currency.
      * @type {number}
      */
@@ -51,13 +44,13 @@ var ClosedLot = class ClosedLot {
      * The amount of fiat or cryptocurrency credited in subunits.
      * @type {number}
      */
-    this.creditAmountSubunits = Math.round(creditAmount * this.creditCurrencySubunits);
+    this.creditAmountSubunits = Math.round(creditAmount * this._creditCurrencySubunits);
 
     /**
      * The fee in the fiat or cryptocurrency credited in subunits.
      * @type {number}
      */
-    this.creditFeeSubunits = Math.round(creditFee * this.creditCurrencySubunits);
+    this.creditFeeSubunits = Math.round(creditFee * this._creditCurrencySubunits);
 
     /**
      * The name of the wallet (or exchange) in which the transaction took place.
@@ -67,13 +60,24 @@ var ClosedLot = class ClosedLot {
 
   }
 
+  get creditCurrency() {
+
+    return this._creditCurrency;
+  }
+
+  set creditCurrency(ticker) {
+
+    this._creditCurrency = ticker;
+    this._creditCurrencySubunits = Currency.subunits(ticker);
+  }
+
   /**
    * The amount of fiat or cryptocurrency credited.
    * @type {number}
    */
   get creditAmount() {
 
-    return this.creditAmountSubunits / this.creditCurrencySubunits;
+    return this.creditAmountSubunits / this._creditCurrencySubunits;
   }
 
   /**
@@ -82,6 +86,6 @@ var ClosedLot = class ClosedLot {
    */
   get creditFee() {
 
-    return this.creditFeeSubunits / this.creditCurrencySubunits;
+    return this.creditFeeSubunits / this._creditCurrencySubunits;
   }
 };

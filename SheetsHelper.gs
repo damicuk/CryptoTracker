@@ -84,14 +84,19 @@ CryptoTracker.prototype.writeTable = function (ss, sheet, dataTable, rangeName, 
 
 /**
  * Sorts a table of values given a column index.
- * The column is assumed to be numeric or date.
  * @param {Array<Array>} dataTable - The table of values to be sorted.
  * @param {number} index - The index of the column by which to sort.
+ * @param {boolean} [abc=false] - The column should be sorted in alphabetical order rather than numeric or date.
  */
-CryptoTracker.prototype.sortTable = function (dataTable, index) {
+CryptoTracker.prototype.sortTable = function (dataTable, index, abc = false) {
 
   dataTable.sort(function (a, b) {
-    return a[index] - b[index];
+    if (abc) {
+      return CryptoTracker.abcComparator(a[index], b[index]);
+    }
+    else {
+      return a[index] - b[index];
+    }
   });
 
   return dataTable;
@@ -206,12 +211,13 @@ CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
 CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
 
   let textColors = [
-    ['Donation', '#ff9900'],
-    ['Gift', '#ff9900'],
-    ['Income', '#6aa84f'],
-    ['Stop', '#9900ff'],
-    ['Trade', '#1155cc'],
-    ['Transfer', '#ff0000']
+    ['Donation', '#ff9900', null],
+    ['Fee', '#9900ff', null],
+    ['Gift', '#ff9900', null],
+    ['Income', '#6aa84f', null],
+    ['Stop', '#ff0000', '#ffbb00'],
+    ['Trade', '#1155cc', null],
+    ['Transfer', '#ff0000', null],
   ];
 
   let range = sheet.getRange(a1Notation);
@@ -222,6 +228,7 @@ CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
     let rule = SpreadsheetApp.newConditionalFormatRule()
       .whenTextEqualTo(textColor[0])
       .setFontColor(textColor[1])
+      .setBackground(textColor[2])
       .setRanges([range])
       .build();
 

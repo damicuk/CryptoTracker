@@ -16,14 +16,6 @@ var FiatAccount = class FiatAccount {
      */
     this.ticker = ticker;
 
-
-    /**
-     * The number of subunit in a unit of the currency (e.g 100 cents in 1 USD).
-     * @type {number}
-     * @static
-     */
-    this.currencySubunits = Currency.subunits(ticker);
-
     /**
      * The balance in the account in subunits.
      * @type {number}
@@ -32,13 +24,24 @@ var FiatAccount = class FiatAccount {
 
   }
 
+  get ticker() {
+
+    return this._ticker;
+  }
+
+  set ticker(ticker) {
+
+    this._ticker = ticker;
+    this._currencySubunits = Currency.subunits(ticker);
+  }
+
   /**
    * The balance in the account.
    * @type {number}
    */
   get balance() {
 
-    return this.subunits / this.currencySubunits;
+    return this.subunits / this._currencySubunits;
 
   }
 
@@ -49,7 +52,7 @@ var FiatAccount = class FiatAccount {
    */
   transfer(amount) {
 
-    this.subunits += Math.round(amount * this.currencySubunits); //round because multiplying
+    this.subunits += Math.round(amount * this._currencySubunits); //round because multiplying
 
     return this;
 

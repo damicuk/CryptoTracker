@@ -113,7 +113,6 @@ var CryptoTracker = class CryptoTracker {
     this.incomeRangeName = 'Income';
   }
 
-
   /**
    * Gets the value of a user property from a Properties object or sets and returns a default.
    * @param {Properties} userProperties - Properties object from PropertiesService.getUserProperties().
@@ -181,7 +180,13 @@ var CryptoTracker = class CryptoTracker {
     let originalIndex = 0;
     for (let integer of integerArray) {
 
-      let float = (integer / total) * integerAmount;
+      let float;
+      if (total > 0) {
+        float = (integer / total) * integerAmount;
+      }
+      else {
+        float = integerAmount / integerArray.length;
+      }
       let rounded = Math.round(float);
       let error = rounded - float;
 
@@ -247,6 +252,24 @@ var CryptoTracker = class CryptoTracker {
     for (let wallet of this.wallets) {
       for (let cryptoAccount of wallet.cryptoAccounts) {
         cryptos.add(cryptoAccount.ticker);
+      }
+    }
+    return cryptos;
+  }
+
+  /**
+   * Set of cryptocurrency tickers with positive balances used by this instance.
+   * Only filled once processLedger has completed.
+   * @type {Set}
+   */
+  get currentCryptos() {
+
+    let cryptos = new Set();
+    for (let wallet of this.wallets) {
+      for (let cryptoAccount of wallet.cryptoAccounts) {
+        if (cryptoAccount.balance > 0) {
+          cryptos.add(cryptoAccount.ticker);
+        }
       }
     }
     return cryptos;

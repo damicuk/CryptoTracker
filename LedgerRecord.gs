@@ -59,15 +59,15 @@ class LedgerRecord {
     this.debitExRate = debitExRate;
 
     /**
-    * The amount of fiat or cryptocurrency debited from the account.
-    * @type {number}
-    */
+     * The amount of fiat or cryptocurrency debited from the account.
+     * @type {number}
+     */
     this.debitAmount = debitAmount;
 
     /**
-    * The fee in the fiat or cryptocurrency debited from the account.
-    * @type {number}
-    */
+     * The fee in the fiat or cryptocurrency debited from the account.
+     * @type {number}
+     */
     this.debitFee = debitFee;
 
     /**
@@ -158,7 +158,6 @@ class LedgerRecord {
 
 /**
  * Retrieves the ledger records from the ledger sheet.
- * Stops reading if it encounters the stop action.
  * @return {LedgerRecord[]} The collection of ledger records.
  */
 CryptoTracker.prototype.getLedgerRecords = function () {
@@ -186,10 +185,6 @@ CryptoTracker.prototype.getLedgerRecords = function () {
       row[12]
     );
 
-    //Stop reading here
-    if (ledgerRecord.action === 'Stop') {
-      break;
-    }
     ledgerRecords.push(ledgerRecord);
   }
   return ledgerRecords;

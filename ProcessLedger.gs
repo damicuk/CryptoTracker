@@ -1,21 +1,28 @@
 /**
  * Processes the ledger records.
  * It treats the ledger as a set of instuctions and simulates the actions specified.
+ * Stops reading if it encounters the stop action.
  * @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
  */
 CryptoTracker.prototype.processLedger = function (ledgerRecords) {
 
   if (LedgerRecord.inReverseOrder(ledgerRecords)) {
 
+    ledgerRecords = ledgerRecords.slice().reverse();
     let rowIndex = this.ledgerHeaderRows + ledgerRecords.length;
-    for (let i = ledgerRecords.length - 1; i >= 0; i--) {
-      this.processLedgerRecord(ledgerRecords[i], rowIndex--);
+    for (let ledgerRecord of ledgerRecords) {
+      if (ledgerRecord.action === 'Stop') {
+        break;
+      }
+      this.processLedgerRecord(ledgerRecord, rowIndex--);
     }
   }
   else {
-
     let rowIndex = this.ledgerHeaderRows + 1;
     for (let ledgerRecord of ledgerRecords) {
+      if (ledgerRecord.action === 'Stop') {
+        break;
+      }
       this.processLedgerRecord(ledgerRecord, rowIndex++);
     }
   }
@@ -72,6 +79,23 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
   }
   else if (action === 'Trade') { //Trade
 
+    // Infer missing ex rates
+    if(debitCurrency !== this.accountingCurrency && creditCurrency !== this.accountingCurrency) {
+
+      const decimalPlaces = 7;
+      
+      if(!debitExRate) {
+        
+        debitExRate = Math.round(10 ** decimalPlaces * creditExRate * creditAmount / debitAmount) / 10 ** decimalPlaces;
+      
+      }
+      if(!creditExRate) {
+
+        creditExRate = Math.round(10 ** decimalPlaces * debitExRate * debitAmount / creditAmount) / 10 ** decimalPlaces;
+
+      }
+    }
+
     if (Currency.isFiat(debitCurrency) && Currency.isCrypto(creditCurrency)) {  //Buy crypto
 
       this.getWallet(debitWalletName).getFiatAccount(debitCurrency).transfer(-debitAmount).transfer(-debitFee);
@@ -123,6 +147,15 @@ CryptoTracker.prototype.processLedgerRecord = function (ledgerRecord, rowIndex) 
   else if (action === 'Gift') { //Gift
 
     this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).withdraw(debitAmount, debitFee, this.lotMatching, rowIndex);
+
+  }
+  else if (action === 'Fee') { //Fee
+
+    this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).apportionFee(debitFee, rowIndex);
+
+    let lots = this.getWallet(debitWalletName).getCryptoAccount(debitCurrency).removeZeroSubunitLots();
+
+    this.closeLots(lots, date, this.accountingCurrency, 0, 0, 0, debitWalletName);
 
   }
 };

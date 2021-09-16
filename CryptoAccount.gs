@@ -17,18 +17,22 @@ var CryptoAccount = class CryptoAccount {
     this.ticker = ticker;
 
     /**
-     * The number of subunit in a unit of the currency (e.g 100,000,000 satoshi in 1 BTC).
-     * @type {number}
-     * @static
-     */
-    this.currencySubunits = Currency.subunits(ticker);
-
-    /**
      * The crytocurrency lots.
      * @type {Array<Lot>}
      */
     this.lots = [];
 
+  }
+
+  get ticker() {
+
+    return this._ticker;
+  }
+
+  set ticker(ticker) {
+
+    this._ticker = ticker;
+    this._currencySubunits = Currency.subunits(ticker);
   }
 
   /**
@@ -52,7 +56,7 @@ var CryptoAccount = class CryptoAccount {
    */
   get balance() {
 
-    return this.subunits / this.currencySubunits;
+    return this.subunits / this._currencySubunits;
   }
 
   /**
@@ -85,17 +89,18 @@ var CryptoAccount = class CryptoAccount {
    * LIFO Last in first out.
    * HIFO Highest cost first out.
    * LOFO Lowest cost first out.
-   * @return {Lot[]} The collection if lots withdrawn.
+   * @param {number} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
+   * @return {Lot[]} The collection of lots withdrawn.
    */
-  withdraw(amount, fee, lotMatching, row) {
+  withdraw(amount, fee, lotMatching, rowIndex) {
 
-    let amountSubunits = Math.round(amount * this.currencySubunits);
-    let feeSubunits = Math.round(fee * this.currencySubunits);
+    let amountSubunits = Math.round(amount * this._currencySubunits);
+    let feeSubunits = Math.round(fee * this._currencySubunits);
     let neededSubunits = amountSubunits + feeSubunits;
 
     if (neededSubunits > this.subunits) {
 
-      throw new CryptoAccountError(`Attempted to withdraw ${this.ticker} ${amount} + fee ${fee} from balance of ${this.ticker} ${this.balance}`, row);
+      throw new CryptoAccountError(`Attempted to withdraw ${this.ticker} ${amount} + fee ${fee} from balance of ${this.ticker} ${this.balance}`, rowIndex);
 
     }
 
@@ -127,16 +132,72 @@ var CryptoAccount = class CryptoAccount {
     }
 
     //apportion the fee to withdrawal lots
-    let withdrawLotSubunits = [];
-    for(let withdrawLot of withdrawLots) {
-      withdrawLotSubunits.push(withdrawLot.subunits);
+    this.apportionFeeSubunits(feeSubunits, withdrawLots);
+
+    this.lots = keepLots;
+    return withdrawLots;
+  }
+
+  /**
+   * Apportions fee subunits equitably between lots.
+   * The fee subunits are assigned to the lots in proportion to each lot's subunits.
+   * Throws an error if the fee subunits are greater than the total lots' subunits.
+   * @param {number} fee subunit - The fee subunits to assign to the lots.
+   * @param {Lot[]} lots - The collection of lots.
+   */
+  apportionFeeSubunits(feeSubunits, lots) {
+
+    let lotSubunits = [];
+    for (let lot of lots) {
+      lotSubunits.push(lot.subunits);
     }
-    let apportionedFeeSubunits = CryptoTracker.apportionInteger(feeSubunits, withdrawLotSubunits);
+    let apportionedFeeSubunits = CryptoTracker.apportionInteger(feeSubunits, lotSubunits);
     let index = 0;
-    for(let withdrawLot of withdrawLots) {
-      withdrawLot.creditFeeSubunits += apportionedFeeSubunits[index++];
+    for (let lot of lots) {
+      lot.creditFeeSubunits += apportionedFeeSubunits[index++];
     }
-    
+  }
+
+  /**
+   * Apportions fee equitably between the lots of the account.
+   * The fee is assigned to the lots in proportion to the lot size.
+   * Throws an error if the fee is greater than the balance in the account.
+   * @param {number} fee - The fee to assign to the lots of this account.
+   * @param {number} rowIndex - The index of the row in the ledger sheet used to set the current cell in case of an error.
+   */
+  apportionFee(fee, rowIndex) {
+
+    let feeSubunits = Math.round(fee * this._currencySubunits);
+
+    if (feeSubunits > this.subunits) {
+
+      throw new CryptoAccountError(`Attempted to withdraw fee ${fee} from balance of ${this.ticker} ${this.balance}`, rowIndex);
+
+    }
+
+    this.apportionFeeSubunits(feeSubunits, this.lots);
+  }
+
+  /**
+   * Removes any lots with zero subunits.
+   * Used when misc fee sets lot subunits to zero.
+   * @return {Lot[]} The collection of lots with zero subunits.
+   */
+  removeZeroSubunitLots() {
+
+    let keepLots = [];
+    let withdrawLots = [];
+
+    for (let lot of this.lots) {
+
+      if (lot.subunits > 0) {
+        keepLots.push(lot);
+      }
+      else {
+        withdrawLots.push(lot);
+      }
+    }
+
     this.lots = keepLots;
     return withdrawLots;
   }

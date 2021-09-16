@@ -52,7 +52,7 @@ CryptoTracker.prototype.exRatesCurrent = function (sheet, minuteMargin) {
 
   let date = new Date();
 
-  for (let crypto of this.cryptos) {
+  for (let crypto of this.currentCryptos) {
 
     if (!this.lookupExRate(exRateRecords, date, crypto, minuteMargin)) {
 

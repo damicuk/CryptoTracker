@@ -31,12 +31,11 @@ CryptoTracker.prototype.getLedgerRange = function () {
 
 
 /**
- * Checks the version of the eldger sheet.
+ * Checks the version of the ledger sheet.
  * Sets conditional text color formatting of the action column of the ledger sheet if the version is not current.
  * Sets data validation on the action column of the ledger sheet if the version is not current.
  * Sets data validation on the currency columns in the ledger sheet.
  * Sets data validation on the wallets columns in the ledger sheet.
- * Used to format the action column of the ledger sheet.
  */
 CryptoTracker.prototype.updateLedger = function () {
 

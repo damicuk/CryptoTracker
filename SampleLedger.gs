@@ -11,6 +11,8 @@ CryptoTracker.prototype.sampleLedger = function () {
   let ss = SpreadsheetApp.getActive();
   sheet = ss.insertSheet(sheetName);
 
+  this.setSheetVersion(sheet, this.ledgerSheetVersion);
+
   let headers = [
     [
       , ,
@@ -55,44 +57,40 @@ CryptoTracker.prototype.sampleLedger = function () {
   sheet.getRange('I3:K').setNumberFormat('#,##0.00000000;(#,##0.00000000)');
   sheet.getRange('L3:N').setNumberFormat('@');
 
-  sheet.clearConditionalFormatRules();
-  this.addActionCondtion(sheet, 'B3:B');
+  this.setLedgerConditionalFormatRules(sheet);
 
-  let actions = ['Donation', 'Fee', 'Gift', 'Income', 'Stop', 'Trade', 'Transfer'];
+  this.setLedgerActions(sheet);
 
-  let actionRule = SpreadsheetApp.newDataValidation().requireValueInList(actions).setAllowInvalid(false).build();
-  sheet.getRange('B3:B').setDataValidation(actionRule);
+  let currencies = [this.accountingCurrency, 'ADA', 'BTC'];
 
-  let currencies = ['USD', 'ADA', 'BTC'];
-
-  this.addCurrencyValidation(sheet, 'C3:C', currencies);
-  this.addCurrencyValidation(sheet, 'H3:H', currencies);
+  this.setCurrencyValidation(sheet, 'C3:C', currencies);
+  this.setCurrencyValidation(sheet, 'H3:H', currencies);
 
   let wallets = ['Binance', 'Deposit', 'Kraken', 'Ledger', 'Rewards', 'Yoroi'];
 
-  this.addWalletValidation(sheet, 'G3:G', wallets);
-  this.addWalletValidation(sheet, 'L3:L', wallets);
+  this.setWalletValidation(sheet, 'G3:G', wallets);
+  this.setWalletValidation(sheet, 'L3:L', wallets);
 
-  let lotMatchings = ['FIFO', 'LIFO', 'HIFO', 'LOFO'];
-
-  let lotMatchingRule = SpreadsheetApp.newDataValidation().requireValueInList(lotMatchings).setAllowInvalid(false).build();
-  sheet.getRange('M3:M').setDataValidation(lotMatchingRule);
+  this.setLedgerLotMatchings(sheet);
 
   if (!sheet.getFilter()) {
     sheet.getRange('A2:N').createFilter();
   }
 
+  //To make prices in JPY approx those in other currencies
+  let multiplier = 100 / Currency.subunits(this.accountingCurrency);
+
   let sampleData = [
-    ['2019-03-01 12:00:00', 'Transfer', 'USD', , 20000, , , , , , , 'Kraken', , `Leave debit wallet blank when transferring fiat from a bank account.`],
-    ['2019-03-02 12:00:00', 'Trade', 'USD', , 7990, 10, 'Kraken', 'BTC', , 2, , , , `Debit amount is debited and credit amount is credited but fees are always debited.`],
-    ['2019-03-03 12:00:00', 'Trade', 'USD', , 9990, 10, 'Kraken', 'BTC', , 2, , , , `Buy BTC.`],
-    ['2019-03-04 12:00:00', 'Trade', 'BTC', , 1, , 'Kraken', 'USD', , 6010, 10, , , `Sell BTC.`],
-    ['2020-12-01 12:00:00', 'Trade', 'BTC', , 1, , 'Kraken', 'USD', , 20010, 10, , 'LIFO', `Lot matching method applies to the current and following transactions (default in settings).`],
+    ['2019-03-01 12:00:00', 'Transfer', this.accountingCurrency, , 20000 * multiplier, , , , , , , 'Kraken', , `Leave debit wallet blank when transferring fiat from a bank account.`],
+    ['2019-03-02 12:00:00', 'Trade', this.accountingCurrency, , 7990 * multiplier, 10 * multiplier, 'Kraken', 'BTC', , 2, , , , `Debit amount is debited and credit amount is credited but fees are always debited.`],
+    ['2019-03-03 12:00:00', 'Trade', this.accountingCurrency, , 9990 * multiplier, 10 * multiplier, 'Kraken', 'BTC', , 2, , , , `Buy BTC.`],
+    ['2019-03-04 12:00:00', 'Trade', 'BTC', , 1, , 'Kraken', this.accountingCurrency, , 6010 * multiplier, 10 * multiplier, , , `Sell BTC.`],
+    ['2020-12-01 12:00:00', 'Trade', 'BTC', , 1, , 'Kraken', this.accountingCurrency, , 20010 * multiplier, 10 * multiplier, , 'LIFO', `Lot matching method applies to the current and following transactions (default in settings).`],
     ['2020-12-02 12:00:00', 'Trade', 'BTC', 20000, 1, , 'Kraken', 'ADA', 0.2, 100000, , , , `Exchange cryptos.`],
-    ['2020-12-03 12:00:00', 'Trade', 'ADA', , 50000, , 'Kraken', 'USD', , 12010, 10, , , ,],
+    ['2020-12-03 12:00:00', 'Trade', 'ADA', , 50000, , 'Kraken', this.accountingCurrency, , 12010 * multiplier, 10 * multiplier, , , ,],
     ['2020-12-04 12:00:00', 'Transfer', 'ADA', , 49999.4, 0.6, 'Kraken', , , , , 'Yoroi', , `Transfer amount and fee are always and only entered in the debit column.`],
     ['2020-12-05 12:00:00', 'Transfer', 'BTC', , 0.9995, 0.0005, 'Kraken', , , , , 'Ledger', , ,],
-    ['2020-12-06 12:00:00', 'Transfer', 'USD', , 30000, , 'Kraken', , , , , , , `Leave credit wallet blank when transferring fiat to a bank account.`],
+    ['2020-12-06 12:00:00', 'Transfer', this.accountingCurrency, , 30000 * multiplier, , 'Kraken', , , , , , , `Leave credit wallet blank when transferring fiat to a bank account.`],
     ['2021-02-01 12:00:00', 'Income', , , , , , 'ADA', 1, 10, , 'Rewards', , `Staking reward.`],
     ['2021-02-05 12:00:00', 'Income', , , , , , 'ADA', 1.3, 10, , 'Rewards', , ,],
     ['2021-03-01 12:00:00', 'Donation', 'ADA', 1.1, 500, , 'Yoroi', , , , , , , `Donations (e.g. to registered charities) are recorded in the donations report.`],
@@ -112,4 +110,3 @@ CryptoTracker.prototype.sampleLedger = function () {
 
   return sheet;
 };
-

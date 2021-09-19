@@ -42,8 +42,14 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
  */
 CryptoTracker.prototype.setSheetVersion = function (sheet, version) {
 
-  sheet.addDeveloperMetadata('version', version, SpreadsheetApp.DeveloperMetadataVisibility.PROJECT);
-}
+  let metadataArray = sheet.createDeveloperMetadataFinder().withKey('version').find();
+  if (metadataArray.length > 0) {
+    metadataArray[0].setValue(version);
+  }
+  else {
+    sheet.addDeveloperMetadata('version', version, SpreadsheetApp.DeveloperMetadataVisibility.PROJECT);
+  }
+};
 
 /**
  * Reads version metadata from a sheet.
@@ -56,7 +62,7 @@ CryptoTracker.prototype.getSheetVersion = function (sheet) {
   let metadataArray = sheet.createDeveloperMetadataFinder().withKey('version').find();
   let metadataValue = metadataArray.length > 0 ? metadataArray[0].getValue() : '';
   return metadataValue;
-}
+};
 
 /**
  * Writes a table of data values to a given sheet, adds a named range, trims the sheet to the correct size and resizes the columns.
@@ -228,42 +234,6 @@ CryptoTracker.prototype.trimColumns = function (sheet, neededColumns) {
 
 /**
  * Adds specific conditional text color formatting to a range of cells in a sheet.
- * Used to format the action column of the ledger sheet.
- * @param {Sheet} sheet - The sheet containing the range of cells to format.
- * @param {string} a1Notation - The A1 notation used to specify the range of cells to be formatted.
- */
-CryptoTracker.prototype.addActionCondtion = function (sheet, a1Notation) {
-
-  let textColors = [
-    ['Donation', '#ff9900', null],
-    ['Fee', '#9900ff', null],
-    ['Gift', '#ff9900', null],
-    ['Income', '#6aa84f', null],
-    ['Stop', '#ff0000', '#ffbb00'],
-    ['Trade', '#1155cc', null],
-    ['Transfer', '#ff0000', null],
-  ];
-
-  let range = sheet.getRange(a1Notation);
-  let rules = sheet.getConditionalFormatRules();
-
-  for (let textColor of textColors) {
-
-    let rule = SpreadsheetApp.newConditionalFormatRule()
-      .whenTextEqualTo(textColor[0])
-      .setFontColor(textColor[1])
-      .setBackground(textColor[2])
-      .setRanges([range])
-      .build();
-
-    rules.push(rule);
-  }
-
-  sheet.setConditionalFormatRules(rules);
-};
-
-/**
- * Adds specific conditional text color formatting to a range of cells in a sheet.
  * Used to format the long / short columns in the reports sheets.
  * @param {Sheet} sheet - The sheet containing the range of cells to format.
  * @param {string} a1Notation - The A1 notation used to specify the range of cells to be formatted.
@@ -292,47 +262,24 @@ CryptoTracker.prototype.addLongShortCondition = function (sheet, a1Notation) {
 
 /**
  * Sets data validation from a list on a range of cells in a sheet.
- * Sets the help text that appears when the user hovers over a cell on which data validation is set.
- * Used specifically to set the data validation on the currency columns in the ledger sheet.
- * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set.
- * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set.
- * @param {string[]} values - The list of valid values
- */
-CryptoTracker.prototype.addCurrencyValidation = function (sheet, a1Notation, values) {
-
-  this.addValidation(sheet, a1Notation, values, 'New currencies will be added to the data validation dropdown when write reports is run.');
-
-};
-
-/**
- * Sets data validation from a list on a range of cells in a sheet.
- * Sets the help text that appears when the user hovers over a cell on which data validation is set.
- * Used specifically to set the data validation on the wallet columns in the ledger sheet.
- * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set.
- * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set.
- * @param {string[]} values - The list of valid values
- */
-CryptoTracker.prototype.addWalletValidation = function (sheet, a1Notation, values) {
-
-  this.addValidation(sheet, a1Notation, values, 'New wallets will be added to the data validation dropdown when write reports is run.');
-
-};
-
-/**
- * Sets data validation from a list on a range of cells in a sheet.
  * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set.
  * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set.
  * @param {string[]} values - The list of valid values.
  * @param {string} helpText - Sets the help text that appears when the user hovers over a cell on which data validation is set.
  */
-CryptoTracker.prototype.addValidation = function (sheet, a1Notation, values, helpText) {
+CryptoTracker.prototype.setValidation = function (sheet, a1Notation, values, allowInvalid, helpText) {
 
   let range = sheet.getRange(a1Notation);
 
-  let rule = SpreadsheetApp.newDataValidation()
+  let dataValidationBuilder = SpreadsheetApp.newDataValidation()
     .requireValueInList(values)
-    .setHelpText(helpText)
-    .build();
+    .setAllowInvalid(allowInvalid);
+
+  if (helpText) {
+    dataValidationBuilder.setHelpText(helpText);
+  }
+
+  let rule = dataValidationBuilder.build();
 
   range.setDataValidation(rule);
 };

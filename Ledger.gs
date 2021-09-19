@@ -60,7 +60,7 @@ CryptoTracker.prototype.updateLedger = function () {
 
   this.updateLedgerCurrencies(sheet);
   this.updateLedgerWallets(sheet);
-}
+};
 
 /**
  * Sets conditional text color formatting of the action column of the ledger sheet.
@@ -96,7 +96,7 @@ CryptoTracker.prototype.setLedgerConditionalFormatRules = function (sheet) {
   }
 
   sheet.setConditionalFormatRules(rules);
-}
+};
 
 /**
  * Sets data validation on the action column of the ledger sheet.

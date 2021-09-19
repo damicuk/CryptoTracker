@@ -43,7 +43,7 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
 CryptoTracker.prototype.setSheetVersion = function (sheet, version) {
 
   sheet.addDeveloperMetadata('version', version, SpreadsheetApp.DeveloperMetadataVisibility.PROJECT);
-}
+};
 
 /**
  * Reads version metadata from a sheet.
@@ -56,7 +56,7 @@ CryptoTracker.prototype.getSheetVersion = function (sheet) {
   let metadataArray = sheet.createDeveloperMetadataFinder().withKey('version').find();
   let metadataValue = metadataArray.length > 0 ? metadataArray[0].getValue() : '';
   return metadataValue;
-}
+};
 
 /**
  * Writes a table of data values to a given sheet, adds a named range, trims the sheet to the correct size and resizes the columns.

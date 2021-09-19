@@ -37,7 +37,6 @@ CryptoTracker.prototype.getLedgerRange = function () {
  * Sets data validation on the currency columns in the ledger sheet.
  * Sets data validation on the wallets columns in the ledger sheet.
  * Used to format the action column of the ledger sheet.
- * @param {Sheet} sheet - The ledger sheet.
  */
 CryptoTracker.prototype.updateLedger = function () {
 

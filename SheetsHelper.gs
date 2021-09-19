@@ -35,6 +35,30 @@ CryptoTracker.prototype.deleteSheets = function (sheetNames) {
 };
 
 /**
+ * Writes version metadata to a sheet with project visibility.
+ * Used to determine when to push sheet updates to end users.
+ * @param {Sheet} sheet - The sheet to which to add version metadata.
+ * @param {string} version - The version to write to the sheet.
+ */
+CryptoTracker.prototype.setSheetVersion = function (sheet, version) {
+
+  sheet.addDeveloperMetadata('version', version, SpreadsheetApp.DeveloperMetadataVisibility.PROJECT);
+}
+
+/**
+ * Reads version metadata from a sheet.
+ * Used to determine when to push sheet updates to end users.
+ * @param {Sheet} sheet - The sheet from which to read version metadata.
+ * @return {string} The version of the sheet.
+ */
+CryptoTracker.prototype.getSheetVersion = function (sheet) {
+
+  let metadataArray = sheet.createDeveloperMetadataFinder().withKey('version').find();
+  let metadataValue = metadataArray.length > 0 ? metadataArray[0].getValue() : '';
+  return metadataValue;
+}
+
+/**
  * Writes a table of data values to a given sheet, adds a named range, trims the sheet to the correct size and resizes the columns.
  * @param {Spreadsheet} ss - Spreadsheet object e.g. from SpreadsheetApp.getActive().
  * @param {Sheet} sheet - The sheet to which the data values should be written.

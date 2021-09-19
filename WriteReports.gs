@@ -61,8 +61,7 @@ CryptoTracker.prototype.writeReports = function () {
   this.fiatWalletsReport();
   this.exRatesTable();
 
-  this.updateLedgerCurrencies();
-  this.updateLedgerWallets();
+  this.updateLedger();
 
   if (apiError) {
     this.handleError('api', apiError.message);

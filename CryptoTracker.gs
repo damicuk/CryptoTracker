@@ -91,6 +91,7 @@ var CryptoTracker = class CryptoTracker {
     this.exRatesSheetDataColumns = 4;
 
     this.ledgerSheetName = 'Ledger';
+    this.ledgerSheetVersion = '1';
     this.exRatesSheetName = 'Ex Rates Data';
     this.fiatAccountsSheetName = 'Fiat Accounts Data';
     this.openPositionsReportName = 'Open Positions Report';

@@ -1,22 +1,30 @@
 /**
  * Creates the closed summary report if it doesn't already exist.
+ * Updated the sheet if the version is not the current version.
  * No data is writen to this sheet.
  * It contains formulas that pull data from other sheets.
  */
 CryptoTracker.prototype.closedSummaryReport = function () {
 
+  const version = '1';
   const sheetName = this.closedSummaryReportName;
 
   let ss = SpreadsheetApp.getActive();
   let sheet = ss.getSheetByName(sheetName);
 
   if (sheet) {
-
-    return;
-
+    if (this.getSheetVersion(sheet) === version) {
+      return;
+    }
+    else {
+      sheet.clear();
+    }
+  }
+  else {
+    sheet = ss.insertSheet(sheetName);
   }
 
-  sheet = ss.insertSheet(sheetName);
+  this.setSheetVersion(sheet, version);
 
   const referenceRangeName = this.closedPositionsRangeName;
 

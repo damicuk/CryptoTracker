@@ -265,6 +265,7 @@ CryptoTracker.prototype.addLongShortCondition = function (sheet, a1Notation) {
  * @param {Sheet} sheet - The sheet containing the range of cells on which data validation is set.
  * @param {string} a1Notation - The A1 notation used to specify the range of cells on which data validation is set.
  * @param {string[]} values - The list of valid values.
+ * @param {boolean} allowInvalid - Whether to allow invalid data with a warning or reject it.
  * @param {string} helpText - Sets the help text that appears when the user hovers over a cell on which data validation is set.
  */
 CryptoTracker.prototype.setValidation = function (sheet, a1Notation, values, allowInvalid, helpText) {
@@ -283,5 +284,3 @@ CryptoTracker.prototype.setValidation = function (sheet, a1Notation, values, all
 
   range.setDataValidation(rule);
 };
-
-

@@ -91,7 +91,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousR
     throw new ValidationError(`Ledger row ${rowIndex}: No action specified.`, rowIndex, 'action');
   }
   else if (debitCurrency && !Currency.isFiat(debitCurrency) && !Currency.isCrypto(debitCurrency)) {
-    throw new ValidationError(`${action} row ${rowIndex}: Debit currency (${debitCurrency}) is not recognized - neither fiat (${Currency.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`, rowIndex, 'debitCurrency');
+    throw new ValidationError(`${action} row ${rowIndex}: Debit currency (${debitCurrency}) is not recognized - neither fiat (${Currency.validFiats.join(', ')}) nor crypto (1-9 characters [A-Za-z0-9_$@]).`, rowIndex, 'debitCurrency');
   }
   else if (isNaN(debitExRate)) {
     throw new ValidationError(`${action} row ${rowIndex}: Debit exchange rate is not valid (number or blank).`, rowIndex, 'debitExRate');
@@ -103,7 +103,7 @@ CryptoTracker.prototype.validateLedgerRecord = function (ledgerRecord, previousR
     throw new ValidationError(`${action} row ${rowIndex}: Debit fee is not valid (number or blank).`, rowIndex, 'debitFee');
   }
   else if (creditCurrency && !Currency.isFiat(creditCurrency) && !Currency.isCrypto(creditCurrency)) {
-    throw new ValidationError(`${action} row ${rowIndex}: Credit currency (${creditCurrency}) is not recognized - neither fiat (${Currency.validFiats.join(', ')}) nor crypto (2-9 characters [A-Za-z0-9_]).`, rowIndex, 'creditCurrency');
+    throw new ValidationError(`${action} row ${rowIndex}: Credit currency (${creditCurrency}) is not recognized - neither fiat (${Currency.validFiats.join(', ')}) nor crypto (1-9 characters [A-Za-z0-9_$@]).`, rowIndex, 'creditCurrency');
   }
   else if (isNaN(creditExRate)) {
     throw new ValidationError(`${action} row ${rowIndex}: Credit exchange rate is not valid (number or blank).`, rowIndex, 'creditExRate');

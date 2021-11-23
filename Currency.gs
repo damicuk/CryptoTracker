@@ -23,7 +23,7 @@ var Currency = class Currency {
    */
   static get cryptoRegExp() {
 
-    return /^\w{2,9}$/;
+    return /^[\w$@]{1,9}$/;
   }
 
   /**

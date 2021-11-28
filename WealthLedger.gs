@@ -6,6 +6,8 @@
  * Creates an instructions sheet.
  * Creates a WealthLedger assets sheet.
  * Creates a WealthLedger ledger sheet.
+ * Sets the currenct cell to A1 in the instructions sheet.
+ * Displays toast on success.
  */
 CryptoTracker.prototype.createWealthLedger = function () {
 
@@ -56,6 +58,10 @@ CryptoTracker.prototype.createWealthLedger = function () {
   SpreadsheetApp.getActive().toast('Follow the instuctions.', 'Upgrade complete');
 }
 
+/**
+ * Creates an instructions sheet.
+ * Includes the API key if there is one.
+ */
 CryptoTracker.prototype.instructionsSheet = function () {
 
   const sheetName = 'Instructions';
@@ -84,7 +90,7 @@ CryptoTracker.prototype.instructionsSheet = function () {
   range.setFontWeight('bold');
 
   return sheet;
-}
+};
 
 /**
  * Creates a WealthLedger assets sheet.
@@ -410,7 +416,7 @@ CryptoTracker.prototype.getLedgerComments = function () {
   let comments = commentsRange.getValues();
 
   return comments;
-}
+};
 
 /**
  * Adds lot matching to the first ledger record if not already set and if the default lot matching is not FIFO.
@@ -440,7 +446,7 @@ CryptoTracker.prototype.addDefaultLotMatching = function (ledgerRecords) {
     firstLedgerRecord.lotMatching = this.defaultLotMatching;
 
   }
-}
+};
 
 /**
  * Adds specific conditional text color formatting to a range of cells in a sheet.

@@ -49,20 +49,30 @@ CryptoTracker.prototype.createWealthLedger = function () {
 
   this.deleteReports();
 
-  let instructionsSheet = this.instructionsSheet();
+  let hasDoubleExRates = this.hasDoubleExRates(ledgerRecords);
+  let instructionsSheet = this.instructionsSheet(hasDoubleExRates);
   this.assetsSheet();
   this.wealthLedgerSheet(ledgerRecords);
 
   SpreadsheetApp.getActive().setCurrentCell(instructionsSheet.getRange('A1'));
 
   SpreadsheetApp.getActive().toast('Follow the instuctions.', 'Upgrade complete');
-}
+};
+
+CryptoTracker.prototype.hasDoubleExRates = function (ledgerRecords) {
+  for (let ledgerRecord of ledgerRecords) {
+    if (ledgerRecord.debitExRate !== '' && ledgerRecord.creditExRate !== '') {
+      return true;
+    }
+  }
+  return false;
+};
 
 /**
  * Creates an instructions sheet.
  * Includes the API key if there is one.
  */
-CryptoTracker.prototype.instructionsSheet = function () {
+CryptoTracker.prototype.instructionsSheet = function (hasDoubleExRates) {
 
   const sheetName = 'Instructions';
 
@@ -71,20 +81,31 @@ CryptoTracker.prototype.instructionsSheet = function () {
   let ss = SpreadsheetApp.getActive();
   sheet = ss.insertSheet(sheetName);
 
+  let index = 1;
+
   let dataTable = [
-    [`1. Uninstall CryptoTracker (Extensions - Add-ons - Manage Add-ons).`],
+    [`${index++}. Uninstall CryptoTracker (Extensions - Add-ons - Manage Add-ons).`],
     [``],
-    [`2. Install WealthLedger (Extensions - Add-ons - Get Add-ons).`],
-    [``],
-    [`3. Copy the following CryptoCompare API key into WealthLedger settings.`],
-    [``],
-    [this.apiKey ? this.apiKey : 'No API key found.'],
-    [``],
-    [`4. Delete this sheet.`],
-    [``],
-    [`5. When you are happy with the upgrade you can delete the old ledger sheet (now renamed Ledger + some number).`]
+    [`${index++}. Install WealthLedger (Extensions - Add-ons - Get Add-ons).`]
   ];
 
+  if (this.apiKey) {
+    dataTable.push([``]);
+    dataTable.push([`${index++}. Copy the following CryptoCompare API key into WealthLedger settings.`]);
+    dataTable.push([``]);
+    dataTable.push([this.apiKey]);
+  }
+
+  dataTable.push([``]);
+  dataTable.push([`${index++}. You can delete this sheet and the old ledger sheet (now renamed Ledger + some number).`]);
+
+  if (hasDoubleExRates) {
+    dataTable.push([``]);
+    dataTable.push([`Warning:`]);
+    dataTable.push([`When you run wealthledger for the first time you will get validation errors on ledger records with both exchange rates set.\nThis is redundant and no longer allowed.\nFollow the instructions in the validation  message to resolve the problem.`]);
+  }
+
+  sheet.getRange(dataTable.length - 1, 1, 1, 1).setFontColor('red');
   let range = sheet.getRange(1, 1, dataTable.length, 1);
   range.setValues(dataTable);
   range.setFontWeight('bold');

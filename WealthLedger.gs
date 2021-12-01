@@ -62,7 +62,7 @@ CryptoTracker.prototype.createWealthLedger = function () {
 };
 
 /**
- * Determines wether the ledger records contains records with both ex rates set.
+ * Determines whether the ledger records contain records with both ex rates set.
   @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
  */
 CryptoTracker.prototype.hasDoubleExRates = function (ledgerRecords) {
@@ -103,12 +103,14 @@ CryptoTracker.prototype.instructionsSheet = function (hasDoubleExRates) {
   }
 
   dataTable.push([``]);
-  dataTable.push([`${index++}. You can delete this sheet and the old ledger sheet (now renamed Ledger + some number).`]);
+  dataTable.push([`${index++}. Delete this sheet.`]);
+  dataTable.push([``]);
+  dataTable.push([`${index++}. Delete the old ledger sheet (now renamed Ledger + some number) when you are happy with the upgrade.`]);
 
   if (hasDoubleExRates) {
     dataTable.push([``]);
     dataTable.push([`Warning:`]);
-    dataTable.push([`When you run WealthLedger for the first time you will get validation errors on ledger records with both exchange rates set.\nThis is redundant and no longer allowed.\nFollow the instructions in the validation  message to resolve the problem.`]);
+    dataTable.push([`When you run WealthLedger for the first time you will get validation errors on ledger records with both exchange rates set.\nThis is redundant, often contradictory and no longer allowed.\nOne exchange rate can be deduced from the other and the amount of assets exchanged.\nRead the the validation message when deciding which exchange rate to remove.`]);
 
     sheet.getRange(dataTable.length - 1, 1, 1, 1).setFontColor('red');
   }

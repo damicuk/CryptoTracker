@@ -6,8 +6,10 @@
  * Creates an instructions sheet.
  * Creates a WealthLedger assets sheet.
  * Creates a WealthLedger ledger sheet.
- * Sets the currenct cell to A1 in the instructions sheet.
+ * Copies the API key into the instructions sheet if found.
+ * Adds a warning to the instructions sheet if a record is found with both ex rates set.
  * Displays toast on success.
+ * Sets the currenct cell to A1 in the instructions sheet.
  */
 CryptoTracker.prototype.createWealthLedger = function () {
 
@@ -59,6 +61,10 @@ CryptoTracker.prototype.createWealthLedger = function () {
   SpreadsheetApp.getActive().toast('Follow the instuctions.', 'Upgrade complete');
 };
 
+/**
+ * Determines wether the ledger records contains records with both ex rates set.
+  @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
+ */
 CryptoTracker.prototype.hasDoubleExRates = function (ledgerRecords) {
   for (let ledgerRecord of ledgerRecords) {
     if (ledgerRecord.debitExRate !== '' && ledgerRecord.creditExRate !== '') {

@@ -103,9 +103,10 @@ CryptoTracker.prototype.instructionsSheet = function (hasDoubleExRates) {
     dataTable.push([``]);
     dataTable.push([`Warning:`]);
     dataTable.push([`When you run WealthLedger for the first time you will get validation errors on ledger records with both exchange rates set.\nThis is redundant and no longer allowed.\nFollow the instructions in the validation  message to resolve the problem.`]);
+
+    sheet.getRange(dataTable.length - 1, 1, 1, 1).setFontColor('red');
   }
 
-  sheet.getRange(dataTable.length - 1, 1, 1, 1).setFontColor('red');
   let range = sheet.getRange(1, 1, dataTable.length, 1);
   range.setValues(dataTable);
   range.setFontWeight('bold');

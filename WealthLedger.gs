@@ -11,7 +11,7 @@
  * Displays toast on success.
  * Sets the currenct cell to A1 in the instructions sheet.
  */
-CryptoTracker.prototype.createWealthLedger = function () {
+CryptoTracker.prototype.upgradeToWealthLedger = function () {
 
   let ui = SpreadsheetApp.getUi();
   let message = `WealthLedger is a more powerful version of this application.\nIt is still entirely free. The upgrade is fully reversable.\n\nDo you want to continue?`;
@@ -21,40 +21,54 @@ CryptoTracker.prototype.createWealthLedger = function () {
     return;
   }
 
-  let ledgerRecords;
-  try {
-    ledgerRecords = this.getLedgerRecords();
-    this.validateLedgerRecords(ledgerRecords);
-  }
-  catch (error) {
-    if (error instanceof ValidationError) {
-      this.handleError('validation', error.message, error.rowIndex, error.columnName);
-      return;
-    }
-    else {
-      throw error;
-    }
-  }
+  let ss = SpreadsheetApp.getActive();
+  let ledgerSheet = ss.getSheetByName(this.ledgerSheetName);
 
-  try {
-    this.processLedger(ledgerRecords);
-  }
-  catch (error) {
-    if (error instanceof CryptoAccountError) {
-      this.handleError('cryptoAccount', error.message, error.rowIndex, 'debitAmount');
-      return;
+  let ledgerRecords;
+
+  if (ledgerSheet) {
+
+    try {
+      ledgerRecords = this.getLedgerRecords();
+      this.validateLedgerRecords(ledgerRecords);
     }
-    else {
-      throw error;
+    catch (error) {
+      if (error instanceof ValidationError) {
+        this.handleError('validation', error.message, error.rowIndex, error.columnName);
+        return;
+      }
+      else {
+        throw error;
+      }
+    }
+
+    try {
+      this.processLedger(ledgerRecords);
+    }
+    catch (error) {
+      if (error instanceof CryptoAccountError) {
+        this.handleError('cryptoAccount', error.message, error.rowIndex, 'debitAmount');
+        return;
+      }
+      else {
+        throw error;
+      }
     }
   }
 
   this.deleteReports();
 
-  let countDoubleExRates = this.countDoubleExRates(ledgerRecords);
+  let countDoubleExRates = 0;
+  if (ledgerSheet) {
+    countDoubleExRates = this.countDoubleExRates(ledgerRecords);
+  }
+
   let instructionsSheet = this.instructionsSheet(countDoubleExRates);
-  this.assetsSheet();
-  this.wealthLedgerSheet(ledgerRecords);
+
+  if (ledgerSheet) {
+    this.assetsSheet();
+    this.wealthLedgerSheet(ledgerRecords);
+  }
 
   SpreadsheetApp.getActive().setCurrentCell(instructionsSheet.getRange('A1'));
 
@@ -79,7 +93,7 @@ CryptoTracker.prototype.countDoubleExRates = function (ledgerRecords) {
  * Creates an instructions sheet.
  * Includes the API key if there is one.
  */
-CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates) {
+CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates, ledgerSheet) {
 
   const sheetName = 'Instructions';
 
@@ -105,8 +119,11 @@ CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates) {
 
   dataTable.push([``]);
   dataTable.push([`${index++}. Delete this sheet.`]);
-  dataTable.push([``]);
-  dataTable.push([`${index++}. Delete the old ledger sheet (now renamed Ledger + some number) when you are happy with the upgrade.`]);
+
+  if (ledgerSheet) {
+    dataTable.push([``]);
+    dataTable.push([`${index++}. Delete the old ledger sheet (now renamed Ledger + some number) when you are happy with the upgrade.`]);
+  }
 
   if (countDoubleExRates > 0) {
     dataTable.push([``]);

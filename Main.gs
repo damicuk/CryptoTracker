@@ -25,7 +25,7 @@ function onInstall(e) {
 function onOpen(e) {
   SpreadsheetApp.getUi()
     .createMenu('CryptoTracker')
-    .addItem('Upgrade to WealthLedger', 'createWealthLedger')
+    .addItem('Upgrade to WealthLedger', 'upgradeToWealthLedger')
     .addSeparator()
     .addItem('Step 1: Create sample ledger', 'createSampleLedger')
     .addSeparator()
@@ -40,9 +40,9 @@ function onOpen(e) {
 /**
  * Calls the corresponding method of a new instance of CryptoTracker
  */
-function createWealthLedger() {
+function upgradeToWealthLedger() {
 
-  new CryptoTracker().createWealthLedger();
+  new CryptoTracker().upgradeToWealthLedger();
 }
 
 /**

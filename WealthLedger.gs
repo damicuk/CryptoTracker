@@ -51,8 +51,8 @@ CryptoTracker.prototype.createWealthLedger = function () {
 
   this.deleteReports();
 
-  let hasDoubleExRates = this.hasDoubleExRates(ledgerRecords);
-  let instructionsSheet = this.instructionsSheet(hasDoubleExRates);
+  let countDoubleExRates = this.countDoubleExRates(ledgerRecords);
+  let instructionsSheet = this.instructionsSheet(countDoubleExRates);
   this.assetsSheet();
   this.wealthLedgerSheet(ledgerRecords);
 
@@ -65,20 +65,21 @@ CryptoTracker.prototype.createWealthLedger = function () {
  * Determines whether the ledger records contain records with both ex rates set.
   @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
  */
-CryptoTracker.prototype.hasDoubleExRates = function (ledgerRecords) {
+CryptoTracker.prototype.countDoubleExRates = function (ledgerRecords) {
+  let count = 0;
   for (let ledgerRecord of ledgerRecords) {
     if (ledgerRecord.debitExRate !== '' && ledgerRecord.creditExRate !== '') {
-      return true;
+      count++;
     }
   }
-  return false;
+  return count;
 };
 
 /**
  * Creates an instructions sheet.
  * Includes the API key if there is one.
  */
-CryptoTracker.prototype.instructionsSheet = function (hasDoubleExRates) {
+CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates) {
 
   const sheetName = 'Instructions';
 
@@ -107,10 +108,10 @@ CryptoTracker.prototype.instructionsSheet = function (hasDoubleExRates) {
   dataTable.push([``]);
   dataTable.push([`${index++}. Delete the old ledger sheet (now renamed Ledger + some number) when you are happy with the upgrade.`]);
 
-  if (hasDoubleExRates) {
+  if (countDoubleExRates > 0) {
     dataTable.push([``]);
     dataTable.push([`Warning:`]);
-    dataTable.push([`When you run WealthLedger for the first time you will get validation errors on ledger records with both exchange rates set.\nThis is redundant, often contradictory and no longer allowed.\nOne exchange rate can be deduced from the other and the amount of assets exchanged.\nRead the the validation message when deciding which exchange rate to remove.`]);
+    dataTable.push([`Found ${countDoubleExRates} records with both both exchange rates set.\nThis is redundant, often contradictory and no longer allowed.\nOne exchange rate can be deduced from the other and the amount of assets exchanged.\nWhen you run WealthLedger you will get validation errors on these records.\nRead the validation message when deciding which exchange rate to remove.`]);
 
     sheet.getRange(dataTable.length - 1, 1, 1, 1).setFontColor('red');
   }

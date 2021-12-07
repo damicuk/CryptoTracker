@@ -128,7 +128,7 @@ CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates, ledger
   if (countDoubleExRates > 0) {
     dataTable.push([``]);
     dataTable.push([`Warning:`]);
-    dataTable.push([`Found ${countDoubleExRates} records with both both exchange rates set.\nThis is redundant, often contradictory and no longer allowed.\nOne exchange rate can be deduced from the other and the amount of assets exchanged.\nWhen you run WealthLedger you will get validation errors on these records.\nRead the validation message when deciding which exchange rate to remove.`]);
+    dataTable.push([`Found ${countDoubleExRates} records with both both exchange rates set.\nThis is redundant, often contradictory and no longer allowed.\nOne exchange rate can be inferred from the other and the amount of assets exchanged.\nWhen you run WealthLedger you will get validation errors on these records.\nRead the validation message when deciding which exchange rate to remove.`]);
 
     sheet.getRange(dataTable.length - 1, 1, 1, 1).setFontColor('red');
   }

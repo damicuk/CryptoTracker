@@ -59,11 +59,13 @@ CryptoTracker.prototype.upgradeToWealthLedger = function () {
   this.deleteReports();
 
   let countDoubleExRates = 0;
+  let countGifts = 0;
   if (ledgerSheet) {
     countDoubleExRates = this.countDoubleExRates(ledgerRecords);
+    countGifts = this.countGifts(ledgerRecords);
   }
 
-  let instructionsSheet = this.instructionsSheet(countDoubleExRates);
+  let instructionsSheet = this.instructionsSheet(countDoubleExRates, countGifts, ledgerSheet);
 
   if (ledgerSheet) {
     this.assetsSheet();
@@ -76,8 +78,9 @@ CryptoTracker.prototype.upgradeToWealthLedger = function () {
 };
 
 /**
- * Determines whether the ledger records contain records with both ex rates set.
-  @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
+ * Determines the number of ledger records with both ex rates set.
+ * @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
+ * @return {number} The number of ledger records with both ex rates set.
  */
 CryptoTracker.prototype.countDoubleExRates = function (ledgerRecords) {
   let count = 0;
@@ -90,10 +93,28 @@ CryptoTracker.prototype.countDoubleExRates = function (ledgerRecords) {
 };
 
 /**
+ * Determines the number of ledger records with the gift action.
+ * @param {LedgerRecord[]} ledgerRecords - The collection of ledger records.
+ * @return {number} The number of ledger records with the gift action.
+ */
+CryptoTracker.prototype.countGifts = function (ledgerRecords) {
+  let count = 0;
+  for (let ledgerRecord of ledgerRecords) {
+    if (ledgerRecord.action === 'Gift') {
+      count++;
+    }
+  }
+  return count;
+};
+
+/**
  * Creates an instructions sheet.
  * Includes the API key if there is one.
+ * @param {number} countDoubleExRates - The number of ledger records with both ex rates set.
+ * @param {number} countGifts - The number of ledger records with the gift action.
+ * @param {Sheet} ledgerSheet - The ledger sheet.
  */
-CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates, ledgerSheet) {
+CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates, countGifts, ledgerSheet) {
 
   const sheetName = 'Instructions';
 
@@ -129,6 +150,14 @@ CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates, ledger
     dataTable.push([``]);
     dataTable.push([`Warning:`]);
     dataTable.push([`Found ${countDoubleExRates} records with both both exchange rates set.\nThis is redundant, often contradictory and no longer allowed.\nOne exchange rate can be deduced from the other and the amount of assets exchanged.\nWhen you run WealthLedger you will get validation errors on these records.\nRead the validation message when deciding which exchange rate to remove.`]);
+
+    sheet.getRange(dataTable.length - 1, 1, 1, 1).setFontColor('red');
+  }
+
+  if (countGifts > 0) {
+    dataTable.push([``]);
+    dataTable.push([`Warning:`]);
+    dataTable.push([`Found ${countGifts} gift records.\nGifts given now require the debit exchange rate to be specified.\nWhen you run WealthLedger you will get validation errors on these records.`]);
 
     sheet.getRange(dataTable.length - 1, 1, 1, 1).setFontColor('red');
   }
@@ -271,6 +300,8 @@ CryptoTracker.prototype.assetsSheet = function () {
   sheet.setColumnWidth(6, 170);
   sheet.autoResizeColumns(7, 1);
 
+  this.setSheetVersion(sheet, '1');
+
   return sheet;
 };
 
@@ -350,6 +381,16 @@ CryptoTracker.prototype.wealthLedgerSheet = function (ledgerRecords) {
     let comment = '';
     if (comments) {
       comment = comments[index++][0];
+    }
+
+    if (ledgerRecord.action === 'Transfer' && Currency.isFiat(ledgerRecord.debitCurrency) && ledgerRecord.debitWalletName === '') {
+
+      ledgerRecord.creditCurrency = ledgerRecord.debitCurrency;
+      ledgerRecord.creditAmount = ledgerRecord.debitAmount;
+      ledgerRecord.debitCurrency = '';
+      ledgerRecord.debitAmount = '';
+      ledgerRecord.debitFee = '';
+
     }
 
     dataTable.push([
@@ -442,6 +483,8 @@ CryptoTracker.prototype.wealthLedgerSheet = function (ledgerRecords) {
   sheet.autoResizeColumns(10, 1);
   sheet.setColumnWidth(13, 120);
   sheet.autoResizeColumns(14, 1);
+
+  this.setSheetVersion(sheet, '1');
 
   return sheet;
 };

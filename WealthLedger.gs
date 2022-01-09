@@ -126,8 +126,6 @@ CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates, countG
   let index = 1;
 
   let dataTable = [
-    [`${index++}. Uninstall CryptoTracker (Extensions - Add-ons - Manage Add-ons).`],
-    [``],
     [`${index++}. Install WealthLedger (Extensions - Add-ons - Get Add-ons).`]
   ];
 
@@ -174,35 +172,6 @@ CryptoTracker.prototype.instructionsSheet = function (countDoubleExRates, countG
  * Renames any existing assets sheet so as not to overwrite it.
  */
 CryptoTracker.prototype.assetsSheet = function () {
-
-  const sheetName = 'Assets';
-
-  this.renameSheet(sheetName);
-
-  let ss = SpreadsheetApp.getActive();
-  sheet = ss.insertSheet(sheetName);
-
-  let headers = [
-    [
-      'Asset',
-      'Asset Type',
-      'Decimal Places',
-      'Current Price',
-      'API',
-      'Timestamp',
-      'Comment'
-    ]
-  ];
-
-  sheet.getRange('A1:G1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
-  sheet.setFrozenRows(1);
-
-  sheet.getRange('A2:B').setNumberFormat('@');
-  sheet.getRange('C2:C').setNumberFormat('0');
-  sheet.getRange('D2:D').setNumberFormat('#,##0.0000;(#,##0.0000)');
-  sheet.getRange('E2:E').setNumberFormat('@');
-  sheet.getRange('F2:F').setNumberFormat('yyyy-mm-dd hh:mm:ss');
-  sheet.getRange('G2:G').setNumberFormat('@');
 
   let dataTable = [];
 
@@ -256,6 +225,38 @@ CryptoTracker.prototype.assetsSheet = function () {
 
   dataTable.push([, , , , , , ,]);
 
+  const sheetName = 'Assets';
+
+  this.renameSheet(sheetName);
+
+  let ss = SpreadsheetApp.getActive();
+  sheet = ss.insertSheet(sheetName);
+
+  this.trimSheet(sheet, dataTable.length + 1, 7);
+
+  let headers = [
+    [
+      'Asset',
+      'Asset Type',
+      'Decimal Places',
+      'Current Price',
+      'API',
+      'Timestamp',
+      'Comment'
+    ]
+  ];
+
+  sheet.getRange('A1:G1').setValues(headers).setFontWeight('bold').setHorizontalAlignment("center");
+  sheet.setFrozenRows(1);
+
+  sheet.getRange('A2:B').setNumberFormat('@');
+  sheet.getRange('C2:C').setNumberFormat('0');
+  sheet.getRange('D2:D').setNumberFormat('#,##0.0000;(#,##0.0000)');
+  sheet.getRange('E2:E').setNumberFormat('@');
+  sheet.getRange('F2:F').setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  sheet.getRange('G2:G').setNumberFormat('@');
+
+
   this.cmcApiName = 'CoinMarketCap';
   this.ccApiName = 'CryptoCompare';
 
@@ -294,10 +295,10 @@ CryptoTracker.prototype.assetsSheet = function () {
     sheet.getRange('A1:G').createFilter();
   }
 
-  this.trimSheet(sheet, dataTable.length + 1, 7);
-
   sheet.setColumnWidths(1, 5, 140);
   sheet.setColumnWidth(6, 170);
+
+  SpreadsheetApp.flush();
   sheet.autoResizeColumns(7, 1);
 
   this.setSheetVersion(sheet, '1');
@@ -315,12 +316,53 @@ CryptoTracker.prototype.wealthLedgerSheet = function (ledgerRecords) {
   this.addDefaultLotMatching(ledgerRecords);
   let comments = this.getLedgerComments();
 
+  let dataTable = [];
+
+  let index = 0;
+
+  for (let ledgerRecord of ledgerRecords) {
+
+    let comment = '';
+    if (comments) {
+      comment = comments[index++][0];
+    }
+
+    if (ledgerRecord.action === 'Transfer' && Currency.isFiat(ledgerRecord.debitCurrency) && ledgerRecord.debitWalletName === '') {
+
+      ledgerRecord.creditCurrency = ledgerRecord.debitCurrency;
+      ledgerRecord.creditAmount = ledgerRecord.debitAmount;
+      ledgerRecord.debitCurrency = '';
+      ledgerRecord.debitAmount = '';
+      ledgerRecord.debitFee = '';
+
+    }
+
+    dataTable.push([
+      ledgerRecord.date,
+      ledgerRecord.action,
+      ledgerRecord.debitCurrency,
+      ledgerRecord.debitExRate,
+      ledgerRecord.debitAmount,
+      ledgerRecord.debitFee,
+      ledgerRecord.debitWalletName,
+      ledgerRecord.creditCurrency,
+      ledgerRecord.creditExRate,
+      ledgerRecord.creditAmount,
+      ledgerRecord.creditFee,
+      ledgerRecord.creditWalletName,
+      ledgerRecord.lotMatching,
+      comment
+    ]);
+  }
+
   const sheetName = 'Ledger';
 
   this.renameSheet(sheetName);
 
   let ss = SpreadsheetApp.getActive();
   sheet = ss.insertSheet(sheetName);
+
+  this.trimSheet(sheet, dataTable.length + 2, 14);
 
   let headers = [
     [
@@ -372,44 +414,6 @@ CryptoTracker.prototype.wealthLedgerSheet = function (ledgerRecords) {
     sheet.getRange('A2:N').createFilter();
   }
 
-  let dataTable = [];
-
-  let index = 0;
-
-  for (let ledgerRecord of ledgerRecords) {
-
-    let comment = '';
-    if (comments) {
-      comment = comments[index++][0];
-    }
-
-    if (ledgerRecord.action === 'Transfer' && Currency.isFiat(ledgerRecord.debitCurrency) && ledgerRecord.debitWalletName === '') {
-
-      ledgerRecord.creditCurrency = ledgerRecord.debitCurrency;
-      ledgerRecord.creditAmount = ledgerRecord.debitAmount;
-      ledgerRecord.debitCurrency = '';
-      ledgerRecord.debitAmount = '';
-      ledgerRecord.debitFee = '';
-
-    }
-
-    dataTable.push([
-      ledgerRecord.date,
-      ledgerRecord.action,
-      ledgerRecord.debitCurrency,
-      ledgerRecord.debitExRate,
-      ledgerRecord.debitAmount,
-      ledgerRecord.debitFee,
-      ledgerRecord.debitWalletName,
-      ledgerRecord.creditCurrency,
-      ledgerRecord.creditExRate,
-      ledgerRecord.creditAmount,
-      ledgerRecord.creditFee,
-      ledgerRecord.creditWalletName,
-      ledgerRecord.lotMatching,
-      comment
-    ]);
-  }
 
   let fiatTickers = Array.from(this.fiats).sort(CryptoTracker.abcComparator);
   let assetTickers = Array.from(this.cryptos).sort(CryptoTracker.abcComparator);
@@ -476,12 +480,12 @@ CryptoTracker.prototype.wealthLedgerSheet = function (ledgerRecords) {
     .build();
   sheet.getRange('M3:M').setDataValidation(lotMatchingRule);
 
-  this.trimSheet(sheet, dataTable.length + 2, 14);
+  sheet.setColumnWidth(13, 120);
 
+  SpreadsheetApp.flush();
   sheet.autoResizeColumns(1, 1);
   sheet.autoResizeColumns(5, 1);
   sheet.autoResizeColumns(10, 1);
-  sheet.setColumnWidth(13, 120);
   sheet.autoResizeColumns(14, 1);
 
   this.setSheetVersion(sheet, '1');

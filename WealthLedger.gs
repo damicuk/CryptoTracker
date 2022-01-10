@@ -191,7 +191,7 @@ CryptoTracker.prototype.assetsSheet = function () {
   let cryptos = Array.from(this.cryptos).sort(CryptoTracker.abcComparator);
   let currentCryptos = this.currentCryptos;
   let googleFinanceSet = new Set(['BTC', 'BNB', 'ETH', 'ADA', 'XRP']);
-  let assetType = 'Crypto'
+  let assetType = 'Crypto';
   let stablecoinSet = new Set(['BUSD', 'cUSD', 'DAI', 'EURS', 'EURX', 'FEI', 'FRAX', 'GUSD', 'HUSD', 'LUSD', 'MUSD', 'sUSD', 'TUSD', 'USDC', 'USDN', 'USDP', 'USDT', 'UST']);
 
   for (let crypto of cryptos) {

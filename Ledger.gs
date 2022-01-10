@@ -13,6 +13,11 @@ CryptoTracker.prototype.getLedgerRange = function () {
 
     ledgerSheet = this.sampleLedger();
   }
+  else if (this.isWealthLedger(ledgerSheet)) {
+
+    throw new ValidationError('Please use the WealthLedger add-on for this ledger sheet.');
+
+  }
 
   if (ledgerSheet.getMaxColumns() < this.ledgerDataColumns) {
     throw new ValidationError('Ledger has insufficient columns.');
@@ -29,6 +34,15 @@ CryptoTracker.prototype.getLedgerRange = function () {
   return ledgerRange;
 };
 
+/**
+ * Checks if the ledger sheet is for the WealthLedger add-on.
+ * @return {boolean} Whether ledger sheet is for the WealthLedger add-on.
+ */
+CryptoTracker.prototype.isWealthLedger = function (sheet) {
+
+  return sheet.getRange('C2').getValue() === 'Asset';
+
+};
 
 /**
  * Checks the version of the ledger sheet.

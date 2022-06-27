@@ -25,8 +25,8 @@ function onInstall(e) {
 function onOpen(e) {
   SpreadsheetApp.getUi()
     .createMenu('CryptoTracker')
-    .addItem('Upgrade to WealthLedger', 'upgradeToWealthLedger')
-    .addSeparator()
+    // .addItem('Upgrade to WealthLedger', 'upgradeToWealthLedger')
+    // .addSeparator()
     .addItem('Step 1: Create sample ledger', 'createSampleLedger')
     .addSeparator()
     .addItem('Step 2: Validate ledger', 'validateLedger')
@@ -50,6 +50,8 @@ function upgradeToWealthLedger() {
  */
 function createSampleLedger() {
 
+  showWarning();
+
   new CryptoTracker().sampleLedger();
 }
 
@@ -57,6 +59,8 @@ function createSampleLedger() {
  * Calls the corresponding method of a new instance of CryptoTracker
  */
 function validateLedger() {
+
+  showWarning();
 
   new CryptoTracker().validateLedger();
 
@@ -67,7 +71,19 @@ function validateLedger() {
  */
 function writeReports() {
 
+  showWarning();
+
   new CryptoTracker().writeReports();
+}
+
+/**
+ * Displays dialog warning the user of the pending removal of this application
+ */
+function showWarning() {
+
+  let ui = SpreadsheetApp.getUi();
+  let message = `Please note that this application will be removed on 01/01/2023.\nPlease use WealthLedger instead.`;
+  ui.alert(`Warning`, message, ui.ButtonSet.OK);
 }
 
 /**
@@ -87,7 +103,7 @@ function showSettingsDialog() {
 function saveSettings(settings) {
 
   new CryptoTracker().saveSettings(settings);
-  
+
 }
 
 /**
